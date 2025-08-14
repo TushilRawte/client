@@ -1,0 +1,20 @@
+
+.card-header-custom {
+   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2px 16px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  color: white;
+  margin: -16px -16px 16px -16px; /* remove default mat-card padding at top */
+}
+
+.card-header-custom mat-card-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: white;
+}
+
+.button{
+    text-align: end;
+}

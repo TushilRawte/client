@@ -1,0 +1,41 @@
+<div class="container my-4">
+  <div *ngFor="let fee of feeDetails; let i = index" class="card mb-3 shadow-sm border rounded">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+      <div>
+        <strong>{{ i + 1 }}. {{ fee.session }}</strong>
+        <span class="badge bg-secondary ms-2">{{ fee.yearSemester }}</span>
+      </div>
+      <div>
+        <span *ngFor="let s of fee.status" class="badge bg-primary text-white ms-1">{{ s }}</span>
+      </div>
+    </div>
+
+    <div class="card-body row small-text">
+      <!-- Paid Fee Section -->
+      <div class="col-md-6 border-end">
+        <h6 class="text-info mb-2">Paid Fee</h6>
+        <ul class="list-unstyled">
+          <li *ngFor="let item of fee.paidFees" class="mb-1">
+            <span class="badge bg-success me-1">✔ paid</span>
+            {{ item.label }}
+            <a *ngIf="item.receipt" href="#" class="text-decoration-none ms-1">Get Receipt</a>
+            <!-- <hr> -->
+          </li>
+        </ul>
+      </div>
+
+      <!-- Applicable Fee Section -->
+      <div class="col-md-6">
+        <h6 class="text-primary mb-2">Applicable Fee</h6>
+        <ul class="list-unstyled">
+          <li *ngFor="let item of fee.applicableFees" class="mb-1">
+            <span class="badge bg-success me-1">✔ paid</span>
+            {{ item.label }}
+            <span class="text-muted small ms-1">{{ item.mode }}</span>
+            <a *ngIf="item.receipt" href="#" class="text-decoration-none ms-1">Get Receipt</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

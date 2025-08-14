@@ -1,0 +1,13 @@
+
+
+<form [formGroup]="mainForm" >
+<mat-form-field appearance="outline">
+    <mat-label>Session</mat-label>
+    <mat-select formControlName="session">
+      <mat-option *ngFor="let item of acadmcSesnList" [value]="item.module_id">
+        {{ item.module_name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+

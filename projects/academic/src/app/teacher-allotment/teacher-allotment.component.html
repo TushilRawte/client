@@ -1,0 +1,183 @@
+<mat-card>
+    <mat-card-content>
+        <form  [formGroup]="finalizecourseFormGroup" >
+            <div class="row">
+                <div class="col-md-3 col-6">
+                  <ng-select placeholder="Session" formControlName="Academic_Session_Id" appearance="outline" >
+                    <ng-container *ngFor="let server of acadmcSesnList">
+                      <ng-option [value]="server.Academic_Session_Id">{{ server.Academic_Session_Name_E }}</ng-option>
+                    </ng-container>
+                  </ng-select>
+                </div>
+                <div class="col-md-3 col-6">
+                  <ng-select placeholder="College" formControlName="college_id" (change)="onCollegeChange($event)" appearance="outline" >
+                    <ng-container *ngFor="let server of collegeList">
+                      <ng-option [value]="server.college_id">{{ server.College_name_E }}</ng-option>
+                    </ng-container>
+                  </ng-select>
+                </div>
+                <div class="col-md-3 col-6">
+                  <ng-select placeholder="Degree Programme" formControlName="Degree_Programme_Id" (change)="onDegreeProgrammeChange($event)" appearance="outline" >
+                    <ng-container *ngFor="let server of degreeProgramme">
+                      <ng-option [value]="server.Degree_Programme_Id">{{ server.Degree_Programme_Name_E }}</ng-option>
+                    </ng-container>
+                  </ng-select>
+                </div>
+                <div class="col-md-3 col-6">
+                  <ng-select placeholder="Semester" formControlName="Semester_Id" appearance="outline" >
+                    <ng-container *ngFor="let server of semesterList">
+                      <ng-option [value]="server.Semester_Id">{{ server.Semester_Name_E }}</ng-option>
+                    </ng-container>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="row mt-3">
+                  <table class="table    table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Year</th>
+                        <th>Dean Committee</th>
+                        <th>Batch</th>
+                        <!-- <th>Course Allotment Finalize Status</th> -->
+                        <th>Get Allotment</th>
+                        <th>Print</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of courseYearList">
+                        <td>{{ item.Course_Year_Name_E }}</td>
+                        <td>{{item.Dean_Commite_Name_E}}</td>
+                        <td>I & II</td>
+                        <!-- <td >
+                            <span *ngIf="print_row.Finalize_YN == 'Y'">Finalized</span>
+                            <span *ngIf="print_row.Finalize_YN == 'N'">Not Finalized</span>
+                        </td> -->
+                        <td>
+                            <button mat-raised-button color="primary" matTooltip="Show Course"   (click)="getDataForPrint(item)" class="tools mx-auto">Get Allotment</button>
+                        </td>
+                        <td>
+                          <!-- <button (click)="getDataForPrint(item);" mat-raised-button color="primary" matTooltip="Print"  class="tools mx-auto"> <mat-icon>print</mat-icon> </button> -->
+                           <button mat-raised-button color="primary" matTooltip="Print"  class="tools mx-auto"> <mat-icon>print</mat-icon> </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+              </div> 
+            
+<div class="row mt-3">
+    <table class="table table-bordered">
+        <thead class="table-light sticky-top">
+          <tr>
+            <th>Course</th>
+            <th>Course Type</th>
+            <th>Course Nature</th>
+            <th>Credit</th>
+            <th>Allotment Type</th>
+            <th>Teachers</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let course of print_row">
+            <td>{{ course.course_name }}</td>
+            <td>{{ course.Course_Type_Name_E }}</td>
+            <td>{{ course.course_nature }}</td>
+            <td>{{ course.Credit }}</td>
+            <td>{{ course.Cou_Allot_Type_Name_E }}</td>
+            <td>
+              <ng-select placeholder="Teacher" formControlName="Emp_Id" appearance="outline" [multiple]="true" [(ngModel)]="course.selectedEmpIds"
+              (change)="onTeacherChange($event, course)">
+                <ng-container *ngFor="let teacher of course.teacherRows" >
+                  <ng-option [value]="teacher.Emp_Id">{{ teacher.emp_name }}</ng-option>
+                </ng-container>
+              </ng-select>
+            </td>
+          </tr>
+        </tbody>
+    </table>
+  </div>
+        </form>
+    </mat-card-content>
+</mat-card>
+
+
+<mat-card class="mt-3">
+    <mat-card-content>
+        <form *ngIf="courseForm" [formGroup]="courseForm">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Course Type</th>
+                  <th>Course Nature</th>
+                  <th>Credit</th>
+                  <th>Allotment Type</th>
+                  <th>Teachers</th>
+                </tr>
+              </thead>
+              <tbody formArrayName="courses">
+                <tr *ngFor="let courseCtrl of coursesFormArray.controls; let i = index" [formGroupName]="i">
+                  <td>{{ courseCtrl.value.course_name }}</td>
+                  <td>{{ courseCtrl.value.Course_Type_Name_E }}</td>
+                  <td>{{ courseCtrl.value.course_nature }}</td>
+                  <td>{{ courseCtrl.value.Credit }}</td>
+                  <td>{{ courseCtrl.value.Cou_Allot_Type_Name_E }}</td>
+                  <td>
+                    <ng-select
+                      [items]="teacherList"
+                      bindLabel="emp_name"
+                      bindValue="Emp_Id"
+                      [multiple]="true"
+                      placeholder="Select Teachers"
+                      formControlName="Emp_Id"
+                    ></ng-select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </form>
+          
+          <!-- Loading Fallback -->
+          <div *ngIf="!courseForm">
+            <p class="text-danger">Loading or no courses available...</p>
+          </div>
+          
+          
+          <div *ngIf="!courseForm || !coursesFormArray.controls.length">
+            <p class="text-danger">Loading or no courses available...</p>
+          </div>
+          
+          
+    </mat-card-content>
+</mat-card>
+
+<!-- <div class="row mt-3">
+    <table class="table table-bordered">
+        <thead class="table-light sticky-top">
+          <tr>
+            <th>Course</th>
+            <th>Course Type</th>
+            <th>Course Nature</th>
+            <th>Credit</th>
+            <th>Allotment Type</th>
+            <th>Teachers</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let course of print_row">
+            <td>{{ course.course_name }}</td>
+            <td>{{ course.Course_Type_Name_E }}</td>
+            <td>{{ course.course_nature }}</td>
+            <td>{{ course.Credit }}</td>
+            <td>{{ course.Cou_Allot_Type_Name_E }}</td>
+            <td>
+                                       <ng-select placeholder="Teacher" formControlName="Emp_Id" appearance="outline" [multiple]="true" [(ngModel)]="course.selectedEmpIds"
+              (change)="onTeacherChange($event, course)">
+                <ng-container *ngFor="let teacher of teacherList" >
+                  <ng-option [value]="teacher.Emp_Id">{{ teacher.emp_name }}</ng-option>
+                </ng-container>
+              </ng-select>
+            </td>
+          </tr>
+        </tbody>
+    </table>
+  </div> -->

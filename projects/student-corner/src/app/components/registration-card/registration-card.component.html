@@ -1,0 +1,189 @@
+ <mat-card class="mt-5" >
+        <mat-card-content>
+            <div class="row">
+                Download Registration Card
+            </div>
+            <table class="table mt-3 table-bordered  mb-0">
+                        <thead>
+                            <tr> <th>#</th>
+                                <th>Session</th>
+                                <th>Year</th>
+                                <th>Semester</th>
+                                <th>Academic Standing</th>
+                                <th>Student Study Status</th>
+                                <th>Registration Status</th>
+                                <th>Download</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of registrationData; let i = index">
+                                <td>{{i+1}}</td>
+                                <td>{{ item.academicYear }}</td>
+                                <td>{{ item.year }}</td>
+                                <td>{{ item.semester }}</td>
+                                <td>{{ item.status }}</td>
+                                <td>{{ item.studentType }}</td>
+                                <td>{{ item.registrationStatus }}</td>
+                                <td>
+                                    <button mat-icon-button color="primary" (click)="printData()" ><mat-icon>cloud_download</mat-icon></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                    </table>
+        </mat-card-content>
+ </mat-card>
+
+
+<div id="print-section" class="container my-4 bg-white p-3 mt-3">
+  <div class="border border-4 border-dark">
+    <!-- Header Section -->
+    <div class="text-center border-bottom border-2 border-dark p-2">
+      <div class="d-flex align-items-center justify-content-center gap-3">
+        <!-- Logo -->
+        <div class="rounded-circle bg-success d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+          <span class="text-white fw-bold small">LOGO</span>
+        </div>
+        <div>
+          <h4 class="fw-bolder text-info m-0">
+           Indira Gandhi Krishi Vishwavidyalaya, Raipur
+          </h4>
+          <h5 class="fw-bolder text-info">CHHATTISGARH</h5>
+          <div class="fw-bolder text-success text-decoration-underline small">REGISTRATION CARD SHEET</div>
+          <div class="small">
+            College of Forestry, Sankra Patan<br />
+            B.Sc Forestry (Hons.)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Registration Details -->
+    <div class="border-bottom border-dark">
+      <div class="bg-light p-1 fw-bold small border-bottom border-dark">
+        Registration Detail :-
+      </div>
+      <table class="table table-bordered table-sm m-0 small align-middle">
+        <tbody>
+          <tr>
+            <td>Registration No :</td>
+            <td>{{ studentData.registrationNo }}</td>
+            <td>Student Name :</td>
+            <td>{{ studentData.studentName }}</td>
+            <td>Phone No. :</td>
+            <td>{{ studentData.phoneNo }}</td>
+          </tr>
+          <tr>
+            <td>Registration Session :</td>
+            <td>{{ studentData.registrationSession }}</td>
+            <td>Year & Class :</td>
+            <td>{{ studentData.yearClass }}</td>
+            <td>Cumulative Semester No :</td>
+            <td>{{ studentData.cumulativeSemesterNo }}</td>
+          </tr>
+          <tr>
+            <td>Student U.B. Id :</td>
+            <td>{{ studentData.studentUBId }}</td>
+            <td>Semester :</td>
+            <td>{{ studentData.semester }}</td>
+            <td>Academic Session :</td>
+            <td>{{ studentData.academicSession }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Fees Detail -->
+    <div class="border-bottom border-dark">
+      <div class="bg-light p-1 fw-bold small border-bottom border-dark">
+        Fees Detail :-
+      </div>
+      <table class=" table-bordered table-sm m-0 small align-middle">
+        <thead>
+          <tr class="bold-row" style="background-color: rgb(200, 220, 236);">
+            <td>Fee</td>
+            <td>Fee Receipt No</td>
+            <td>Fee Paid Date</td>
+            <td>Transaction No</td>
+            <td>Paid Amount</td>
+            <td>Fee Paid College</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let fee of feesData">
+            <td>{{ fee.fee }}</td>
+            <td>{{ fee.feeReceiptNo }}</td>
+            <td>{{ fee.feePaidDate }}</td>
+            <td>{{ fee.transactionNo }}</td>
+            <td>{{ fee.paidAmount }}</td>
+            <td>{{ fee.feePaidCollege }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Course Detail -->
+    <div class="border-bottom border-dark">
+      <div class="bg-light p-1 fw-bold small border-bottom border-dark">
+        Course Detail :-
+      </div>
+      <table class=" table-bordered table-sm m-0 small align-middle">
+        <thead>
+          <tr class="bold-row" style="background-color: rgb(200, 220, 236);">
+            <td>S. No.</td>
+            <td>Course No</td>
+            <td>Course Type</td>
+            <td>Title Of Course</td>
+            <td>Credit(T+P)</td>
+            <td>(R) for repeat</td>
+            <td>Name Of Course Teacher</td>
+            <td>Signature</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let course of courseData">
+            <td>{{ course.sNo }}</td>
+            <td>{{ course.courseNo }}</td>
+            <td>{{ course.courseType }}</td>
+            <td>{{ course.titleOfCourse }}</td>
+            <td class="text-center">{{ course.credit }}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Signatures -->
+    <div class="p-0">
+        <table class="table table-bordered table-sm m-0 small text-center signature-table">
+        <tbody>
+            <tr>
+            <td>Student</td>
+            <td>Adviser</td>
+            <td>Hostel Warden</td>
+            <td>I/C Student Section</td>
+            <td>Cashier</td>
+            <td>HOD</td>
+            <td>Dean</td>
+            <td>Registrar</td>
+            </tr>
+        </tbody>
+        </table>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="border-top border-dark p-1 small">
+      <div class="d-flex justify-content-between">
+        <span>Print Date : 16.08.2024</span>
+        <span>* This is system generated registration card.</span>
+        <span>Page 1-1</span>
+      </div>
+      <div class="text-center mt-1">
+        Office must ensure the submission of registration card as per V.V Rule.
+      </div>
+    </div>
+  </div>
+</div>
+

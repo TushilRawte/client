@@ -1,0 +1,31 @@
+<mat-card>
+    <mat-card-content>
+      <!-- <h4 class="mb-0"></h4> -->
+        <table class="" >
+            <thead>
+                <tr>
+                  <th *ngIf="data?.session">Session</th>
+                  <th *ngIf="data?.college">College</th>
+                  <th *ngIf="data?.programme">Degree Programme</th>
+                  <th *ngIf="data?.Course_Year_Name_E">Year</th>
+                  <th *ngIf="data?.semester">Semester</th>
+                  <th *ngIf="data?.deanCommittee">Dean Committee</th>
+                  <th *ngIf="data?.batch">Batch</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td *ngIf="data?.session">{{ data.session }}</td>
+                  <td *ngIf="data?.college">{{ data.college }}</td>
+                  <td *ngIf="data?.programme">{{ data.programme }}</td>
+                  <td *ngIf="data?.Course_Year_Name_E">{{ data.Course_Year_Name_E }}</td>
+                  <td *ngIf="data?.semester">{{ data.semester }}</td>
+                  <td *ngIf="data?.deanCommittee">{{ data.deanCommittee }}</td>
+                  <td *ngIf="data?.batch">{{ data.batch }}</td>
+                </tr>
+              </tbody>
+        </table>
+    </mat-card-content>
+</mat-card>
+
+  

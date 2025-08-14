@@ -1,0 +1,14 @@
+table td, table th {
+  vertical-align: middle;
+}
+
+.signature-table td {
+  height: 60px;             /* Fixed height */
+  vertical-align: bottom;   /* Push content to bottom */
+  padding-top: 40px;        /* Space for signature */
+}
+.bold-row {
+  font-weight: 600;
+  background-color: #cfe2f3; /* Light blue background */
+  font-size: 12px;
+}

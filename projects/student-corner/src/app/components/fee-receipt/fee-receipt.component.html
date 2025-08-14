@@ -1,0 +1,73 @@
+<div class="container">
+  <h1 class="page-title">Fee Receipt</h1>
+  <div class="row">
+    <div class="filter">
+        <div class="row">
+            <div class="col-md-12">
+                <ng-select style="padding-bottom: 0; "
+                [items]="feeCategories"
+                bindLabel="label"
+                bindValue="value"
+                placeholder="Filter a category"
+                [searchable]="true"
+                class="form-control">
+                </ng-select>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-4 mb-4" *ngFor="let fee of feeRecords">
+      <div class="fee-card">
+        <div class="card-header">
+          <div class="header-content">
+            <div class="fee-icon">{{ fee.icon }}</div>
+            <h3 class="fee-title">{{ fee.category }}</h3>
+            <!-- <button class="btn" style="margin: 12px;" title="Print Receipt">
+                <mat-icon>print</mat-icon>
+          </button> -->
+          </div>
+               
+        </div>
+        <div class="card-body">
+          <div class="fee-row">
+            <span class="fee-label">Year - Semester</span>
+            <span class="fee-value">{{ fee.yearSemester }}</span>
+          </div>
+          <div class="fee-row">
+            <span class="fee-label">Receipt No.</span>
+            <span class="fee-value">{{ fee.receiptNo }}</span>
+          </div>
+          <div class="fee-row">
+            <span class="fee-label">Payment Date</span>
+            <span class="fee-value">{{ fee.paymentDate }}</span>
+          </div>
+          <div class="fee-row">
+            <span class="fee-label">
+              {{ fee.status === 'paid' ? 'Paid Amount' : 'Due Amount' }}
+            </span>
+            <span class="fee-value amount">₹{{ fee.amount | number }}/-</span>
+          </div>
+          <div class="receipt-section">
+            <div class="receipt-info">
+              <div>
+                <span class="fee-label">Payment Mode: </span>
+                <span class="fee-value">{{ fee.paymentMode }}</span>
+              </div>
+              <span class="status-badge" [ngClass]="{
+                'status-paid': fee.status === 'paid',
+                'status-pending': fee.status === 'pending'
+              }">
+                {{ fee.status }}
+              </span>
+            </div>
+            <div class="mt-1 print-btn" style="text-align: end;">
+              <span class="print"><mat-icon>print</mat-icon></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

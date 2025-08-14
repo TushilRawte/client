@@ -1,0 +1,22 @@
+
+  
+  thead th {
+    text-align: left;
+    padding: 12px 16px;
+    background-color: #e17af5;
+    font-weight: bold;
+    font-size: 15px;
+  }
+  
+  tbody td {
+    padding: 12px 16px;
+    font-size: 14px;
+    background-color: #ffffff;
+  }
+  
+  /* Optional: Add a slight shadow or row spacing for better separation */
+  tbody tr:not(:last-child) {
+    margin-bottom: 10px;
+    display: table-row;
+  }
+  

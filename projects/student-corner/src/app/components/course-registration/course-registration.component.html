@@ -1,0 +1,160 @@
+
+<form [formGroup]="courseRegistrationForm" (ngSubmit)="onSubmit()">
+  <div class="header">
+    <!-- <h2>Course Registration</h2> -->
+  </div>
+ 
+<mat-card class="basic-details-card">
+  <mat-card-content>
+    <div class="card-header-custom">
+      <mat-card-title>Basic Details</mat-card-title>
+    </div>
+
+    <div class="details-grid">
+      <div class="detail-item">
+        <label class="detail-label">Session:</label>
+        <div class="detail-value">{{ academicSessions[0].value }}</div>      
+      </div>
+      
+      <div class="detail-item">
+        <label class="detail-label">Year:</label>
+         <div class="detail-value">{{ year[0].value }}</div>
+      </div>
+      
+      <div class="detail-item">
+        <label class="detail-label">Semester:</label>
+         <div class="detail-value">{{ semester[0].value }}</div>
+      </div>
+      
+      <div class="detail-item">
+        <label class="detail-label">Academic Standing:</label>
+         <div class="detail-value">{{ academicStanding[0].value }}</div>
+      </div>
+
+      <div class="detail-item">
+        <label class="detail-label">College:</label>
+         <div class="detail-value">{{ collges[0].value }}</div>
+      </div>
+      
+      <div class="detail-item">
+        <label class="detail-label">Degree Programme:</label>
+         <div class="detail-value">{{ academicDegreeProgram[0].value }}</div>
+      </div>
+      
+      <div class="detail-item">
+        <label class="detail-label">Dean Committee:</label>
+         <div class="detail-value">{{ deanCommittee[0].value }}</div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="mt-3">
+  <mat-card-content>
+ 
+
+    <div class="course-list">
+      <div class="row">
+
+        <!-- Left column: Available Courses -->
+        <div class="col-md-6 section">
+          <h5>Major Courses</h5>
+
+           <table class="table table-bordered" >
+                    <thead class="table-header">
+                        <tr>
+                            <th>#</th>
+                            <th>Code</th>
+                            <th>Course Title</th>
+                            <th>Type</th>
+                            <th>Add</th>
+                        </tr>
+                    </thead>
+                    <tbody id="availableCoursesTable">
+                        <tr *ngFor="let course of courseListForReg; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ course.course_code }}</td>
+                             <td>{{ course.course_title_e }}</td>
+                              <td>{{ course.course_type_name_e }}</td>
+                            <td>
+                                <button type="button"  color="primary" class=" btn-add"
+                                        (click)="selectCourse(course)">
+                                    <mat-icon>add</mat-icon> 
+                                </button>
+                                
+                            </td>
+                        </tr>
+                       
+                    </tbody>
+            </table>
+
+            <h5>Other Courses</h5>
+                  
+<div class="table-container">
+  <table class="table table-bordered">
+    <thead class="table-header">
+      <tr>
+        <th>#</th>
+        <th>Code</th>
+        <th>Course Title</th>
+        <th>Type</th>
+        <th>Add</th>
+      </tr>
+    </thead>
+    <tbody id="availableCoursesTable">
+      <tr *ngFor="let course of otherDeptcourseListForReg; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ course.course_code }}</td>
+        <td>{{ course.course_title_e }}</td>
+        <td>{{ course.course_type_name_e }}</td>
+        <td>
+          <button type="button" color="primary" class="btn-add" (click)="selectCourse(course)">
+            <mat-icon>add</mat-icon>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+        </div>
+        <div class="col-md-6 section">
+          <h5>Selected Courses</h5>
+            
+             <table class="table table-bordered" >
+                    <thead class="table-header">
+                        <tr>
+                            <th>#</th>
+                            <th>Code</th>
+                            <th>Course Title</th>
+                            <th>Type</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody id="availableCoursesTable">
+                        <tr *ngFor="let course of selectedCourses; let i = index" class="highlighted-row" style="background-color: #f0f8ff;">
+                             <td>{{ i + 1 }}</td>
+                            <td>{{ course.course_code }}</td>
+                             <td>{{ course.course_title_e }}</td>
+                              <td>{{ course.course_type_name_e }}</td>
+                            <td>
+                                <button type="button"  color="danger" class=" btn-remove"
+                                        (click)="removeCourse(course.course_id)">
+                                    <mat-icon>close</mat-icon> 
+                                </button>
+                                
+                            </td>
+                        </tr>
+                       
+                    </tbody>
+                </table>
+        </div>
+      </div>
+    </div>
+    <hr>
+ <button mat-raised-button color="primary" type="submit">Submit</button>  
+  <button mat-raised-button color="primary" type="button">Update</button> 
+</mat-card-content>
+</mat-card>
+</form>
+

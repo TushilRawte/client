@@ -1,0 +1,30 @@
+ <mat-card class="mt-5">
+        <mat-card-content>
+            <div class="row">
+                Download Admit Card
+            </div>
+            <table class="table mt-3 table-bordered  mb-0">
+                        <thead>
+                            <tr> <th>#</th>
+                                <th>Session</th>
+                                <th>Year</th>
+                                <th>Semester</th>
+                                <th>Exam Typee</th>                 
+                                <th>Download</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of registrationData; let i = index">
+                                <td>{{i+1}}</td>
+                                <td>{{ item.academicYear }}</td>
+                                <td>{{ item.year }}</td>
+                                <td>{{ item.semester }}</td>
+                                <td>{{ item.examType }}</td>
+                                <td>
+                                    <button mat-icon-button color="primary"><mat-icon>cloud_download</mat-icon></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                    </table>
+        </mat-card-content>
+ </mat-card>

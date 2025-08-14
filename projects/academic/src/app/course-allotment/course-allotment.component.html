@@ -1,0 +1,384 @@
+<mat-card>
+    <mat-card-content>
+      <form [formGroup]="courseAllotFormGroup">
+        <div class="row">
+          <div class="col-md-2 col-6">
+            <ng-select placeholder="Session" formControlName="academic_session_id" appearance="outline" >
+              <ng-container *ngFor="let server of acadmcSesnList">
+                <ng-option [value]="server.academic_session_id">{{ server.academic_session_name_e }}</ng-option>
+              </ng-container>
+            </ng-select>
+          </div>
+          <div class="col-md-4 col-6">
+            <ng-select placeholder="College" formControlName="college_id" (change)="onCollegeChange($event)" appearance="outline" >
+              <ng-container *ngFor="let server of collegeList">
+                <ng-option [value]="server.college_id">{{ server.college_name_e }}</ng-option>
+              </ng-container>
+            </ng-select>
+          </div>
+          <!-- <div class="col-md-3 col-6">
+            <ng-select placeholder="Degree Programme" formControlName="Degree_Programme_Id" (change)="onDegreeProgrammeChange($event)" appearance="outline" >
+              <ng-container *ngFor="let server of degreeProgramme">
+                <ng-option [value]="server.Degree_Programme_Id">{{ server.Degree_Programme_Name_E }}</ng-option>
+              </ng-container>
+            </ng-select>
+          </div> -->
+          <div class="col-md-4 col-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Degree Programme</mat-label>
+              <mat-select placeholder="Degree Programme" formControlName="degree_programme_id" (selectionChange)="onDegreeProgrammeChange($event.value)">
+                <mat-option *ngFor="let server of degreeProgramme" [value]="server.degree_programme_id">
+                  {{ server.degree_programme_name_e }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+    
+          <div class="col-md-2 col-6">
+            <!-- <ng-select placeholder="Semester" 
+                       formControlName="semester_id" 
+                       appearance="outline" 
+                       (change)="onSemesterChange($event)">
+              <ng-option *ngFor="let semester of semesterList" 
+                         [value]="semester.semester_id">
+                {{ semester.semester_name_e }}
+              </ng-option>
+            </ng-select> -->
+                <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Semester</mat-label>
+                <mat-select placeholder="Semester" formControlName="semester_id" (selectionChange)="onSemesterChange($event.value)">
+                  <mat-option *ngFor="let semester of semesterList" 
+                           [value]="semester.semester_id">
+                    {{ semester.semester_name_e }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </div>
+        </div>
+        <div class="row mt-3">
+            <ng-container class="card-header">Course Allotment</ng-container>
+            <table class="table    table-bordered">
+              <thead>
+                <tr>
+                  <th>Year</th>
+                  <th>Dean Committee</th>
+                  <!-- <th>Batch</th> -->
+                  <th>Course Allotment</th>
+                  <th>Previous Year Allotment</th>
+                  <th>Teacher Allotment</th>
+                  <th>Course Allotement Status</th>
+                  <!-- <th>Print</th> -->
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of courseYearList; let i = index">
+                  <td>{{ item.course_year_name_e }}</td>
+                  <td>{{item.dean_committee_name_e}}</td>
+                  <!-- <td>I & II</td> -->
+                  <td>
+                    <div class="btnsection">
+                      <span class="a-btn">
+                        <button [disabled]="hasSpecificProgramme && !showChildButton" mat-icon-button color="primary" type="button" (click)="openCourseGeneralCall(item)" ><mat-icon>add_circle</mat-icon>
+                        </button>
+                        
+                        <button [disabled]="hasSpecificProgramme && !showChildButton" mat-icon-button color="primary" type="button" (click)="openCourseGenforUpdate(item)" ><mat-icon>edit</mat-icon></button>
+
+                        <button mat-icon-button color="primary" type="button" (click)="openCourseGeneralforDilog(item)"><mat-icon>visibility</mat-icon></button>
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="a-btn">
+                      <button 
+                        type="button" 
+                        class="a-btn link-type" 
+                        [disabled]="hasSpecificProgramme && !showChildButton" 
+                        (click)="previousYearaltBtn = true; getPreviousYearAllotment(item)">
+                        Get Previous Year Allotment
+                      </button>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="btnsection">
+                      <span class="a-btn">
+                        <button  mat-icon-button color="primary" type="button" (click)="openCourseGenforUpdate(item)" ><mat-icon>person_edit</mat-icon></button>
+                        <button mat-icon-button color="primary" type="button" (click)="openCourseGeneralforDilog(item)"><mat-icon>visibility</mat-icon></button>
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                  <span 
+                  [ngClass]="{
+                    'text-danger': !item.allotmentStatus,
+                    'text-success': item.allotmentStatus
+                  }">
+                  {{ item.allotmentStatus ? 'Allotted' : 'Not Allotted' }}
+                </span>
+                  </td>
+                  <!-- <td>
+                    <button (click)="getDataForPrint(item);" mat-raised-button color="primary" matTooltip="Print"  class="tools mx-auto"> <mat-icon>print</mat-icon> </button>
+                  </td> -->
+                </tr>
+              </tbody>
+            </table>
+        </div>
+          <app-courseallot-dashboard [data]="currentData" ></app-courseallot-dashboard>
+        <div class="row course-allot mt-3" *ngIf="showCourse">
+            <div class="row">
+              <!-- <div class="O-course">
+                <div class="col-md-4 col-6">
+                  <label>Other Department Course</label>
+                  <mat-checkbox [(ngModel)]="isAllCourse" (change)="toggleCourseSection()">Yes</mat-checkbox>
+                </div>
+                  <div class="col-md-8 col-6" (click)="toggleCourseSection()" >
+                    <ng-select placeholder="Course" formControlName="course_id" appearance="outline" (change)="onCourseChange($event)">
+                      <ng-container *ngFor="let item of allCourses">
+                        <ng-option [value]="item.course_id">{{ item.course_name }}</ng-option>
+                      </ng-container>
+                    </ng-select>
+                  </div>
+              </div>
+              
+              <div class="col-md-8 col-6" *ngIf="!isAllCourse">
+                <ng-select placeholder="Course" formControlName="course_id" appearance="outline" (change)="onCourseChange($event)">
+                  <ng-container *ngFor="let item of courseList">
+                    <ng-option [value]="item.course_id">{{ item.course_name }}</ng-option>
+                  </ng-container>
+                </ng-select>
+              </div> -->
+
+          
+                <div class="col-md-2 col-3 align-items-center" >
+                  <label>Other Department Course</label>
+                  <mat-checkbox [(ngModel)]="isAllCourse" (change)="toggleCourseSection()">Yes</mat-checkbox>
+                </div>
+              
+                <div class="col-md-6 col-12 mt-2">
+                  <!-- If Other Course is selected -->
+                  <ng-select *ngIf="isAllCourse"
+                             placeholder="Other Deparment Course"
+                             formControlName="course_id"
+                             appearance="outline"
+                             (change)="onCourseChange($event)">
+                    <ng-option *ngFor="let item of allCourses" [value]="item.course_id">
+                      {{ item.course_name }}
+                    </ng-option>
+                  </ng-select>
+              
+                  <!-- If Regular Course -->
+                  <ng-select *ngIf="!isAllCourse"
+                             placeholder="Course"
+                             formControlName="course_id"
+                             appearance="outline"
+                             (change)="onCourseChange($event)">
+                    <ng-option *ngFor="let item of courseList" [value]="item.course_id">
+                      {{ item.course_name }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+    
+              
+                 
+                  
+                  <div class="col-md-2 col-6">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Course Nature</mat-label>
+                      <input matInput formControlName="course_nature" readonly>
+                    </mat-form-field>
+                  </div>
+                  
+                  <div class="col-md-2 col-6">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Credit</mat-label>
+                      <input matInput formControlName="total_credit" readonly>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-4 col-6">
+                    <ng-select placeholder="Course Type" formControlName="course_type_id" appearance="outline">
+                      <ng-container *ngFor="let item of courseTypeList">
+                        <ng-option [value]="item.course_type_id">{{ item.course_type_name_e }}</ng-option>
+                      </ng-container>
+                    </ng-select>
+                  </div>
+                  <div class="col-md-4 col-6">
+                    <ng-select placeholder="Course Allotement Type" formControlName="cou_allot_type_id" appearance="outline">
+                      <ng-container *ngFor="let item of courseAllotType">
+                        <ng-option [value]="item.cou_allot_type_id">{{ item.cou_allot_type_name_e }}</ng-option>
+                      </ng-container>
+                    </ng-select>
+                  </div>
+                  <div class="col-md-4 col-6">
+                    <ng-select placeholder="Teacher" formControlName="emp_id" appearance="outline" [multiple]="true">
+                      <ng-container *ngFor="let item of teacherList">
+                        <ng-option [value]="item?.emp_id">{{ item?.emp_name || 'unknown' }}</ng-option>
+                      </ng-container>
+                    </ng-select>
+                  </div>
+                
+                <div class="col-md-3 col-12 mt-2">
+                  <button *ngIf="isaddRow == true" type="button" class="btn btn-primary" (click)="addRowToTable()">+ Add Row</button>
+                  <button *ngIf="isEdit" class="btn btn-primary" (click)="submitUpdatedRow()">Update</button>
+                  <!-- <button  class="btn btn-primary" (click)="submitUpdatedRow()">Update</button>  -->
+
+                </div>
+              </div>
+          </div>
+
+          <div class="row">
+          
+          </div>
+
+          <!-- Table to show added rows -->
+          <!-- <div *ngIf="courserows.controls.length > 0" class="mt-3">
+            <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Course</th>
+                    <th>Course Type</th>
+                    <th>Course Nature</th>
+                    <th>Credit</th>
+                    <th>Allotment Type</th>
+                    <th>Teachers</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of courserows.controls; let i = index" [formGroupName]="i">
+                    <td>{{ row.get('Course_Name')?.value }}</td>
+                    <td>{{ getCourseTypeName(row.get('Course_Type_Id')?.value) }}</td>
+                    <td>{{ row.get('Course_Nature')?.value }}</td>
+                    <td>{{ row.get('Total_Credit')?.value }}</td>
+                    <td>{{ getAllotmentTypeName(row.get('Cou_Allot_Type_Id')?.value) }}</td>
+                    <td>
+                      <span *ngFor="let teacher of getTeacherArray(row); let last = last">
+                        {{ getTeacherName(teacher.Emp_Id) }}{{ !last ? ', ' : '' }}
+                      </span>
+                    </td>
+                    <td>
+                      <button mat-icon-button color="warn" (click)="removeRow(i)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+          </div> -->
+
+          <!-- <div *ngIf="courseAllotFormGroup.get('courserows')?.value?.length > 0" class="mt-3"> -->
+          <div  class="mt-3">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+
+                  <th>S.No</th>
+                  <th>Course</th>
+                  <th>Course Type</th>
+                  <th>Course Nature</th>
+                  <th>Credit</th>
+                  <th>Allotment Type</th>
+                  <th>Teachers</th>
+                  <th>Delete</th>
+                  <th>Edit</th>
+                </tr>
+              </thead>
+              <tbody formArrayName="courserows">
+                <tr *ngFor="let row of courserows.controls; let i = index" [formGroupName]="i">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ row.get('course_name')?.value }}</td>
+                  <td>{{ getCourseTypeName(row.get('course_type_id')?.value) }}</td>
+                  <td>{{ row.get('course_nature')?.value }}</td>
+                  <td>{{ row.get('total_credit')?.value }}</td>
+                  <td>{{ getAllotmentTypeName(row.get('cou_allot_type_id')?.value) }}</td>
+                  <td>
+                    <span *ngFor="let teacher of getTeacherArray(row); let last = last">
+                      {{ getTeacherName(teacher?.emp_id) }}{{ !last ? ', ' : '' }}
+                    </span>
+                  </td>
+                  <td>
+                    <!-- <button  mat-icon-button color="warn" (click)="removeRow(i)">
+                      <mat-icon>delete</mat-icon>
+                    </button> -->
+                    <button  mat-icon-button color="warn" (click)="deleteParticularCourse(row, i)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                  <td>
+                    <button *ngIf="isShowbutton == true" mat-icon-button color="primary" (click)="editRow(row, i)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  </td>
+                </tr> 
+              </tbody>
+            </table>
+          </div>
+          <div class="col-md-4 col-12 mt-2">
+            <button type="submit" class="btn btn-primary" *ngIf="isSbumitBtn == true" (click)="onSubmit()" >Allot Course</button>
+            <button type="submit" class="btn btn-primary" *ngIf="previousYearaltBtn == true" (click)="onSubmit()" >Allot Same as Previous Year Allotment</button>
+          </div>
+      </form>
+    </mat-card-content>
+</mat-card>  
+
+<br> <br>
+
+<mat-card style="display: none;">
+<!-- 🖨️ Printable Section -->
+<div id="print-section" *ngIf="printDash" style="font-family: Arial, sans-serif; text-align: center;"> 
+  <div >
+    <span>{{ currentDateTime }}</span>
+  </div>
+
+  <h3 style="margin: 5px 0;">Course Allotment Report</h3>
+  <h2 style="margin: 0;">
+    Indira Gandhi Krishi Vishwavidyalaya, Raipur <span style="font-weight: normal;" *ngIf="printDash?.session">({{printDash?.session}})</span>
+  </h2>
+
+  <div style="margin-top: 10px; font-weight: bold; font-size: 14px;">
+   
+    <table style="border: none !important;">
+      <tr>
+        <td >College Name</td>
+        <td *ngIf="printDash?.session" style="font-weight: normal;">{{printDash.college}}</td>
+        <td>Degree Programme</td>
+        <td *ngIf="printDash?.programme" style="font-weight: normal;">{{printDash?.programme}}</td>
+        
+      </tr>
+    </table>
+  </div>
+
+  <hr style="margin: 20px 0;" />
+  <table class="table table-bordered">
+    <thead class="table-light sticky-top">
+      <tr>
+        <th>Year</th>
+        <th>Sem</th>
+        <th>Course</th>
+        <th>Course Type</th>
+        <th>Course Nature</th>
+        <th>Credit</th>
+        <th>Allotment Type</th>
+        <th>Teachers</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let course of print_row">
+        <td *ngIf="printDash?.course_year_name_e">{{printDash?.course_year_name_e}}</td>
+        <td *ngIf="printDash?.semester">{{printDash?.semester}}</td>
+        <td>{{ course.course_name }}</td>
+        <td>{{ course.course_type_name_e }}</td>
+        <td>{{ course.course_nature }}</td>
+        <td>{{ course.credit }}</td>
+        <td>{{ course.cou_allot_type_name_e }}</td>
+        <td>
+          <ul class="mb-0">
+            <li *ngFor="let teacher of course.teacherRows">
+              {{ teacher.emp_name }}
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</mat-card>
+

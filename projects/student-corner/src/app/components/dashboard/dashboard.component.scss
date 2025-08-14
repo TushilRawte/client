@@ -1,0 +1,114 @@
+// .section{
+//     // background-color: aliceblue;
+//      border: 1px solid #ccc;
+//     border-color: #ece9e9;
+// }
+
+.profile {
+    background-color: #ffffff;
+     margin-left: -35px;
+    height: 250px;
+    border: 1px solid #ccc;
+    border-color: #ece9e9;
+}
+
+.profile_img{
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    margin: 0 auto;
+    margin-top: 5px;
+    display: block;
+}
+
+.Head-1{
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 10px;
+    color: #6e6c6c;
+}
+.user{
+    text-align: center;
+    justify-content:   center;
+    margin-top: -20px;
+}
+
+ .btns {
+            text-align: end;
+            margin-right: -10px;
+            margin-top: -10px;
+            color: #5427f5;
+        }
+
+// cards
+ .metric-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .metric-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .icon-courses { background-color: #e8f4fd; color: #1976d2; }
+        .icon-concluded { background-color: #e8f5e8; color: #388e3c; }
+        .icon-hours { background-color: #fff3e0; color: #f57c00; }
+        .icon-certificates { background-color: #f3e5f5; color: #7b1fa2; }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .metric-label {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        // Course Card Styles
+         .course-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .faculty-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, #007bff, #6610f2);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.875rem;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }

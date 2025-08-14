@@ -1,0 +1,103 @@
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-examination-result',
+  standalone: false,
+  templateUrl: './examination-result.component.html',
+  styleUrl: './examination-result.component.scss'
+})
+export class ExaminationResultComponent {
+
+    examinationResults = [
+    {
+      courseCode: 'HABM-5321 - Horti-Business Management',
+      courseRegistrationType: 'Regular',
+      theoryMaxMarks: 70,
+      theoryObtainMarks: 56,
+      theoryRemark: 'P',
+      practicalMaxMarks: 30,
+      practicalObtainMarks: 26,
+      practicalRemark: 'P',
+    },
+    {
+      courseCode: 'HENG-5321 - Post Harvest Management of Horticultural Crops',
+      courseRegistrationType: 'Regular',
+      theoryMaxMarks: 70,
+      theoryObtainMarks: 48,
+      theoryRemark: 'P',
+      practicalMaxMarks: 30,
+      practicalObtainMarks: 21,
+      practicalRemark: 'P',
+    },
+    {
+      courseCode: 'HENT-5322 - Insect Pests of Vegetable, Ornamental & Spice Crops',
+      courseRegistrationType: 'Regular',
+      theoryMaxMarks: 70,
+      theoryObtainMarks: 47,
+      theoryRemark: 'P',
+      practicalMaxMarks: 30,
+      practicalObtainMarks: 24,
+      practicalRemark: 'P',
+    },
+    {
+      courseCode: 'HENT-5321 - Apiculture, Sericulture & Lac Culture',
+      courseRegistrationType: 'Regular',
+      theoryMaxMarks: 70,
+      theoryObtainMarks: 47,
+      theoryRemark: 'P',
+      practicalMaxMarks: 30,
+      practicalObtainMarks: 24,
+      practicalRemark: 'P',
+    },
+    {
+      courseCode: 'HEXT-5321 - Communication Skills & Personality Development',
+      courseRegistrationType: 'Regular',
+      theoryMaxMarks: 70,
+      theoryObtainMarks: 54,
+      theoryRemark: 'P',
+      practicalMaxMarks: 30,
+      practicalObtainMarks: 19,
+      practicalRemark: 'P',
+    },
+    {
+      courseCode: 'HFR-5321 - Processing of Horticultural Crops',
+      courseRegistrationType: 'Regular',
+      theoryMaxMarks: 70,
+      theoryObtainMarks: 49,
+      theoryRemark: 'P',
+      practicalMaxMarks: 30,
+      practicalObtainMarks: 20,
+      practicalRemark: 'P',
+    },
+    {
+      courseCode: 'HFR-5322 - Dryland Horticulture',
+      courseRegistrationType: 'Regular',
+      theoryMaxMarks: 70,
+      theoryObtainMarks: 58,
+      theoryRemark: 'P',
+      practicalMaxMarks: 30,
+      practicalObtainMarks: 23,
+      practicalRemark: 'P',
+    },
+    {
+      courseCode: 'HPB-5321 - Seed Production of Vegetable, Tuber & Spice Crops',
+      courseRegistrationType: 'Regular',
+      theoryMaxMarks: 70,
+      theoryObtainMarks: 54,
+      theoryRemark: 'P',
+      practicalMaxMarks: 30,
+      practicalObtainMarks: 17,
+      practicalRemark: 'P',
+    },
+    {
+      courseCode: 'HYG-5321 - Breeding & Seed Production of Flower & Ornamental Plants',
+      courseRegistrationType: 'Regular',
+      theoryMaxMarks: 70,
+      theoryObtainMarks: 44,
+      theoryRemark: 'P',
+      practicalMaxMarks: 30,
+      practicalObtainMarks: 15,
+      practicalRemark: 'P',
+    },
+  ];
+}

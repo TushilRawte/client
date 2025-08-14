@@ -1,0 +1,322 @@
+// mat-sidenav{
+//   background:white(255, 255, 255);
+//   width: 230px;
+//   height: 100%;
+// }
+
+// .nav{
+//     position: sticky;
+//     top: 0;
+//     }
+
+// mat-sidenav-content{
+//     height: 100vh;
+//     background: rgb(250, 252, 252);
+//     .main{
+//         margin-left: 25px;
+//     }
+// }
+
+// mat-toolbar{
+//     mat-icon{
+//         margin-left: 15px;
+//         color: grey;
+//     }
+//     justify-content: space-between;
+
+//     .box{
+//         margin-top: 8px;
+//     }
+// }
+
+// .user{
+//     font-size: 13px;
+//     text-align: center;
+//     font-weight: 600;
+//     .profile_img {
+//       width: 100px;
+//       height: 100px;
+//       border-radius: 50%;
+//       border: 5px solid #ccd8e3;
+//       margin: 5px auto;
+//       object-fit: cover;
+//     }
+
+//     .name{
+//         color: rgb(85, 80, 80);
+//     }
+//     .mail{
+//         font-size: smaller;
+//         color: rgb(150, 144, 144);
+//     }
+// }
+
+// .menu-head{
+//     text-transform: uppercase;
+//     font-weight: 700;
+//     // margin-left: 30px;
+//     color: #030410;
+//     font-size: 0.6rem;
+//     letter-spacing: 1px;
+
+// }
+
+// :host {
+//     .mat-icon {
+//       vertical-align: middle;
+//       // margin-right: 1rem;
+//     }
+//   }
+//   .logo {
+//     text-align: center;
+//     padding: 2.6rem 1rem;
+//     img {
+//       width: 200px;
+//     }
+//   }
+//   .mat-divider {
+//     border-top-width: 2px;
+//     border-color: white;
+//   }
+//   .mat-list-item {
+//     color: #94a3b8 !important;
+//     font-size: 0.8rem;
+//     height: 44px !important;
+//     margin-bottom: 4px;
+//     &:hover {
+//       color: #f0eff2 !important;
+//     }
+//     ::ng-deep {
+//       .mat-list-item-content {
+//         border-radius: 5px;
+//         margin: 0 4px;
+//         &:hover {
+//           background: #2c3344 !important;
+//         }
+//       }
+//     }
+//   }
+//   .list-item-active {
+//     // background: blue !important;
+//     // border-radius: 0 2rem 2rem 0;
+//     // &:hover {
+//     //   background: blue;
+//     // }
+  
+//     color: #f2f5f7 !important;
+//     ::ng-deep {
+//       .mat-list-item-content {
+//         background: #2c3344 !important;
+//         &:hover {
+//           background: #2c3344 !important;
+//         }
+//      }
+//     }
+// }
+
+
+
+// layout.component.scss
+mat-sidenav{
+  background: #f8f9fa;
+  width: 280px;
+  height: 100%;
+  border-right: 1px solid #e9ecef;
+}
+
+.nav{
+    position: sticky;
+    top: 0;
+}
+
+mat-sidenav-content{
+    height: 100vh;
+    background: rgb(250, 252, 252);
+    .main{
+        // margin-left: 25px;
+        padding: 10px;
+    }
+}
+
+mat-toolbar{
+    mat-icon{
+        margin-left: 15px;
+        color: grey;
+    }
+    justify-content: space-between;
+
+    .box{
+        margin-top: 8px;
+    }
+}
+
+.user{
+    font-size: 13px;
+    text-align: center;
+    font-weight: 600;
+    padding: 20px 0;
+    
+    .profile_img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid #dee2e6;
+      margin: 5px auto;
+      object-fit: cover;
+    }
+
+    .name{
+        color: rgb(85, 80, 80);
+    }
+    .mail{
+        font-size: smaller;
+        color: rgb(150, 144, 144);
+    }
+}
+
+// Menu Section Styles
+.menu-section {
+    margin-bottom: 2px;
+}
+
+.menu-item {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between; // ensures left and right elements align properly
+  padding: 12px 16px !important;
+  color: #495057 !important;
+  font-weight: 500;
+  font-size: 14px !important;   
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  height: auto !important;
+  min-height: 48px !important;
+  background-color: rgb(234, 239, 240);
+
+  &:hover {
+    background-color: #e9ecef !important;
+    color: #212529 !important;
+  }
+
+  .menu-left {
+    display: flex;
+    align-items: center;
+  }
+
+  .chevron-icon {
+    font-size: 16px;
+    margin-right: 8px;
+    transition: transform 0.2s ease;
+    color: #6c757d;
+
+    &.expanded {
+      transform: rotate(90deg);
+    }
+  }
+
+  .menu-label {
+    text-align: left;
+    white-space: nowrap;
+    font-size: 14px !important;
+    font-weight: 500;
+  }
+
+  .dropdown-arrow {
+    font-size: 18px;
+    transition: transform 0.2s ease;
+    color: #6c757d;
+
+    &.expanded {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+
+
+// Dropdown Content
+.dropdown-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: #ffffff;
+    
+    &.show {
+        max-height: 300px;
+    }
+}
+
+.sub-menu {
+    padding: 0;
+    
+    .sub-menu-item {
+        display: flex !important;
+        align-items: center;
+        padding: 10px 16px 10px 40px !important;
+        color: #6f42c1 !important;
+        font-size: 13px !important;
+        text-decoration: none;
+        border: none;
+        background: transparent;
+        height: auto !important;
+        min-height: 36px !important;
+        
+        &:hover {
+            background-color: #f8f9fa !important;
+            color: #5a2d91 !important;
+        }
+        
+        &.active-child {
+            color: #5a2d91 !important;
+            font-weight: 600;
+        }
+
+        .child-arrow {
+            font-size: 14px;
+            margin-right: 8px;
+            color: #6f42c1;
+        }
+    }
+}
+
+:host {
+    .mat-icon {
+      vertical-align: middle;
+    }
+}
+
+.mat-divider {
+    border-top-width: 1px;
+    border-color: #dee2e6;
+    margin: 0;
+}
+
+// Override Material List Item Styles
+::ng-deep {
+    .mat-list-item {
+        &.menu-item {
+            .mat-list-item-content {
+                padding: 0 !important;
+                border-radius: 0;
+                margin: 0;
+                
+                &:hover {
+                    background: transparent !important;
+                }
+            }
+        }
+        
+        &.sub-menu-item {
+            .mat-list-item-content {
+                padding: 0 !important;
+                border-radius: 0;
+                margin: 0;
+                
+                &:hover {
+                    background: transparent !important;
+                }
+            }
+        }
+    }
+}
