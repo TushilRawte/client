@@ -15,6 +15,8 @@ import { CourseFinalizeComponent } from './course-finalize/course-finalize.compo
 import { TeacherAllotmentComponent } from './teacher-allotment/teacher-allotment.component';
 import { FormsModule } from '@angular/forms';
 import { CourseRegistrationComponent } from './registration/course-registration/course-registration.component';
+import { CourseAttendanceComponent } from './attendance/course-attendance/course-attendance.component';
+import { CourseAttendanceReportComponent } from './attendance/course-attendance-report/course-attendance-report.component';
 
 
 @NgModule({
@@ -27,6 +29,8 @@ import { CourseRegistrationComponent } from './registration/course-registration/
     CourseFinalizeComponent,
     TeacherAllotmentComponent,
     CourseRegistrationComponent,
+    CourseAttendanceComponent,
+    CourseAttendanceReportComponent,
 
   ],
   imports: [

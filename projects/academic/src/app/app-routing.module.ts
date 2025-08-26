@@ -1,12 +1,14 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {AuthGuard, LayoutComponent, NotFoundComponent, UpdateRoutesComponent} from 'shared';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard, LayoutComponent, NotFoundComponent, UpdateRoutesComponent } from 'shared';
 import { CourseDashboardComponent } from './course-dashboard/course-dashboard.component';
 import { CourseAllotmentComponent } from './course-allotment/course-allotment.component';
 import { CourseallotDashboardComponent } from './courseallot-dashboard/courseallot-dashboard.component';
 import { CourseFinalizeComponent } from './course-finalize/course-finalize.component';
 import { TeacherAllotmentComponent } from './teacher-allotment/teacher-allotment.component';
 import { CourseRegistrationComponent } from './registration/course-registration/course-registration.component';
+import { CourseAttendanceComponent } from './attendance/course-attendance/course-attendance.component';
+import { CourseAttendanceReportComponent } from './attendance/course-attendance-report/course-attendance-report.component';
 
 const routes: Routes = [
   {
@@ -20,36 +22,46 @@ const routes: Routes = [
       },
       {
         path: 'new',
-          component:CourseDashboardComponent,
+        component: CourseDashboardComponent,
         pathMatch: 'full',
       },
       {
         path: 'course-allotment',
-          component:CourseAllotmentComponent,
+        component: CourseAllotmentComponent,
         pathMatch: 'full',
-        children:[
-          
+        children: [
+
         ]
       },
       {
         path: 'coursealt-dash',
-          component:CourseallotDashboardComponent,
+        component: CourseallotDashboardComponent,
         pathMatch: 'full',
       },
       {
         path: 'course-finalize',
-          component:CourseFinalizeComponent,
+        component: CourseFinalizeComponent,
         pathMatch: 'full',
       },
       {
         path: 'teacher-allotment',
-          component:TeacherAllotmentComponent,
+        component: TeacherAllotmentComponent,
         pathMatch: 'full',
       },
       {
         path: 'course-registration',
-          component:CourseRegistrationComponent,
+        component: CourseRegistrationComponent,
         // pathMatch: 'full',
+      },
+      {
+        path: 'course-attendance',
+        component: CourseAttendanceComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'course-attendance-report',
+        component: CourseAttendanceReportComponent,
+        pathMatch: 'full',
       },
       // { path: 'student-corner', loadChildren: () => import('./student-corner/student-corner.module').then(m => m.StudentCornerModule) },
 
@@ -59,7 +71,7 @@ const routes: Routes = [
     path: 'update',
     component: UpdateRoutesComponent
   },
-  
+
   {
     path: '**',
     redirectTo: '404',
