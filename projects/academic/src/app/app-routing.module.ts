@@ -59,7 +59,7 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       {
-        path: 'course-attendance-report',
+        path: 'course-attendance-report',  // getRegisteredCourses
         component: CourseAttendanceReportComponent,
         pathMatch: 'full',
       },
