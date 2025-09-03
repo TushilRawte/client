@@ -1,0 +1,52 @@
+<mat-card>
+  <mat-card-content>
+    <div class="d-flex justify-content-between align-items-center">
+      <h4 class="mb-0 mt-1">Allotted Course</h4>
+      <button mat-icon-button (click)="closeDialog()" aria-label="Close">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <app-courseallot-dashboard [data]="currentData"></app-courseallot-dashboard>
+
+    <div class="mt-3" style="max-height: 65vh; overflow-y: auto">
+      <form [formGroup]="teacherSectionForm" (ngSubmit)="onSubmit()">
+        <div formArrayName="teachers">
+          <table class="table table-bordered">
+            <thead class="table-light sticky-top">
+              <tr>
+                <th>#</th>
+                <th>Teachers</th>
+                <th>Section</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let teacherCtrl of teachers.controls; let i = index" [formGroupName]="i">
+                <td>{{ i + 1 }}</td>
+                <td style="text-align: left;">
+                  <ul class="mb-0">
+                    <li>{{ teacherCtrl.get('emp_name')?.value }}</li>
+                  </ul>
+                </td>
+                <td>
+                  <select class="form-select" formControlName="section_id">
+                    <option value="">Select Section</option>
+                    <option *ngFor="let s of sections" [value]="s.section_id">
+                      {{ s.section_name }}
+                    </option>
+                  </select>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="d-flex justify-content-end mt-3">
+          <button mat-raised-button color="primary" type="submit" [disabled]="teacherSectionForm.invalid">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </mat-card-content>
+</mat-card>

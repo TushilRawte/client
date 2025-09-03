@@ -67,6 +67,7 @@
                   <th>Course List</th>
                   <th>Teacher Allotment</th>
                   <th>Course Allotement Status</th>
+                  <th>Teacher Section Allotment</th>
                   <!-- <th>Print</th> -->
                 </tr>
               </thead>
@@ -113,7 +114,10 @@
                     'text-success': item.allotmentStatus
                   }">
                   {{ item.allotmentStatus ? 'Allotted' : 'Not Allotted' }}
-                </span>
+                  </span>
+                  </td>
+                  <td>
+                    <button mat-icon-button color="primary" type="button" (click)="openTeachSectionDilog(item)"><mat-icon>visibility</mat-icon></button>
                   </td>
                   <!-- <td>
                     <button (click)="getDataForPrint(item);" mat-raised-button color="primary" matTooltip="Print"  class="tools mx-auto"> <mat-icon>print</mat-icon> </button>
@@ -148,7 +152,7 @@
               </div> -->
 
              <ng-container *ngIf="ifShowContainer">
-                                 <div class="col-md-2 col-3 align-items-center" >
+                <div class="col-md-2 col-3 align-items-center" >
                   <label>Other Department Course</label>
                   <mat-checkbox [(ngModel)]="isAllCourse" (change)="toggleCourseSection()">Yes</mat-checkbox>
                 </div>
@@ -190,21 +194,35 @@
                       <input matInput formControlName="total_credit" readonly>
                     </mat-form-field>
                   </div>
-                  <div class="col-md-4 col-6">
+                         <div class="col-md-4 col-6">
+                    <ng-select placeholder="Module" formControlName="course_module_id" appearance="outline" >
+                      <ng-container *ngFor="let item of moduleList">
+                        <ng-option [value]="item?.course_module_id">{{ item?.module_name}}</ng-option>
+                      </ng-container>
+                    </ng-select>
+                  </div>
+                     <div class="col-md-2 col-6">
+                    <ng-select placeholder="Batch Group" formControlName="course_module_batch_group_id" appearance="outline" >
+                      <ng-container *ngFor="let item of moduleBatchGroupList">
+                        <ng-option [value]="item?.course_module_batch_group_id">{{ item?.course_module_batch_group_name_e}}</ng-option>
+                      </ng-container>
+                    </ng-select>
+                  </div>
+                  <div class="col-md-2 col-6">
                     <ng-select placeholder="Course Type" formControlName="course_type_id" appearance="outline">
                       <ng-container *ngFor="let item of courseTypeList">
                         <ng-option [value]="item.course_type_id">{{ item.course_type_name_e }}</ng-option>
                       </ng-container>
                     </ng-select>
                   </div>
-                  <div class="col-md-4 col-6">
+                  <div class="col-md-2 col-6">
                     <ng-select placeholder="Course Allotement Type" formControlName="cou_allot_type_id" appearance="outline">
                       <ng-container *ngFor="let item of courseAllotType">
                         <ng-option [value]="item.cou_allot_type_id">{{ item.cou_allot_type_name_e }}</ng-option>
                       </ng-container>
                     </ng-select>
                   </div>
-                  <div class="col-md-4 col-6">
+                  <div class="col-md-2 col-6">
                     <ng-select placeholder="Teacher" formControlName="emp_id" appearance="outline" [multiple]="true">
                       <ng-container *ngFor="let item of teacherList">
                         <ng-option [value]="item?.emp_id">{{ item?.emp_name || 'unknown' }}</ng-option>
@@ -212,23 +230,14 @@
                     </ng-select>
                   </div>
              </ng-container>
- 
-         
-              
-                
-                <div class="col-md-3 col-12 mt-2">
+                <div class="col-md-6 col-12 mt-2">
                   <!-- <button *ngIf="isaddRow == true" type="button" class="btn btn-primary" (click)="addRowToTable()">+ Add Row</button> -->
 
                   <button  type="button" class="btn btn-primary" (click)="addRowToTable()">+ Add Row</button>
-                  <button *ngIf="isEdit" class="btn btn-primary" (click)="submitUpdatedRow()">Update</button>
+                  <button *ngIf="isEdit" class="btn btn-primary" (click)="submitUpdatedRow()">Edit Selected Course & Teachers</button>
                   <!-- <button  class="btn btn-primary" (click)="submitUpdatedRow()">Update</button>  -->
-
                 </div>
               </div>
-          </div>
-
-          <div class="row">
-          
           </div>
 
           <!-- Table to show added rows -->
@@ -306,7 +315,8 @@
                     </button>
                   </td>
                   <td>
-                    <button *ngIf="isShowbutton == true" mat-icon-button color="primary" (click)="editRow(row, i)">
+                    <!-- *ngIf="isShowbutton == true" -->
+                    <button  mat-icon-button color="primary" (click)="editRow(row, i)">
                       <mat-icon>edit</mat-icon>
                     </button>
                   </td>
@@ -316,7 +326,9 @@
           </div>
           <div class="col-md-4 col-12 mt-2">
             <button type="submit" class="btn btn-primary" *ngIf="isSbumitBtn == true" (click)="onSubmit()" >Allot Course</button>
+            <!-- <button type="submit" class="btn btn-primary" (click)="onSubmit()" >Allot Course</button> -->
             <button type="submit" class="btn btn-primary" *ngIf="previousYearaltBtn == true" (click)="onSubmit()" > Allot Course</button>
+             <button type="submit" class="btn btn-primary" *ngIf="isShowUpdateButton" (click)="onUpdateCouesNew()" >Update Alloted Course</button>
           </div>
       </form>
     </mat-card-content>

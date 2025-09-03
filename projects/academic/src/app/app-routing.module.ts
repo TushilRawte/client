@@ -8,6 +8,7 @@ import { CourseFinalizeComponent } from './course-finalize/course-finalize.compo
 import { TeacherAllotmentComponent } from './teacher-allotment/teacher-allotment.component';
 import { CourseRegistrationComponent } from './registration/course-registration/course-registration.component';
 import { CourseRegistrationUnfinlizeComponent } from './course-registration-unfinlize/course-registration-unfinlize.component';
+import { StudentSectionAllotmentComponent } from './student-section-allotment/student-section-allotment.component';
 
 const routes: Routes = [
   {
@@ -55,6 +56,11 @@ const routes: Routes = [
        {
         path: 'course-registration-unfinalize',
           component:CourseRegistrationUnfinlizeComponent,
+        // pathMatch: 'full',
+      },
+       {
+        path: 'student-section-allotment',
+          component:StudentSectionAllotmentComponent,
         // pathMatch: 'full',
       },
       // { path: 'student-corner', loadChildren: () => import('./student-corner/student-corner.module').then(m => m.StudentCornerModule) },

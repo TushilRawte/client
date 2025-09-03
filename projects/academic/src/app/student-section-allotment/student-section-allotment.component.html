@@ -1,0 +1,90 @@
+<mat-card>
+  <mat-card-content>
+    <form [formGroup]="studentSectionAlotFormGroup">
+      <div class="row">
+        <div class="col-md-3">
+          <ng-select placeholder="Session" formControlName="academic_session_id" appearance="outline">
+            <ng-container *ngFor="let server of acadmcSesnList">
+              <ng-option [value]="server.academic_session_id">{{ server.academic_session_name_e }}</ng-option>
+            </ng-container>
+          </ng-select>
+        </div>
+
+        <div class="col-md-3 col-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Degree Programme</mat-label>
+            <mat-select placeholder="Degree Programme" formControlName="degree_programme_id">
+              <mat-option *ngFor="let server of degreeProgramme" [value]="server.degree_programme_id">
+                {{ server.degree_programme_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3 col-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Semester</mat-label>
+            <mat-select placeholder="Semester" formControlName="semester_id">
+              <mat-option *ngFor="let semester of semesterList" [value]="semester.semester_id">
+                {{ semester.semester_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3 col-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Year</mat-label>
+            <mat-select placeholder="Year" formControlName="course_year_id">
+              <mat-option *ngFor="let item of courseYearList" [value]="item.course_year_id">
+                {{ item.course_year_name_e}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div formArrayName="sectionrows">
+          <!-- <div *ngFor="let row of sectionrows.controls; let i = index" [formGroupName]="i">
+            <input formControlName="ue_id" placeholder="UE ID" />
+            <input formControlName="section_id" placeholder="Section ID" />
+          </div> -->
+          <table class="table table-bordered mt-3">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>UE ID</th>
+                <th>Name</th>
+                <th>Academic Status</th>
+                <th>Allot Section</th>
+              </tr>
+            </thead>
+                <tbody formArrayName="sectionrows">
+              <tr *ngFor="let row of sectionrows.controls; let i = index" [formGroupName]="i">
+                <!-- Serial no -->
+                <td>{{ i + 1 }}</td>
+
+                <!-- UE ID -->
+                <td>{{ row.get('ue_id')?.value }}</td>
+
+                <!-- Student Name -->
+                <td>{{ row.get('student_name')?.value }}</td>
+
+                <!-- Academic Status -->
+                <td>{{ row.get('academic_status')?.value }}</td>
+
+                <!-- Section Dropdown -->
+                <td>
+                  <select class="form-select" formControlName="section_id">
+                    <option value="">Select Section</option>
+                    <option *ngFor="let s of sections" [value]="s.section_id">
+                      {{ s.section_name }}
+                    </option>
+                  </select>
+                </td>
+              </tr>
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

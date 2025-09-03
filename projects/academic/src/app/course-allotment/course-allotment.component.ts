@@ -4,6 +4,7 @@ import { HttpService,AlertService, PrintService } from 'shared';
 import { ViewCourseallotmentComponent } from '../view-courseallotment/view-courseallotment.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TeacherSectionAllotmentComponent } from '../teacher-section-allotment/teacher-section-allotment.component';
 
 
 @Component({
@@ -58,7 +59,11 @@ export class CourseAllotmentComponent {
   showChildButton: boolean = false;
   selectedYearAndCommittee: any = null;
   selectedSubject: any;
-  ifShowContainer: boolean = false
+  ifShowContainer: boolean = false;
+  moduleList:any
+  moduleBatchGroupList:any
+  isShowCourseListTable: boolean = false
+  isShowUpdateButton: boolean = false
   
 
   toggleCourseSection(): void {
@@ -78,6 +83,8 @@ export class CourseAllotmentComponent {
     this.getTeacherListForCrsAlt();
     this.mainforfun();
     this.getallCourse();
+    this.getModuleList();
+    this.getModuleBatchGroup();
   }
   
   mainforfun() {
@@ -95,12 +102,15 @@ export class CourseAllotmentComponent {
       course_type_id: ['', Validators.required],
       cou_allot_type_id: ['', Validators.required],
       course_nature: [''],  
+      course_module_id: [''],  
+      course_module_batch_group_id: [''],  
       total_credit: [''],   
       emp_id: [[]], 
       courserows: this.fb.array([])
     });
 
   }
+
 
   addRowToTable() {
     const teachers = this.courseAllotFormGroup.get('emp_id')?.value;
@@ -120,6 +130,8 @@ export class CourseAllotmentComponent {
       total_credit: [selectedCourse?.credit],  // Store credit
       course_type_id: [this.courseAllotFormGroup.get('course_type_id')?.value],
       cou_allot_type_id: [this.courseAllotFormGroup.get('cou_allot_type_id')?.value],
+      course_module_id: [this.courseAllotFormGroup.get('course_module_id')?.value],
+      course_module_batch_group_id: [this.courseAllotFormGroup.get('course_module_batch_group_id')?.value],
       // teacherRows: this.fb.array(
       //   teachers.map((teacherId: any) => this.fb.group({
       //     emp_id: [teacherId]
@@ -132,9 +144,10 @@ export class CourseAllotmentComponent {
       )
     });
 
-    
     this.courserows.push(newCourseRow);
     console.log('New course row added:', newCourseRow.value);
+    console.log('new array created ==>',this.courserows);
+    this.courseAllotFormGroup.get('course_id')?.reset();
     // Reset form fields
     this.courseAllotFormGroup.patchValue({
       course_id: '',
@@ -142,7 +155,9 @@ export class CourseAllotmentComponent {
       cou_allot_type_id: '',
       emp_id: [],
       course_nature: '',
-      total_credit: ''
+      total_credit: '',
+      course_module_id: '',
+      course_module_batch_group_id: '',
     });
     this.isShowbutton = false
   }
@@ -163,6 +178,8 @@ export class CourseAllotmentComponent {
         course_type_id: row.get('course_type_id')?.value,
         total_credit: row.get('total_credit')?.value,
         cou_allot_type_id: row.get('cou_allot_type_id')?.value,
+        course_module_id:row.get('course_module_id')?.value,
+        course_module_batch_group_id:row.get('course_module_batch_group_id')?.value,
         teacherRows: (row.get('teacherRows') as FormArray).controls.map(teacherCtrl => ({
           emp_id: teacherCtrl.get('emp_id')?.value
         }))
@@ -223,7 +240,6 @@ export class CourseAllotmentComponent {
       finalPayload = submitData;
       apiUrl = '/course/post/saveCourseAllotment/';
     }
-  
     console.log('Final data to submit:', finalPayload);
   
     this.HTTP.postData(apiUrl, finalPayload, 'academic').subscribe(res => {
@@ -257,7 +273,8 @@ createCourseRow(): FormGroup {
     course_id: ['', Validators.required],
     course_type_id: ['', Validators.required],
     cou_allot_type_id: ['', Validators.required],
- 
+    course_module_id: [''],
+    course_module_batch_group_id: [''],
   });
 }
 
@@ -370,6 +387,13 @@ getChildCollegeForCounselling(m_college_id: number) {
       this.allCourses = result.body.data;
     })
   }
+
+    getModuleBatchGroup() {
+    this.HTTP.getParam('/master/get/getModuleBatchGroup/',{},'academic').subscribe((result:any) => {
+      // console.log(result);
+      this.moduleBatchGroupList = result.body.data;
+    })
+  }
   hasSpecificProgramme: boolean = false;
   onDegreeProgrammeChange(degree_programme_id: number) {
     const selected = this.degreeProgramme.find((p: { degree_programme_id: number; }) => p.degree_programme_id === degree_programme_id);
@@ -397,6 +421,8 @@ getChildCollegeForCounselling(m_college_id: number) {
 onSemesterChange(semester_id: number) {
   // console.log('Semester changed:', semester_id);
   this.getCourseYearList();
+        // this.isShowCourseListTable = false;
+
 }
 
 onIsAllCourseChange(isAllCourse: boolean) {}
@@ -459,7 +485,7 @@ onIsAllCourseChange(isAllCourse: boolean) {}
       semester_id: formValue.semester_id,
       dean_committee_id: this.selectedDnCmt,
       degree_id: this.selectedDegree,
-      subject_id: this.selectedSubject
+      course_subject_id: this.selectedSubject
     };
     this.HTTP.getParam('/master/get/getCourseForAllot/',params ,'academic').subscribe((result:any) => {
       // console.log(result);
@@ -471,6 +497,13 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     this.HTTP.getParam('/master/get/getCourseForAllot/',{} ,'academic').subscribe((result:any) => {
       // console.log(result);
       // this.courseList = result.body.data;
+    })
+  }
+
+    getModuleList() {
+    this.HTTP.getParam('/master/get/getCourseModule/',{} ,'academic').subscribe((result:any) => {
+      console.log(result);
+      this.moduleList = result.body.data;
     })
   }
 
@@ -509,7 +542,6 @@ onIsAllCourseChange(isAllCourse: boolean) {}
       this.teacherList = result.body.data;
     })
   }
-
 
   getCourseforUpdate() {
     const formValue = this.courseAllotFormGroup.value;
@@ -552,8 +584,7 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     );
   }
 
-
-  // send data and open dilog
+  // send data and open Teacher Allotment View dilog
   openDilog(item:any) {
     const formValue = this.courseAllotFormGroup.value;
     if (
@@ -623,6 +654,74 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     );
   }
 
+    openTeachSectionDilog(item:any) {
+    const formValue = this.courseAllotFormGroup.value;
+    if (
+      !formValue.academic_session_id ||
+      !formValue.college_id ||
+      !formValue.degree_programme_id ||
+      !formValue.semester_id 
+      // if need to check courseYear and deanCommittee, uncomment the next two lines
+      // !formValue.courseYear?.course_year_id ||
+      // !formValue.deanCommittee?.dean_committee_id
+    ) {
+      alert('Please fill all required fields before fetching allotment.');
+      return;
+    }
+    const sessionObj = this.acadmcSesnList.find((s: { academic_session_id: any; }) => s.academic_session_id === formValue.academic_session_id);
+    const collegeObj = this.collegeList.find((c: { college_id: any; }) => c.college_id === formValue.college_id);
+    const programmeObj = this.degreeProgramme.find((p: { degree_programme_id: any; }) => p.degree_programme_id === formValue.degree_programme_id);
+    const semesterObj = this.semesterList.find((s: { semester_id: any; }) => s.semester_id === formValue.semester_id);
+   
+    this.sendToDash = this.selectedCourseData = {
+      session: sessionObj?.academic_session_name_e || '',
+      college: collegeObj?.college_name_e || '',
+      programme: programmeObj?.degree_programme_name_e || '',
+      semester: semesterObj?.semester_name_e || '',
+      semester_id: semesterObj?.semester_id || null,
+      deanCommittee: item.dean_committee_name_e,
+      deanCommittee_id: item.dean_committee_id,
+      batch: 'Batch I & II',
+      course_year_id: item.course_year_id,
+      course_year_name_e: item.course_year_name_e,
+    };
+    const params = {
+      academic_session_id: formValue.academic_session_id,
+      college_id: formValue.college_id,
+      degree_programme_id: formValue.degree_programme_id,
+      course_year_id: item?.course_year_id,  
+      semester_id: formValue.semester_id,
+      dean_committee_id: item?.dean_committee_id, 
+    };
+    this.HTTP.getParam('/master/get/getCourseForUpdate/', params, 'academic').subscribe(
+      (result: any) => {
+        // console.log('Full API Response:', result); // First, log the complete response 
+        
+        if (result.body?.data?.courserows) {
+          // console.log('Data found:', result.body?.data?.courserows);
+         this.new_row = result.body?.data?.courserows
+          // this.populateCourseTable(result.body?.data?.courserows);
+          // ✅ Open Dialog and send data
+        this.dialog.open(TeacherSectionAllotmentComponent, {
+          width: '1100px',
+          height:'600px',
+
+          data: {
+            courseData: this.new_row,
+            params: params,
+            currentData:this.sendToDash
+          }
+        });
+          
+        } else {
+          console.warn('No courserows found in response', result);
+        }
+      }, 
+      (error) => {
+        console.error('API Error:', error);
+      }
+    );
+  }
 
   // Populate table with API data
   populateCourseTable(courseData: any[]) {
@@ -652,6 +751,8 @@ onIsAllCourseChange(isAllCourse: boolean) {}
         course_name: course.course_name,
         course_type_id: course.course_type_id,
         cou_allot_type_id: course.cou_allot_type_id,
+        course_module_id: course.course_module_id,
+        course_module_batch_group_id: course.course_module_batch_group_id,
         course_nature: course.course_nature,
         total_credit: course.credit || 0,
         teacherRows: teacherArray  // Matches your insert structure
@@ -667,8 +768,9 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     this.isShowbutton = true
     this.previousYearaltBtn = false
     this.isSbumitBtn = false
-    this.isEdit = true;
+    this.isEdit = false;
     this.ifShowContainer = true
+    this.isShowUpdateButton = true
   }
 
   openCourseGeneralCall(item: any): void {
@@ -678,7 +780,8 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     this.isSbumitBtn = true
     this.openCourseGeneral(item)
     this.resetCourseAllotmentFields()
-    this.clearcourserows()
+    // this.clearcourserows();
+    this.clearCourseRowstable();
     this.checkIfRypurClgAndDnCmt5(item)
     this.checkIfSvClgAndDnCmt5(item)
   }
@@ -689,9 +792,8 @@ onIsAllCourseChange(isAllCourse: boolean) {}
 
   getPreviousYearAllotment(item: any) {
      this.ifShowContainer = true
+     this.isShowUpdateButton = false
     this.openCourseGeneral(item)
-
-
     const formValue = this.courseAllotFormGroup.value;
     if (
       !formValue.academic_session_id ||
@@ -720,7 +822,6 @@ onIsAllCourseChange(isAllCourse: boolean) {}
           console.log('Data found:', result.body?.data?.courserows);
          this.new_row = result.body?.data?.courserows
           this.populateCourseTable(result.body?.data?.courserows);
-          
         } else {
           alert('No previous year allotment data found.');
         }
@@ -733,8 +834,17 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     this.isaddRow = false
     this.isShowbutton = true
     this.isSbumitBtn = false
-    this.isEdit = true;
+    this.isEdit = false;
     this.ifShowContainer = true
+
+      this.courseAllotFormGroup.patchValue({
+      course_id: '',
+      course_type_id: '',
+      cou_allot_type_id: '',
+      emp_id: [],
+      course_nature: '',
+      total_credit: ''
+    });
   }
 
   getDataForPrint(item: any) {
@@ -871,15 +981,13 @@ onIsAllCourseChange(isAllCourse: boolean) {}
 
   editRow(row:any, index: number) {
     console.log("i am called");
-    
     this.editIndex = index;
-  
-    
-  
     this.courseAllotFormGroup.patchValue({
       course_id: row.get('course_id')?.value,
       course_type_id: row.get('course_type_id')?.value,
       cou_allot_type_id: row.get('cou_allot_type_id')?.value,
+      course_module_id: row.get('course_module_id')?.value,
+      course_module_batch_group_id: row.get('course_module_batch_group_id')?.value,
       course_nature: row.get('course_nature')?.value,
       total_credit: row.get('total_credit')?.value,
       // emp_id: row.get('teacherRows')?.value.map((t: any) => t.emp_id)
@@ -951,6 +1059,7 @@ onIsAllCourseChange(isAllCourse: boolean) {}
       cou_allot_type_id: formValue.cou_allot_type_id,
       course_nature: formValue.course_nature,
       total_credit: formValue.total_credit,
+      
       teacherRows: (formValue.emp_id || []).map((empId: any) => {
         const oldTeacher = this.editingPrimaryKeys.teacherRows.find((t: any) => t.emp_id === empId);
         return {
@@ -968,14 +1077,68 @@ onIsAllCourseChange(isAllCourse: boolean) {}
           this.alert.alertMessage("Record Updated...!", "", "success");
           this.getCourseforUpdate();
           this.clearcourserows();
+          this.resetCourseAllotForms();
         } else {
           this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
         }
       }
     );
   }
+
+  // onUpdateCouesNew(): any {
+  //   const submitData = this.prepareSubmitData();
+  //   const payload = this.courserows.value
+  //   let apiUrl = '/course/update/updateAllotedCourseAndTeacher/';
+  //   let finalPayload: any;
   
+  //   // ✅ New condition: if showChildButton & hasSpecificProgramme are both true
+  //   // if (this.showChildButton && this.hasSpecificProgramme) {
+  //   //   const colg_obj = this.childCollegeList;
+  //   //   finalPayload = {
+  //   //     acaddata: submitData,
+  //   //     colgdata: colg_obj
+  //   //   };
+  //   //   apiUrl = '/course/post/saveCourseAllotmentForMltiClg/';
+  //   // } else {
+  //   //   finalPayload = submitData;
+  //   //   apiUrl = '/course/post/saveCourseAllotment/';
+  //   // }
   
+  //   console.log('Final data to submit:', payload);
+  
+  //   // this.HTTP.putData(apiUrl, payload, 'academic').subscribe(res => {
+  //   //   if (!res.body.error) {
+  //   //     this.alert.alertMessage("Record Updated...!", "", "success");
+  //   //     this.resetForm();
+  //   //   } else {
+  //   //     this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
+  //   //   }
+  //   // });
+  // }
+
+  onUpdateCouesNew(): any {
+  const payload = this.courserows.value;
+  // Get common allotment_main_id from first row
+  const commonAllotmentMainId = payload[0]?.allotment_main_id 
+  // Ensure every row has allotment_main_id
+  const finalPayload = payload.map((row: any) => ({
+    ...row,
+    allotment_main_id: row.allotment_main_id || commonAllotmentMainId
+  }));
+
+  let apiUrl = '/course/update/updateAllotedCourseAndTeacher/';
+  console.log('Final data to submit:', finalPayload);
+  this.HTTP.putData(apiUrl, finalPayload, 'academic').subscribe(res => {
+    if (!res.body.error) {
+      this.alert.alertMessage("Record Updated...!", "", "success");
+      this.getCourseforUpdate();
+      this.resetCourseAllotForms();
+    } else {
+      this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
+    }
+  });
+}
+ 
   // Reset the form 
   resetCourseAllotmentFields(): void {
     this.courseAllotFormGroup.patchValue({
@@ -1019,31 +1182,75 @@ onIsAllCourseChange(isAllCourse: boolean) {}
   //   }
   // }
   
-  
   deleteParticularCourse(row: any, index: number): void {
-    const allotment_detail_id = row.get('allotment_detail_id')?.value;
-    console.log('Deleting row with allotment_detail_id:', allotment_detail_id);
-  
-    if (allotment_detail_id) {
-      const queryParams = `?allotment_detail_id=${allotment_detail_id}`;
-  
-      this.HTTP.deleteData(`/course/delete/deletePartucularCourse/${queryParams}`, {}, 'academic').subscribe({
-        next: (res) => {
-          console.log('Deleted successfully:', res);
-          alert('✅ Course deleted successfully!');
-          this.courserows.removeAt(index);
-        },
-        error: (err) => {
-          console.error('Error deleting:', err);
-          alert('❌ Failed to delete course. Please try again.');
-        }
-      });
-    } else {
-      // If no ID, it's just a UI-only row, remove from form array
-      this.courserows.removeAt(index);
-    }
+  const allotment_detail_id = row.get('allotment_detail_id')?.value;
+  console.log('Deleting row with allotment_detail_id:', allotment_detail_id);
+
+  // 🔔 Confirmation before deleting
+  if (!confirm('⚠️ Are you sure you want to delete this course?')) {
+    return; // ❌ User cancelled, do nothing
   }
+
+  if (allotment_detail_id) {
+    const queryParams = `?allotment_detail_id=${allotment_detail_id}`;
+
+    this.HTTP.deleteData(`/course/delete/deletePartucularCourse/${queryParams}`, {}, 'academic').subscribe({
+      next: (res) => {
+        console.log('Deleted successfully:', res);
+        alert('✅ Course deleted successfully!');
+        this.courserows.removeAt(index);
+      },
+      error: (err) => {
+        console.error('Error deleting:', err);
+        alert('❌ Failed to delete course. Please try again.');
+      }
+    });
+  } else {
+    // If no ID, it's just a UI-only row, remove from form array
+    this.courserows.removeAt(index);
+  }
+}
+
   
+  // deleteParticularCourse(row: any, index: number): void {
+  //   const allotment_detail_id = row.get('allotment_detail_id')?.value;
+  //   console.log('Deleting row with allotment_detail_id:', allotment_detail_id);
+  
+  //   if (allotment_detail_id) {
+  //     const queryParams = `?allotment_detail_id=${allotment_detail_id}`;
+  
+  //     this.HTTP.deleteData(`/course/delete/deletePartucularCourse/${queryParams}`, {}, 'academic').subscribe({
+  //       next: (res) => {
+  //         console.log('Deleted successfully:', res);
+  //         alert('✅ Course deleted successfully!');
+  //         this.courserows.removeAt(index);
+  //       },
+  //       error: (err) => {
+  //         console.error('Error deleting:', err);
+  //         alert('❌ Failed to delete course. Please try again.');
+  //       }
+  //     });
+  //   } else {
+  //     // If no ID, it's just a UI-only row, remove from form array
+  //     this.courserows.removeAt(index);
+  //   }
+  // }
+  
+resetCourseAllotForms() {
+  this.courseAllotFormGroup.patchValue({
+    course_id: '',
+    course_type_id: '',
+    cou_allot_type_id: '',
+    emp_id: [],
+    course_nature: '',
+    total_credit: ''
+  });
+}
+
+clearCourseRowstable() {
+this.isShowCourseListTable = true
+}
+
 
 
 }

@@ -16,6 +16,8 @@ import { TeacherAllotmentComponent } from './teacher-allotment/teacher-allotment
 import { FormsModule } from '@angular/forms';
 import { CourseRegistrationComponent } from './registration/course-registration/course-registration.component';
 import { CourseRegistrationUnfinlizeComponent } from './course-registration-unfinlize/course-registration-unfinlize.component';
+import { TeacherSectionAllotmentComponent } from './teacher-section-allotment/teacher-section-allotment.component';
+import { StudentSectionAllotmentComponent } from './student-section-allotment/student-section-allotment.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import { CourseRegistrationUnfinlizeComponent } from './course-registration-unfi
     TeacherAllotmentComponent,
     CourseRegistrationComponent,
     CourseRegistrationUnfinlizeComponent,
+    TeacherSectionAllotmentComponent,
+    StudentSectionAllotmentComponent,
 
   ],
   imports: [
@@ -35,8 +39,8 @@ import { CourseRegistrationUnfinlizeComponent } from './course-registration-unfi
     BrowserModule,
     NgbModule,
     AppRoutingModule,
-     CapslockDirective,
-     FormsModule,
+    CapslockDirective,
+    FormsModule,
         ServiceWorkerModule.register('ngsw-worker.js', {
           enabled: true,
           registrationStrategy: 'registerWhenStable:30000'
