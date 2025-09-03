@@ -22,6 +22,8 @@ export * from './shared.module'
 // Component
 export * from './component/layout-component/layout-component.component'
 export * from './component/reporttable/reporttable.component'
+export * from './component/report/report.component'
 export * from './component/404/404.component'
 export * from './component/update-routes/update-routes.component'
+
 

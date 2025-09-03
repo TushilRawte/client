@@ -1,0 +1,67 @@
+<mat-card class="mt-4">
+    <mat-card-content #print_content>
+
+        <!-- University Header (now inside print_content) -->
+        <mat-card-header style="display: flex; justify-content: space-around;" class="mb-2">
+            <div>
+                <img [src]="data.university.logo" alt="University Logo" width="68" class="mb-2">
+            </div>
+            <div class="text-center">
+                <h2>{{ data.university.name }}</h2>
+                <p>{{ data.university.address }}</p>
+                <h4 class="mt-3">{{ data.page_title }} - {{ data.college.session }}</h4>
+            </div>
+        </mat-card-header>
+
+        <!-- Dynamic Info Rows -->
+        <div class="mb-4 row">
+            <div *ngFor="let field of infoFields" [class]="field.class" class="mb-md-2 mb-1 mt-md-2 mt-1">
+                <strong>{{ field.label }}:</strong>
+                {{ field.valueKey ? getValueByPath(field.valueKey, data.college) : '' }}
+            </div>
+        </div>
+
+        <!-- Dynamic Table -->
+        <div class="table-responsive">
+            <table class="table table-bordered text-center" #table>
+                <thead class="table-light">
+                    <tr>
+                        <th *ngFor="let col of tableColumns">{{ col.label }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let report of data.reports; let i = index">
+                        <td *ngFor="let col of tableColumns">
+                            <ng-container [ngSwitch]="col.type">
+                                <ng-container *ngSwitchCase="'image'">
+                                    <img [src]="resolveImage(report[col.key])" [alt]="col.label" width="70"
+                                        *ngIf="report[col.key]">
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    {{ col.key === 'index' ? i + 1 : report[col.key] }}
+                                </ng-container>
+                            </ng-container>
+                        </td>
+                    </tr>
+                    <tr class="fw-bold" style="font-weight: bold !important;">
+                        <td>Total</td>
+                        <td [attr.colspan]="tableColumns.length - 1">{{ data.reports.length }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </mat-card-content>
+
+    <!-- Actions: Not visible during print -->
+    <mat-card-actions class="d-print-none text-end">
+        <button mat-raised-button color="primary m-1" (click)="printData()">
+            <mat-icon>print</mat-icon> Print
+        </button>
+        <button mat-raised-button color="accent m-1" (click)="getPdf()">
+            <mat-icon>picture_as_pdf</mat-icon> PDF
+        </button>
+        <button mat-raised-button (click)="getExcel()">
+            <mat-icon>cloud_download</mat-icon> Excel
+        </button>
+    </mat-card-actions>
+</mat-card>

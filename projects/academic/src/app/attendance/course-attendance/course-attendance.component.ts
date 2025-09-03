@@ -276,24 +276,12 @@ export class CourseAttendanceComponent implements OnInit {
     });
   }
 
-  // ~ load attendance stutus after getCourseAttendanceList_Btn_click
-  getAttendanceStatus() {
-    this.HTTP.getParam(
-      '/master/get/getAttendanceStatus/',
-      {},
-      'academic'
-    ).subscribe((result: any) => {
-      // console.log(result);
-      this.attendanceStatusList = result.body.data;
-    });
-  }
-
+  // step 1: button click 
   getCourseAttendanceList_Btn_click() {
     if (this.finalizeCourseFilterFormGroup.invalid) {
       this.alert.alertMessage("Required", "Please fill all required fields.", "warning");
       return;
     }
-
     const {
       emp_id,
       academic_session_id,
@@ -312,6 +300,7 @@ export class CourseAttendanceComponent implements OnInit {
     this.getCourseWiseAttendance(emp_id, academic_session_id, degree_programme_type_id, semester_id);
   }
 
+  // step 2: get status list by employee
   getCourseWiseAttendance(
     emp_id: number,
     academic_session_id: number,
@@ -346,7 +335,22 @@ export class CourseAttendanceComponent implements OnInit {
     );
   }
 
-  // step 2: call getStudentAttendanceList()
+  // step 3: get stust list by employee
+  onStatusClick(item: any): void {
+    this.finalizeCourse = { ...this.finalizeCourse, ...item };
+    // console.log("onStatusClick finalizeCourse: ", this.finalizeCourse);
+    this.getStudentAttendanceList(
+      this.finalizeCourse.emp_id,
+      this.finalizeCourse.academic_session_id,
+      this.finalizeCourse.degree_programme_type_id,
+      this.finalizeCourse.semester_id,
+      item.course_id,
+      2, // course_registration_type_id (you can make this configurable)
+      this.finalizeCourse.dean_committee_id
+    );
+  }
+
+  // step 4: call getStudentAttendanceList()
   getStudentAttendanceList(
     emp_id: number,
     academic_session_id: number,
@@ -392,19 +396,16 @@ export class CourseAttendanceComponent implements OnInit {
     );
   }
 
-  // step 1: get stust list by employee
-  onStatusClick(item: any): void {
-    this.finalizeCourse = { ...this.finalizeCourse, ...item };
-    // console.log("onStatusClick finalizeCourse: ", this.finalizeCourse);
-    this.getStudentAttendanceList(
-      this.finalizeCourse.emp_id,
-      this.finalizeCourse.academic_session_id,
-      this.finalizeCourse.degree_programme_type_id,
-      this.finalizeCourse.semester_id,
-      item.course_id,
-      2, // course_registration_type_id (you can make this configurable)
-      this.finalizeCourse.dean_committee_id
-    );
+  // ~ load attendance stutus after getCourseAttendanceList_Btn_click
+  getAttendanceStatus() {
+    this.HTTP.getParam(
+      '/master/get/getAttendanceStatus/',
+      {},
+      'academic'
+    ).subscribe((result: any) => {
+      // console.log(result);
+      this.attendanceStatusList = result.body.data;
+    });
   }
 
   // ^ final update students data
