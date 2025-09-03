@@ -36,12 +36,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
-
-
-
 @NgModule({
   declarations: [
-    FileuploadComponent
+    FileuploadComponent,
   ],
   imports: [
     CommonModule,
@@ -64,7 +61,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatDividerModule,
     MatListModule,
     MatMenuModule,
-    MatSidenavModule
+    MatSidenavModule,
   ],
   exports: [
     MatIconModule,

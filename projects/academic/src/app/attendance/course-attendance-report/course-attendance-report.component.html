@@ -1,0 +1,149 @@
+<mat-card class="attendance-main">
+  <mat-card-content>
+    <h3 class="fw-bold">Course Attendance Report</h3>
+    <form [formGroup]="courseAttendanceReportFormGroup">
+      <div class="row">
+        <div class="col-md-3 col-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Session</mat-label>
+            <mat-select placeholder="Session" formControlName="academic_session_id">
+              <mat-option *ngFor="let server of state.acadmcSesnList" [value]="server.academic_session_id">
+                {{ server.academic_session_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6 col-12">
+          <!-- <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>College Name</mat-label>
+                        <mat-select placeholder="College Name" formControlName="college_name_e">
+                            <mat-option *ngFor="let server of collegeList" [value]="server.college_id">
+                                {{ server.college_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field> -->
+
+          <ng-select placeholder="College Name" formControlName="college_id" appearance="outline">
+            <ng-container *ngFor="let server of state.collegeList">
+              <ng-option [value]="server.college_id">
+                {{ server.college_name_e}}
+              </ng-option>
+            </ng-container>
+          </ng-select>
+        </div>
+
+        <div class="col-md-6 col-12">
+          <!-- <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Degree Programe</mat-label>
+            <mat-select placeholder="Degree Programe" formControlName="degree_programme_id">
+              <mat-option *ngFor="let server of state.degreeProgrammeList" [value]="server.degree_programme_id">
+                {{ server.degree_programme_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field> -->
+          <ng-select placeholder="Degree Programe" formControlName="degree_programme_id" appearance="outline">
+            <ng-container *ngFor="let server of state.degreeProgrammeList">
+              <ng-option [value]="server.degree_programme_id">
+                {{ server.degree_programme_name_e}}
+              </ng-option>
+            </ng-container>
+          </ng-select>
+        </div>
+
+        <div class="col-md-3 col-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Course Nature</mat-label>
+            <mat-select placeholder="Course Nature" formControlName="course_nature_id">
+              <mat-option *ngFor="let server of state.courseNatureList" [value]="server.course_nature_id">
+                {{ server.course_nature_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-3 col-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Exam Type</mat-label>
+            <mat-select placeholder="Exam Type" formControlName="exam_type_id">
+              <mat-option *ngFor="let server of state.examTypeList" [value]="server.exam_type_id">
+                {{ server.exam_type_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-3 col-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Dean Committee</mat-label>
+            <mat-select placeholder="Exam Type" formControlName="dean_committee_id">
+              <mat-option *ngFor="let server of state.deanCommitteeList" [value]="server.dean_committee_id">
+                {{ server.dean_committee_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-3 col-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Course Year</mat-label>
+            <mat-select placeholder="Exam Type" formControlName="course_year_id">
+              <mat-option *ngFor="let server of state.courseYearList" [value]="server.course_year_id">
+                {{ server.course_year_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- [disabled]="state.semesterList.length === 1" -->
+        <div class="col-md-3 col-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Semester</mat-label>
+            <mat-select placeholder="Semester" formControlName="semester_id">
+              <mat-option *ngFor="let server of state.semesterList" [value]="server.semester_id">
+                {{ server.semester_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6 col-12">
+          <!-- <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Course</mat-label>
+            <mat-select placeholder="Course" formControlName="course_id">
+              <mat-option *ngFor="let server of state.courseList" [value]="server.course_id">
+                {{ server.course_title_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field> -->
+
+          <ng-select placeholder="Course" formControlName="course_id" appearance="outline">
+            <ng-container *ngFor="let server of state.courseList">
+              <ng-option [value]="server.course_id">
+                {{ server.course_title_e}}
+              </ng-option>
+            </ng-container>
+          </ng-select>
+        </div>
+
+        <div class="col-12 mt-md-3 d-flex justify-content-center">
+          <div>
+            <button mat-raised-button color="primary" (click)="onStudentAttendanceList_click()">
+              Get Student List
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+
+
+<!-- Report Rendering -->
+<!-- <ng-container *ngIf="studentAttendaceList.reports && studentAttendaceList.reports.length > 0"> -->
+<ng-container *ngIf="studentAttendaceList.reports.length > 0">
+  <app-report [data]="studentAttendaceList" [infoFields]="infoFields" [tableColumns]="tableColumns">
+  </app-report>
+</ng-container>
