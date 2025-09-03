@@ -58,6 +58,7 @@ export class CourseAllotmentComponent {
   showChildButton: boolean = false;
   selectedYearAndCommittee: any = null;
   selectedSubject: any;
+  ifShowContainer: boolean = false
   
 
   toggleCourseSection(): void {
@@ -93,9 +94,9 @@ export class CourseAllotmentComponent {
       course_id: ['', Validators.required],
       course_type_id: ['', Validators.required],
       cou_allot_type_id: ['', Validators.required],
-      course_nature: [''],  // Add this for display
-      total_credit: [''],    // Add this for display
-      emp_id: [[]], // For multiple teachers
+      course_nature: [''],  
+      total_credit: [''],   
+      emp_id: [[]], 
       courserows: this.fb.array([])
     });
 
@@ -310,15 +311,12 @@ getTeacherName(emp_id: number | null): string {
 
 
 
-
-
-
-
 removeRow(index: number) {
   this.courserows.removeAt(index);
 }
 
   getAcademicSession() {
+
     this.HTTP.getParam('/master/get/getAcademicSession1/',{},'academic').subscribe((result:any) => {
       // console.log(result);
       this.acadmcSesnList = result.body.data;
@@ -670,6 +668,7 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     this.previousYearaltBtn = false
     this.isSbumitBtn = false
     this.isEdit = true;
+    this.ifShowContainer = true
   }
 
   openCourseGeneralCall(item: any): void {
@@ -689,6 +688,7 @@ onIsAllCourseChange(isAllCourse: boolean) {}
   }
 
   getPreviousYearAllotment(item: any) {
+     this.ifShowContainer = true
     this.openCourseGeneral(item)
 
 
@@ -729,10 +729,12 @@ onIsAllCourseChange(isAllCourse: boolean) {}
         console.error('API Error:', error);
       }
     );
-    this.isaddRow = false
-    this.isShowbutton = false
     this.previousYearaltBtn = true
+    this.isaddRow = false
+    this.isShowbutton = true
     this.isSbumitBtn = false
+    this.isEdit = true;
+    this.ifShowContainer = true
   }
 
   getDataForPrint(item: any) {

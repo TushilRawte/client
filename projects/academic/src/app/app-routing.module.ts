@@ -7,6 +7,7 @@ import { CourseallotDashboardComponent } from './courseallot-dashboard/courseall
 import { CourseFinalizeComponent } from './course-finalize/course-finalize.component';
 import { TeacherAllotmentComponent } from './teacher-allotment/teacher-allotment.component';
 import { CourseRegistrationComponent } from './registration/course-registration/course-registration.component';
+import { CourseRegistrationUnfinlizeComponent } from './course-registration-unfinlize/course-registration-unfinlize.component';
 
 const routes: Routes = [
   {
@@ -49,6 +50,11 @@ const routes: Routes = [
       {
         path: 'course-registration',
           component:CourseRegistrationComponent,
+        // pathMatch: 'full',
+      },
+       {
+        path: 'course-registration-unfinalize',
+          component:CourseRegistrationUnfinlizeComponent,
         // pathMatch: 'full',
       },
       // { path: 'student-corner', loadChildren: () => import('./student-corner/student-corner.module').then(m => m.StudentCornerModule) },

@@ -15,7 +15,7 @@ import { CourseFinalizeComponent } from './course-finalize/course-finalize.compo
 import { TeacherAllotmentComponent } from './teacher-allotment/teacher-allotment.component';
 import { FormsModule } from '@angular/forms';
 import { CourseRegistrationComponent } from './registration/course-registration/course-registration.component';
-
+import { CourseRegistrationUnfinlizeComponent } from './course-registration-unfinlize/course-registration-unfinlize.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +27,7 @@ import { CourseRegistrationComponent } from './registration/course-registration/
     CourseFinalizeComponent,
     TeacherAllotmentComponent,
     CourseRegistrationComponent,
+    CourseRegistrationUnfinlizeComponent,
 
   ],
   imports: [

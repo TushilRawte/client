@@ -63,8 +63,8 @@
                   <th>Year</th>
                   <th>Dean Committee</th>
                   <!-- <th>Batch</th> -->
-                  <th>Course Allotment</th>
-                  <th>Previous Year Allotment</th>
+                  <th>Edit Course</th>
+                  <th>Course List</th>
                   <th>Teacher Allotment</th>
                   <th>Course Allotement Status</th>
                   <!-- <th>Print</th> -->
@@ -78,12 +78,12 @@
                   <td>
                     <div class="btnsection">
                       <span class="a-btn">
-                        <button [disabled]="hasSpecificProgramme && !showChildButton" mat-icon-button color="primary" type="button" (click)="openCourseGeneralCall(item)" ><mat-icon>add_circle</mat-icon>
-                        </button>
+                        <!-- <button [disabled]="hasSpecificProgramme && !showChildButton" mat-icon-button color="primary" type="button" (click)="openCourseGeneralCall(item)" ><mat-icon>add_circle</mat-icon>
+                        </button> -->
                         
                         <button [disabled]="hasSpecificProgramme && !showChildButton" mat-icon-button color="primary" type="button" (click)="openCourseGenforUpdate(item)" ><mat-icon>edit</mat-icon></button>
 
-                        <button mat-icon-button color="primary" type="button" (click)="openCourseGeneralforDilog(item)"><mat-icon>visibility</mat-icon></button>
+                        <!-- <button mat-icon-button color="primary" type="button" (click)="openCourseGeneralforDilog(item)"><mat-icon>visibility</mat-icon></button> -->
                       </span>
                     </div>
                   </td>
@@ -93,8 +93,8 @@
                         type="button" 
                         class="a-btn link-type" 
                         [disabled]="hasSpecificProgramme && !showChildButton" 
-                        (click)="previousYearaltBtn = true; getPreviousYearAllotment(item)">
-                        Get Previous Year Allotment
+                        (click)="previousYearaltBtn = true; getPreviousYearAllotment(item)" >
+                        Get Courses for Allot
                       </button>
                     </span>
                   </td>
@@ -147,8 +147,8 @@
                 </ng-select>
               </div> -->
 
-          
-                <div class="col-md-2 col-3 align-items-center" >
+             <ng-container *ngIf="ifShowContainer">
+                                 <div class="col-md-2 col-3 align-items-center" >
                   <label>Other Department Course</label>
                   <mat-checkbox [(ngModel)]="isAllCourse" (change)="toggleCourseSection()">Yes</mat-checkbox>
                 </div>
@@ -177,9 +177,6 @@
                   </ng-select>
                 </div>
     
-              
-                 
-                  
                   <div class="col-md-2 col-6">
                     <mat-form-field appearance="outline">
                       <mat-label>Course Nature</mat-label>
@@ -214,9 +211,15 @@
                       </ng-container>
                     </ng-select>
                   </div>
+             </ng-container>
+ 
+         
+              
                 
                 <div class="col-md-3 col-12 mt-2">
-                  <button *ngIf="isaddRow == true" type="button" class="btn btn-primary" (click)="addRowToTable()">+ Add Row</button>
+                  <!-- <button *ngIf="isaddRow == true" type="button" class="btn btn-primary" (click)="addRowToTable()">+ Add Row</button> -->
+
+                  <button  type="button" class="btn btn-primary" (click)="addRowToTable()">+ Add Row</button>
                   <button *ngIf="isEdit" class="btn btn-primary" (click)="submitUpdatedRow()">Update</button>
                   <!-- <button  class="btn btn-primary" (click)="submitUpdatedRow()">Update</button>  -->
 
@@ -313,7 +316,7 @@
           </div>
           <div class="col-md-4 col-12 mt-2">
             <button type="submit" class="btn btn-primary" *ngIf="isSbumitBtn == true" (click)="onSubmit()" >Allot Course</button>
-            <button type="submit" class="btn btn-primary" *ngIf="previousYearaltBtn == true" (click)="onSubmit()" >Allot Same as Previous Year Allotment</button>
+            <button type="submit" class="btn btn-primary" *ngIf="previousYearaltBtn == true" (click)="onSubmit()" > Allot Course</button>
           </div>
       </form>
     </mat-card-content>

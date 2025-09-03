@@ -67,6 +67,7 @@
                             <th>Code</th>
                             <th>Course Title</th>
                             <th>Type</th>
+                            <th>Nature</th>
                             <th>Add</th>
                         </tr>
                     </thead>
@@ -76,6 +77,7 @@
                             <td>{{ course.course_code }}</td>
                              <td>{{ course.course_title_e }}</td>
                               <td>{{ course.course_type_name_e }}</td>
+                               <td>{{ course.course_nature_name_e}}</td>
                             <td>
                                 <button type="button"  color="primary" class=" btn-add"
                                         (click)="selectCourse(course)">
@@ -98,6 +100,7 @@
         <th>Code</th>
         <th>Course Title</th>
         <th>Type</th>
+        <th>Nature</th>
         <th>Add</th>
       </tr>
     </thead>
@@ -107,6 +110,7 @@
         <td>{{ course.course_code }}</td>
         <td>{{ course.course_title_e }}</td>
         <td>{{ course.course_type_name_e }}</td>
+        <td>{{ course.course_nature_name_e}}</td>
         <td>
           <button type="button" color="primary" class="btn-add" (click)="selectCourse(course)">
             <mat-icon>add</mat-icon>
@@ -118,7 +122,63 @@
 </div>
 
         </div>
+        <!-- Right column: Selected Courses -->
         <div class="col-md-6 section">
+    <h5>Selected Courses</h5>
+    
+    <table class="table table-bordered">
+        <thead class="table-header">
+            <tr>
+                <th>#</th>
+                <th>Code</th>
+                <th>Course Title</th>
+                <th>Type</th>
+                <th>Nature</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody id="selectedCoursesTable">
+            <tr *ngFor="let course of selectedCourses; let i = index" 
+                [class.highlighted-row]="!isFailedCourse(course)"
+                [class.failed-course-row]="isFailedCourse(course)">
+                
+                <td>{{ i + 1 }}</td>
+                <td>{{ course.course_code }}</td>
+                <td>{{ course.course_title_e }}</td>
+                <td>{{ course.course_type_name_e }}</td>
+                <td>{{ course.course_nature_name_e }}</td>
+                
+                <td>
+                    <button type="button" 
+                            color="danger" 
+                            class="btn-remove"
+                            [class.failed-course-remove]="isFailedCourse(course)"
+                            [disabled]="isFailedCourse(course)"
+                            (click)="removeCourse(course.course_id, course.course_nature_id)"
+                            [title]="isFailedCourse(course) ? 'Failed courses are mandatory and cannot be removed' : 'Remove Course'">
+                        <mat-icon>{{ isFailedCourse(course) ? 'lock' : 'close' }}</mat-icon> 
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <!-- Legend for color coding -->
+    <div class="course-legend mt-3">
+        <small class="text-muted">
+            <span class="legend-item">
+                <span class="legend-color normal-course"></span>
+                Normal Courses
+            </span>
+            <span class="legend-item ml-3" style="padding-left: 5px;">
+                <span class="legend-color failed-course"></span>
+                Failed Courses (Auto-selected)
+            </span>
+        </small>
+    </div>
+</div>
+
+        <!-- <div class="col-md-6 section">
           <h5>Selected Courses</h5>
             
              <table class="table table-bordered" >
@@ -128,6 +188,7 @@
                             <th>Code</th>
                             <th>Course Title</th>
                             <th>Type</th>
+                            <th>Nature</th>
                             <th>Remove</th>
                         </tr>
                     </thead>
@@ -137,23 +198,23 @@
                             <td>{{ course.course_code }}</td>
                              <td>{{ course.course_title_e }}</td>
                               <td>{{ course.course_type_name_e }}</td>
+                                   <td>{{ course.course_nature_name_e}}</td>
                             <td>
-                                <button type="button"  color="danger" class=" btn-remove"
-                                        (click)="removeCourse(course.course_id)">
-                                    <mat-icon>close</mat-icon> 
+                                <button type="button" color="danger" class="btn-remove"
+                                (click)="removeCourse(course.course_id, course.course_nature_id)">
+                                <mat-icon>close</mat-icon> 
                                 </button>
-                                
                             </td>
                         </tr>
-                       
                     </tbody>
                 </table>
-        </div>
+        </div> -->
       </div>
     </div>
     <hr>
- <button mat-raised-button color="primary" type="submit">Submit</button>  
-  <button mat-raised-button color="primary" type="button">Update</button> 
+ <button  mat-raised-button color="primary" type="submit">Submit</button>  
+  <!-- <button *ngIf="isRegistrationAllowed" mat-raised-button color="primary" type="button">Update</button>  -->
+   <button (click)="onUpdate()" mat-raised-button color="primary" type="button">Update</button>
 </mat-card-content>
 </mat-card>
 </form>
