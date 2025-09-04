@@ -15,6 +15,9 @@ import { CourseDashboardComponent } from './course-dashboard/course-dashboard.co
 import { CourseFinalizeComponent } from './course-finalize/course-finalize.component';
 import { CourseallotDashboardComponent } from './courseallot-dashboard/courseallot-dashboard.component';
 import { CourseRegistrationComponent } from './registration/course-registration/course-registration.component';
+import { CourseRegistrationUnfinlizeComponent } from './course-registration-unfinlize/course-registration-unfinlize.component';
+import { TeacherSectionAllotmentComponent } from './teacher-section-allotment/teacher-section-allotment.component';
+import { StudentSectionAllotmentComponent } from './student-section-allotment/student-section-allotment.component';
 import { TeacherAllotmentComponent } from './teacher-allotment/teacher-allotment.component';
 import { ViewCourseallotmentComponent } from './view-courseallotment/view-courseallotment.component';
 
@@ -29,6 +32,9 @@ import { ViewCourseallotmentComponent } from './view-courseallotment/view-course
     CourseFinalizeComponent,
     TeacherAllotmentComponent,
     CourseRegistrationComponent,
+    CourseRegistrationUnfinlizeComponent,
+    TeacherSectionAllotmentComponent,
+    StudentSectionAllotmentComponent,
     CourseAttendanceComponent,
     CourseAttendanceReportComponent,
 
@@ -40,13 +46,11 @@ import { ViewCourseallotmentComponent } from './view-courseallotment/view-course
     AppRoutingModule,
     CapslockDirective,
     FormsModule,
-    ServiceWorkerModule.register('ngsw-worker.js', {
-        enabled: true,
-        registrationStrategy: 'registerWhenStable:30000'
-    }),
-    ReporttableComponent,
-    ReportComponent
-],
+        ServiceWorkerModule.register('ngsw-worker.js', {
+          enabled: true,
+          registrationStrategy: 'registerWhenStable:30000'
+        })
+  ],
  providers: [
     provideAnimationsAsync()
   ],
