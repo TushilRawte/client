@@ -9,6 +9,7 @@ import { PaymentStatusComponent } from './components/payment-status/payment-stat
 import { ProfileComponent } from './components/profile/profile.component';
 import { ExaminationResultComponent } from './components/examination-result/examination-result.component';
 import { CourseRegistrationComponent } from './components/course-registration/course-registration.component';
+import { OldLayoutComponent } from './components/old-layout/old-layout.component';
 
 const routes: Routes = [
 {
@@ -23,9 +24,12 @@ const routes: Routes = [
             {path: 'profile', component: ProfileComponent},
             {path: 'result', component: ExaminationResultComponent},
             {path: 'course-registration', component: CourseRegistrationComponent},
-
-        ]
+        ],
       },
+      {
+        path: 'old-layout',
+        component: OldLayoutComponent,
+      }
 ];
 
 @NgModule({
