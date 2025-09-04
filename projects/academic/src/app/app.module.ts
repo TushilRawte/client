@@ -46,11 +46,12 @@ import { ViewCourseallotmentComponent } from './view-courseallotment/view-course
     AppRoutingModule,
     CapslockDirective,
     FormsModule,
-        ServiceWorkerModule.register('ngsw-worker.js', {
-          enabled: true,
-          registrationStrategy: 'registerWhenStable:30000'
-        })
-  ],
+    ServiceWorkerModule.register('ngsw-worker.js', {
+        enabled: true,
+        registrationStrategy: 'registerWhenStable:30000'
+    }),
+    ReportComponent
+],
  providers: [
     provideAnimationsAsync()
   ],
