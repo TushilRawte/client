@@ -11,6 +11,7 @@ import { AlertService, HttpService, PrintService } from 'shared';
 export class CourseAttendanceReportComponent implements OnInit {
   state = {
     acadmcSesnList: [] as any[],
+    degreeProgrammeTypeList: [] as any[],
     collegeList: [] as any[],
     degreeProgrammeList: [] as any,
     courseNatureList: [] as any,
@@ -115,6 +116,7 @@ export class CourseAttendanceReportComponent implements OnInit {
   ) {
     this.courseAttendanceReportFormGroup = this.fb.group({
       academic_session_id: ['', Validators.required],
+      degree_programme_type_id: ['', Validators.required],
       college_id: ['', Validators.required],
       degree_programme_id: ['', Validators.required],
       course_nature_id: ['', Validators.required],
@@ -160,7 +162,8 @@ export class CourseAttendanceReportComponent implements OnInit {
         course_id: ''
       });
       if (academicSessionId) {
-        this.getCollegeData();
+       let degree_programme_type_id = 1
+        this.getCollegeData(degree_programme_type_id);
       }
     });
 
@@ -308,9 +311,22 @@ export class CourseAttendanceReportComponent implements OnInit {
         });
   };
 
-  getCollegeData() {
+  getDegreeProgrammeTypeData() {
+    this.HTTP.getParam('/master/get/getDegreeProgramType', {}, 'academic')
+      .subscribe(
+        (result: any) => {
+          // console.log("degreeProgrammeTypeList : ", result);
+          this.state.degreeProgrammeTypeList = result.body.data;
+        },
+        (error) => {
+          console.error('Error in degreeProgrammeTypeList:', error);
+          this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
+        });
+  };
+
+  getCollegeData(degree_programme_type_id: number) {
     this.HTTP.getParam('/master/get/getCollege',
-      {},
+      {degree_programme_type_id},
       'academic')
       .subscribe(
         (result: any) => {

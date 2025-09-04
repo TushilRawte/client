@@ -126,12 +126,12 @@ export class CourseAttendanceComponent implements OnInit {
   getAttendanceStatusLabel(item: any): string {
     const studentsCount = Number(item.student_count);
     const finalize = Number(item.finalize);
-    const pending = Number(item.pending);
 
     if (studentsCount === finalize) {
-      return `<span class='bg-success badge rounded-pill p-3'>Done</span>`;
+      return `<span class='bg-success badge rounded-pill p-3'>All Finalized</span>`;
     } else {
-      return `<span class='badge bg-info me-1 text-dark'>Pending = ${pending}</span>
+      const pending = studentsCount - finalize;
+      return `<span class='badge bg-info me-1 text-dark'>Not Finalize = ${pending}</span>
             <span class='badge bg-warning text-dark'>Finalize = ${finalize}</span>`;
     }
   }
@@ -238,7 +238,6 @@ export class CourseAttendanceComponent implements OnInit {
       ...groupedArray.filter(g => g.group_type === 'finalized'),
     ];
   }
-
 
   // ~ ng init load academic session
   getAcademicSession() {

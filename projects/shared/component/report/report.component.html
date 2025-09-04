@@ -54,14 +54,21 @@
 
     <!-- Actions: Not visible during print -->
     <mat-card-actions class="d-print-none text-end">
-        <button mat-raised-button color="primary m-1" (click)="printData()">
+        <button mat-raised-button color="primary" matTooltip="Print" class="m-1" (click)="printData()">
             <mat-icon>print</mat-icon> Print
         </button>
-        <button mat-raised-button color="accent m-1" (click)="getPdf()">
+
+        <button mat-raised-button color="accent" matTooltip="PDF" class="m-1" (click)="getPdf()">
             <mat-icon>picture_as_pdf</mat-icon> PDF
         </button>
-        <button mat-raised-button (click)="getExcel()">
+        <button mat-raised-button matTooltip="Excel" class="m-1" (click)="getExcel()">
             <mat-icon>cloud_download</mat-icon> Excel
         </button>
+
+        <button mat-raised-button color="secondary" matTooltip="Copy" class="m-1" (click)="copyTableData()"
+            class="tools mx-auto ms-1">
+            <mat-icon>content_copy</mat-icon>
+        </button>
+
     </mat-card-actions>
 </mat-card>

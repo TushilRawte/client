@@ -5,10 +5,19 @@ import * as XLSX from 'xlsx';
 import { MatCard, MatCardContent, MatCardHeader, MatCardActions } from "@angular/material/card";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatIcon } from "@angular/material/icon";
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-report',
-  imports: [MatCard, MatCardContent, MatCardHeader, BrowserAnimationsModule, MatCardActions, MatIcon],
+  imports: [
+    MatCard,
+    MatCardContent,
+    MatCardHeader,
+    BrowserAnimationsModule,
+    MatCardActions,
+    MatIcon,
+    MatButtonModule,
+  ],
   templateUrl: './report.component.html',
   styleUrl: './report.component.scss'
 })
@@ -194,4 +203,46 @@ export class ReportComponent {
     XLSX.utils.book_append_sheet(wb, ws, 'Attendance');
     XLSX.writeFile(wb, `Attendance.xlsx`);
   }
+
+
+  copyTableData() {
+    if (!this.table) return;
+    let tableText = '';
+    const rows = this.table.nativeElement.querySelectorAll('tr');
+    rows.forEach((row: any) => {
+      const cells = row.querySelectorAll('th, td');
+      let rowText: string[] = [];
+      cells.forEach((cell: HTMLElement) => {
+        if (cell && !cell.classList.contains('d-print-none')) {
+          rowText.push(cell.innerText.trim());
+        } else {
+          console.log(cell)
+        }
+      });
+
+      tableText += rowText.join('\t') + '\n';
+    });
+
+    // Fallback for older browsers or if Clipboard API fails
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(tableText).then(() => {
+        alert('Table copied successfully!');
+      }).catch(err => {
+        console.error('Clipboard API failed:', err);
+        this.fallbackCopy(tableText);
+      });
+    } else {
+      this.fallbackCopy(tableText);
+    }
+  }
+
+  fallbackCopy(tableText: string) {
+    const textArea = document.createElement('textarea');
+    textArea.value = tableText;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+  }
+  
 }
