@@ -32,7 +32,7 @@ export class CourseRegistrationComponent {
     this.getAcademicSession();
     this.getCollegeData();
     this.getDegreeProgramme();
-    this.getallCourse();
+    this.getallCourse();  
     this.getSemester();
     this.mainforfun();
     this.getCourseForRegistration();
@@ -92,7 +92,7 @@ export class CourseRegistrationComponent {
   }
 
     getallCourse() {
-    this.HTTP.getParam('/master/get/getCourseList/',{},'academic').subscribe((result:any) => {
+    this.HTTP.getParam('/course/get/getCourseFromAllotment/',{},'academic').subscribe((result:any) => {
       // console.log(result);
       this.allCourses = result.body.data;
     })
@@ -140,7 +140,7 @@ export class CourseRegistrationComponent {
       Semester_Id: this.semester[0].id,
       ue_id: 20220255
     }
-    this.HTTP.getParam('/course/get/getCourseListForReg/',params ,'academic').subscribe((result:any) => {
+    this.HTTP.getParam('/course/get/getCourseFromAllotment/',params ,'academic').subscribe((result:any) => {
       console.log('course list',result);
       this.courseListForReg = result.body.data;
       if (this.courseListForReg && this.courseListForReg.length > 0) {
@@ -160,7 +160,7 @@ export class CourseRegistrationComponent {
       Semester_Id: this.semester[0].id,
       ue_id: 20220255
     }
-    this.HTTP.getParam('/course/get/getFailedCoursesForRegList/',params ,'academic').subscribe((result:any) => {
+    this.HTTP.getParam('/course/get/getFailedCoursesForReg/',params ,'academic').subscribe((result:any) => {
       console.log('failed course list',result);
       this.failedCoursesList = result.body.data;
        // Automatically select failed courses

@@ -58,13 +58,12 @@
 
         <!-- Left column: Available Courses -->
         <div class="col-md-6 section">
-          <h5>Major Courses</h5>
+          <h5>Major Courses (optional)</h5>
 
            <table class="table table-bordered" >
                     <thead class="table-header">
                         <tr>
                             <th>#</th>
-                            <th>Code</th>
                             <th>Course Title</th>
                             <th>Type</th>
                             <th>Nature</th>
@@ -74,8 +73,7 @@
                     <tbody id="availableCoursesTable">
                         <tr *ngFor="let course of courseListForReg; let i = index">
                             <td>{{ i + 1 }}</td>
-                            <td>{{ course.course_code }}</td>
-                             <td>{{ course.course_title_e }}</td>
+                             <td>{{ course.course_name }}</td>
                               <td>{{ course.course_type_name_e }}</td>
                                <td>{{ course.course_nature_name_e}}</td>
                             <td>
@@ -94,7 +92,7 @@
                   
 <div class="table-container">
   <table class="table table-bordered">
-    <thead class="table-header">
+      <thead class="table-header">
       <tr>
         <th>#</th>
         <th>Code</th>
@@ -130,8 +128,7 @@
         <thead class="table-header">
             <tr>
                 <th>#</th>
-                <th>Code</th>
-                <th>Course Title</th>
+                  <th>Course Title</th>
                 <th>Type</th>
                 <th>Nature</th>
                 <th>Remove</th>
@@ -143,8 +140,7 @@
                 [class.failed-course-row]="isFailedCourse(course)">
                 
                 <td>{{ i + 1 }}</td>
-                <td>{{ course.course_code }}</td>
-                <td>{{ course.course_title_e }}</td>
+                <td>{{ course.course_name }}</td>
                 <td>{{ course.course_type_name_e }}</td>
                 <td>{{ course.course_nature_name_e }}</td>
                 
