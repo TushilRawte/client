@@ -110,6 +110,8 @@ export class CourseRegistrationComponent {
         Academic_Session_Id: this.academicSessions[0].id,
         Course_Year_Id: this.year[0].id,
         Semester_Id: this.semester[0].id,
+        college_id:5,
+        degree_programme_id:20,
         ue_id: 20220255
       }
        this.HTTP.getParam('/course/get/getRegisteredCourseList/',params ,'academic').subscribe((result:any) => {
@@ -124,8 +126,7 @@ export class CourseRegistrationComponent {
       Academic_Session_Id: this.academicSessions[0].id,
       Course_Year_Id: this.year[0].id,
       Semester_Id: this.semester[0].id,
-      // ue_id: 20222882
-       ue_id: 20220255
+      college_id:5
     }
     this.HTTP.getParam('/course/get/getOtherCourseListForRegister/',params ,'academic').subscribe((result:any) => {
       console.log('other dept course list',result);
@@ -135,10 +136,11 @@ export class CourseRegistrationComponent {
 
     getCourseForRegistration() {
    const params  = {
-      Academic_Session_Id: this.academicSessions[0].id,
-      Course_Year_Id: this.year[0].id,
-      Semester_Id: this.semester[0].id,
-      ue_id: 20220255
+      academic_session_Id: this.academicSessions[0].id,
+      course_year_id: this.year[0].id,
+      degree_programme_id:1,
+      college_id:5,
+      semester_id: this.semester[0].id,
     }
     this.HTTP.getParam('/course/get/getCourseFromAllotment/',params ,'academic').subscribe((result:any) => {
       console.log('course list',result);
@@ -161,8 +163,8 @@ export class CourseRegistrationComponent {
       ue_id: 20220255
     }
     this.HTTP.getParam('/course/get/getFailedCoursesForReg/',params ,'academic').subscribe((result:any) => {
-      console.log('failed course list',result);
       this.failedCoursesList = result.body.data;
+      console.log('failed course list',result.body.data);
        // Automatically select failed courses
     if (this.failedCoursesList && this.failedCoursesList.length > 0) {
       this.autoSelectFailedCourses();
@@ -172,6 +174,8 @@ export class CourseRegistrationComponent {
 
   // New method to automatically select failed courses
 autoSelectFailedCourses() {
+  console.warn("before failed course",this.selectedCourses);
+  
   this.failedCoursesList.forEach((failedCourse: any) => {
     // Check if this failed course is not already in selectedCourses
     const isAlreadySelected = this.selectedCourses.find(c => 
@@ -181,9 +185,13 @@ autoSelectFailedCourses() {
     
     if (!isAlreadySelected) {
       // Add failed course to selected courses
+     ;
+      
       this.selectedCourses.push(failedCourse);
-      console.log(`Auto-selected failed course: ${failedCourse.course_title_e}`);
-    }
+//  console.warn("selected failed courses",failedCourse)
+      console.warn("this is selected failed course", this.selectedCourses);
+    
+}
   });
   
   // Optional: Show notification about auto-selected courses
