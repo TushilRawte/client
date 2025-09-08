@@ -18,6 +18,7 @@ export class CourseRegistrationComponent {
   acadmcSesnList: any;
   collegeList: any;
   degreeProgrammeList: any;
+  stuRegistrationId :any;
   allCourses: any;
   semesterList: any;
   courseListForReg: any;
@@ -38,7 +39,8 @@ export class CourseRegistrationComponent {
     this.getCourseForRegistration();
     this.getOtherDeptCourseForRegistration();
     this.getRegisteredCourses();
-    // this.getFailedCourse();
+    this.getFailedCourse();
+    this.getStudentListForRegistration();
   }
 
     mainforfun() {
@@ -117,10 +119,22 @@ export class CourseRegistrationComponent {
        this.HTTP.getParam('/course/get/getRegisteredCourseList/',params ,'academic').subscribe((result:any) => {
        this.registeredCourseList = result.body.data;
       this.selectedCourses = [...this.registeredCourseList];
-      console.warn("this is registed courses by student:",this.registeredCourseList);
       this.getFailedCourse(); 
     })
   }  
+
+  	getStudentListForRegistration(){
+      const params = {
+      academic_session_id: this.academicSessions[0].id,
+      ue_id: 20220725,
+      semester_id: this.semester[0].id,
+      course_year_id: this.year[0].id,
+      }
+       this.HTTP.getParam('/course/get/getStudentListForRegistration/',params ,'academic').subscribe((result:any) => {
+      this.stuRegistrationId = result.body.data;
+      
+    })
+    }
 
   getOtherDeptCourseForRegistration() {
       const params  = {
@@ -186,8 +200,6 @@ onSelectOtherCourses(event: any) {
     this.HTTP.getParam('/course/get/getFailedCoursesForReg/',params ,'academic').subscribe((result:any) => {
       this.failedCoursesList = result.body.data;
        // Automatically select failed courses
-       console.warn('failed course',this.failedCoursesList);
-       
     if (this.failedCoursesList && this.failedCoursesList.length > 0) {
       this.autoSelectFailedCourses();
     }    
@@ -294,44 +306,50 @@ removeCourse(courseId: number, courseNatureId: number) {
 
 
 
-onSubmit() {
+  onSubmit() {
     if (this.selectedCourses.length === 0) {
-    this.snackBar.open('Please select at least one course', 'Close', {
-      duration: 3000,
-      verticalPosition: 'top',
-      horizontalPosition: 'center'
-    });
-    return;
-  }
-  const payload = {
-    academic_session_id: this.academicSessions[0].id,
-    year_id: this.year[0].id,
-    semester_id: this.semester[0].id,
-    registration_id: this.courseListForReg[0].registration_id,
-    courses: this.selectedCourses.map(course => ({
-      course_id: course.course_id,
-      course_type_id: course.course_type_id,
-      course_nature_id: course.course_nature_id,
-    }))
-  };
+      this.snackBar.open('Please select at least one course', 'Close', {
+        duration: 3000,
+        verticalPosition: 'top',
+        horizontalPosition: 'center'
+      });
+      return;
+    }
+    console.warn(this.selectedCourses);
+    
 
-     console.log('Sending payload to update API:', payload);
-  
-    this.HTTP.postData('/course/post/saveStudentCourseRegistration', payload, 'academic').subscribe(
-      (res: any) => {
-        console.log('Response from Saved API:', res);
-        
-        if (!res.body.error) {
-          this.alert.alertMessage("Record Saved...!", "", "success");
-        } else {
-          this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
+    if (this.stuRegistrationId[0].registration_id) {
+      const payload = {   
+        academic_session_id: this.academicSessions[0].id,
+        year_id: this.year[0].id,
+        semester_id: this.semester[0].id,
+        registration_id: this.stuRegistrationId[0].registration_id,
+        courses: this.selectedCourses.map(course => ({
+          course_id: course.course_id,
+          course_type_id: course.course_type_id,
+          course_nature_id: course.course_nature_id,
+        }))
+      };
+
+      console.log('Sending payload to API:', payload);
+
+      this.HTTP.postData('/course/post/saveStudentCourseRegistration', payload, 'academic').subscribe(
+        (res: any) => {
+          console.log('Response from Saved API:', res);
+
+          if (!res.body.error) {
+            this.alert.alertMessage("Record Saved...!", "", "success");
+          } else {
+            this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
+          }
         }
-      }
-    );
-    this.updateRegistrationStatus();
-}
+      ); 
+      this.getRegisteredCourses();
+    }
 
-updateRegistrationStatus(){
+  }
+
+/* updateRegistrationStatus(){
    const payload = {
    registration_id: this.courseListForReg[0].registration_id,
     }
@@ -350,7 +368,7 @@ updateRegistrationStatus(){
         this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
       }
     );
-}
+} */
 
 onUpdate() {
     if (this.selectedCourses.length === 0) {
@@ -365,7 +383,7 @@ onUpdate() {
     academic_session_id: this.academicSessions[0].id,
     year_id: this.year[0].id,
     semester_id: this.semester[0].id,
-    registration_id: this.courseListForReg[0].registration_id,
+    registration_id: this.stuRegistrationId[0].registration_id,
     courses: this.selectedCourses.map(course => ({
       course_id: course.course_id,
       course_type_id: course.course_type_id,
@@ -375,7 +393,7 @@ onUpdate() {
 
      console.log('Sending payload to update API:', payload);
   
-    this.HTTP.putData('/course/update/updateStudentCourseRegistration', payload, 'academic').subscribe(
+  this.HTTP.putData('/course/update/updateStudentCourseRegistration', payload, 'academic').subscribe(
       (res: any) => {
         console.log('Response from update API:', res);
         
@@ -385,7 +403,8 @@ onUpdate() {
           this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
         }
       }
-    );
+    ); 
+this.getRegisteredCourses();
 }
 
 
