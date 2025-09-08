@@ -90,12 +90,30 @@
 
             <h5>Other Courses</h5>
                   
-<div class="table-container">
+<ng-select 
+    [items]="otherDeptcourseListForReg"
+    bindLabel="course_name"
+    [multiple]="true"
+    [hideSelected]="true"
+    [closeOnSelect]="false"
+    appearance="outline"
+    (add)="onCourseAdd($event)" 
+    (remove)="onCourseRemove($event)">
+
+    <!-- Custom multi-label: show count instead of chips -->
+    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+      <span *ngIf="items.length > 0"></span>
+    </ng-template>
+
+</ng-select>
+
+
+
+<!-- <div class="table-container">
   <table class="table table-bordered">
       <thead class="table-header">
       <tr>
         <th>#</th>
-        <th>Code</th>
         <th>Course Title</th>
         <th>Type</th>
         <th>Nature</th>
@@ -105,8 +123,7 @@
     <tbody id="availableCoursesTable">
       <tr *ngFor="let course of otherDeptcourseListForReg; let i = index">
         <td>{{ i + 1 }}</td>
-        <td>{{ course.course_code }}</td>
-        <td>{{ course.course_title_e }}</td>
+        <td>{{ course.course_name }}</td>
         <td>{{ course.course_type_name_e }}</td>
         <td>{{ course.course_nature_name_e}}</td>
         <td>
@@ -117,7 +134,7 @@
       </tr>
     </tbody>
   </table>
-</div>
+</div> -->
 
         </div>
         <!-- Right column: Selected Courses -->

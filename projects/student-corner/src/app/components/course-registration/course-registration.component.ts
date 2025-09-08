@@ -38,7 +38,7 @@ export class CourseRegistrationComponent {
     this.getCourseForRegistration();
     this.getOtherDeptCourseForRegistration();
     this.getRegisteredCourses();
-    this.getFailedCourse();
+    // this.getFailedCourse();
   }
 
     mainforfun() {
@@ -107,33 +107,54 @@ export class CourseRegistrationComponent {
 
     getRegisteredCourses(){
       const params = {
-        Academic_Session_Id: this.academicSessions[0].id,
-        Course_Year_Id: this.year[0].id,
-        Semester_Id: this.semester[0].id,
+        academic_session_id: this.academicSessions[0].id,
+        course_year_id: this.year[0].id,
+        semester_id: this.semester[0].id,
         college_id:5,
-        degree_programme_id:20,
-        ue_id: 20220255
+        degree_programme_id:1,
+        ue_id: 20220725
       }
        this.HTTP.getParam('/course/get/getRegisteredCourseList/',params ,'academic').subscribe((result:any) => {
        this.registeredCourseList = result.body.data;
-        console.log('registered courses',this.registeredCourseList);
-         this.selectedCourses = [...this.registeredCourseList];
+      this.selectedCourses = [...this.registeredCourseList];
+      console.warn("this is registed courses by student:",this.registeredCourseList);
+      this.getFailedCourse(); 
     })
   }  
 
-     getOtherDeptCourseForRegistration() {
+  getOtherDeptCourseForRegistration() {
       const params  = {
-      Academic_Session_Id: this.academicSessions[0].id,
-      Course_Year_Id: this.year[0].id,
-      Semester_Id: this.semester[0].id,
-      college_id:5
+      academic_session_Id: this.academicSessions[0].id,
+      course_year_id: this.year[0].id,
+      college_id:5,
+      semester_id: this.semester[0].id,
     }
-    this.HTTP.getParam('/course/get/getOtherCourseListForRegister/',params ,'academic').subscribe((result:any) => {
+    this.HTTP.getParam('/course/get/getCourseFromAllotment/',params ,'academic').subscribe((result:any) => {
       console.log('other dept course list',result);
       this.otherDeptcourseListForReg = result.body.data;
     })
   }
 
+
+  onCourseAdd(courseId: any) {
+  this.selectedCourses.push(courseId);
+  console.log('Added:', courseId, 'Array:', this.selectedCourses);
+}
+
+onCourseRemove(courseId: any) {
+  this.selectedCourses = this.selectedCourses.filter(id => id !== courseId);
+  console.log('Removed:', courseId, 'Array:', this.selectedCourses);
+}
+  
+
+
+onSelectOtherCourses(event: any) {
+  console.log('Selected:', event); 
+
+}
+
+
+  // course list for registration 
     getCourseForRegistration() {
    const params  = {
       academic_session_Id: this.academicSessions[0].id,
@@ -158,24 +179,23 @@ export class CourseRegistrationComponent {
   getFailedCourse(){
     const params  = {
       Academic_Session_Id: this.academicSessions[0].id - 1,
-      Course_Year_Id: this.year[0].id - 1,
+      course_year_id : this.year[0].id - 1,
       Semester_Id: this.semester[0].id,
-      ue_id: 20220255
+      ue_id: 20220725
     }
     this.HTTP.getParam('/course/get/getFailedCoursesForReg/',params ,'academic').subscribe((result:any) => {
       this.failedCoursesList = result.body.data;
-      console.log('failed course list',result.body.data);
        // Automatically select failed courses
+       console.warn('failed course',this.failedCoursesList);
+       
     if (this.failedCoursesList && this.failedCoursesList.length > 0) {
       this.autoSelectFailedCourses();
-    }
+    }    
     })
   }
 
   // New method to automatically select failed courses
-autoSelectFailedCourses() {
-  console.warn("before failed course",this.selectedCourses);
-  
+autoSelectFailedCourses() {  
   this.failedCoursesList.forEach((failedCourse: any) => {
     // Check if this failed course is not already in selectedCourses
     const isAlreadySelected = this.selectedCourses.find(c => 
@@ -188,8 +208,6 @@ autoSelectFailedCourses() {
      ;
       
       this.selectedCourses.push(failedCourse);
-//  console.warn("selected failed courses",failedCourse)
-      console.warn("this is selected failed course", this.selectedCourses);
     
 }
   });
