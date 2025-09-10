@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormBuilder, FormGroup, Validators,FormArray, AbstractControl } from '@angular/forms';
-import { HttpService,AlertService, PrintService} from 'shared';
+import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
+import { HttpService, AlertService, PrintService } from 'shared';
 
 
 
@@ -14,295 +14,259 @@ import { HttpService,AlertService, PrintService} from 'shared';
 export class CourseRegistrationComponent {
 
   selectedCourses: any[] = [];
-  courseRegistrationForm!: FormGroup
-  acadmcSesnList: any;
-  collegeList: any;
-  degreeProgrammeList: any;
-  stuRegistrationId :any;
-  allCourses: any;
-  semesterList: any;
+  onSelectDropCourse: any;
+  courseRegistrationForm!: FormGroup;
   courseListForReg: any;
   otherDeptcourseListForReg: any;
   registeredCourseList: any;
   isRegistrationAllowed: boolean = true;
   failedCoursesList: any;
-   
-  constructor(private snackBar: MatSnackBar,private fb : FormBuilder,private HTTP : HttpService,private alert: AlertService) {}
+  studentData: any;
+
+
+
+  constructor(private snackBar: MatSnackBar, private fb: FormBuilder, private HTTP: HttpService, private alert: AlertService) { }
 
   ngOnInit() {
-    this.getAcademicSession();
-    this.getCollegeData();
-    this.getDegreeProgramme();
-    this.getallCourse();  
-    this.getSemester();
+    this.getStudentDetails();
     this.mainforfun();
-    this.getCourseForRegistration();
-    this.getOtherDeptCourseForRegistration();
-    this.getRegisteredCourses();
-    this.getFailedCourse();
-    this.getStudentListForRegistration();
   }
 
-    mainforfun() {
-        this.courseRegistrationForm = this.fb.group({
+  mainforfun() {
+    this.courseRegistrationForm = this.fb.group({
 
-        });
-      }
-
-      academicSessions = [
-      { id: 23, value: '2023-2024' }
-    ];
-    year = [
-      { id: 3, value: '1st Year' }
-    ];
-    semester = [
-      { id: 1, value: 'I Semester' }
-    ];
-    academicStanding = [
-      { id: 1, value: 'Regular' }
-    ];
-    collges = [
-      { id: 1, value: 'CARS Raipur' }
-    ];
-    academicDegreeProgram = [
-      { id: 20, value: 'M.Sc.(Hort.) (Fruit Science)' }
-    ];
-      deanCommittee = [
-      { id: 4, value: '4th dean committee' }
-    ];
-
-      getAcademicSession() {
-    this.HTTP.getParam('/master/get/getAcademicSession1/',{},'academic').subscribe((result:any) => {
-      console.log(result);
-      this.acadmcSesnList = result.body.data;
-    })
+    });
   }
 
-  getCollegeData() {
-    this.HTTP.getParam('/master/get/getCollegeList1/',{} ,'academic').subscribe((result:any) => {
-      // console.log(result);
-      this.collegeList = result.body.data;
-    })
-  }
 
-  
-  getDegreeProgramme() {
-    this.HTTP.getParam('/master/get/getDegreePrograamList/',{},'academic').subscribe((result:any) => {
-      // console.log('DP',result);
-      this.degreeProgrammeList = result.body.data;
-    })
-  }
 
-    getallCourse() {
-    this.HTTP.getParam('/course/get/getCourseFromAllotment/',{},'academic').subscribe((result:any) => {
-      // console.log(result);
-      this.allCourses = result.body.data;
-    })
-  }
 
-  getSemester() {
-    this.HTTP.getParam('/master/get/getSemesterList/',{} ,'academic').subscribe((result:any) => {
-      // console.log(result);
-      this.semesterList = result.body.data;
-    })
-  }
 
-    getRegisteredCourses(){
-      const params = {
-        academic_session_id: this.academicSessions[0].id,
-        course_year_id: this.year[0].id,
-        semester_id: this.semester[0].id,
-        college_id:5,
-        degree_programme_id:1,
-        ue_id: 20220725
-      }
-       this.HTTP.getParam('/course/get/getRegisteredCourseList/',params ,'academic').subscribe((result:any) => {
-       this.registeredCourseList = result.body.data;
-      this.selectedCourses = [...this.registeredCourseList];
-      this.getFailedCourse(); 
-    })
-  }  
+  getStudentDetails() {
+    // ^ this data will get from login session
+    const academic_session_id = 23;
+    const course_year_id = 3;
+    const semester_id = 1;
+    const college_id = 5;
+    const degree_programme_id = 1;
+    const ue_id = 20220725;
 
-  	getStudentListForRegistration(){
-      const params = {
-      academic_session_id: this.academicSessions[0].id,
-      ue_id: 20220725,
-      semester_id: this.semester[0].id,
-      course_year_id: this.year[0].id,
-      }
-       this.HTTP.getParam('/course/get/getStudentListForRegistration/',params ,'academic').subscribe((result:any) => {
-      this.stuRegistrationId = result.body.data;
-      
-    })
+    const params = {
+      academic_session_id: academic_session_id,
+      course_year_id: course_year_id,
+      semester_id: semester_id,
+      college_id: college_id,
+      degree_programme_id: degree_programme_id,
+      ue_id: ue_id
     }
+    this.HTTP.getParam('/course/get/getStudentList/', params, 'academic').subscribe((result: any) => {
+      console.warn(result.body.data[0])
+      this.studentData = result.body.data[0];
+      this.getCourseForRegistration();
+      this.getOtherDeptCourseForRegistration();
+      this.getRegisteredCourses();
+      this.getFailedCourse();
+    })
+  }
+
+  getRegisteredCourses() {
+    const params = {
+      academic_session_id: this.studentData?.academic_session_id,
+      course_year_id: this.studentData?.course_year_id,
+      semester_id: this.studentData?.semester_id,
+      college_id: this.studentData?.college_id,
+      degree_programme_id: this.studentData?.degree_programme_id,
+      ue_id: this.studentData?.ue_id
+    }
+    this.HTTP.getParam('/course/get/getRegisteredCourseList/', params, 'academic').subscribe((result: any) => {
+      this.registeredCourseList = result.body.data;
+      this.selectedCourses = [...this.registeredCourseList];
+      this.getFailedCourse();
+    })
+  }
+
 
   getOtherDeptCourseForRegistration() {
-      const params  = {
-      academic_session_Id: this.academicSessions[0].id,
-      course_year_id: this.year[0].id,
-      college_id:5,
-      semester_id: this.semester[0].id,
+    const params = {
+      academic_session_id: this.studentData?.academic_session_id,
+      course_year_id: this.studentData?.course_year_id,
+      college_id: this.studentData?.college_id,
+      semester_id: this.studentData?.semester_id,
     }
-    this.HTTP.getParam('/course/get/getCourseFromAllotment/',params ,'academic').subscribe((result:any) => {
-      console.log('other dept course list',result);
+    this.HTTP.getParam('/course/get/getCourseFromAllotment/', params, 'academic').subscribe((result: any) => {
+      console.log('other dept course list', result);
       this.otherDeptcourseListForReg = result.body.data;
     })
   }
 
+  /* 
+    onCourseAdd(courseId: any) {
+    this.selectedCourses.push(courseId);
+    console.log('Added:', courseId, 'Array:', this.selectedCourses);
+  } */
 
-  onCourseAdd(courseId: any) {
-  this.selectedCourses.push(courseId);
-  console.log('Added:', courseId, 'Array:', this.selectedCourses);
-}
+ selectedCourseId: number | null = null;
+  onCourseSelect(course: any) {
+    this.onSelectDropCourse = course
+  }
 
-onCourseRemove(courseId: any) {
-  this.selectedCourses = this.selectedCourses.filter(id => id !== courseId);
-  console.log('Removed:', courseId, 'Array:', this.selectedCourses);
-}
-  
+  onCourseAdd() {
+    if (this.onSelectDropCourse) {
+      console.log(this.onSelectDropCourse);
+      this.selectedCourses.push(this.onSelectDropCourse);
+      this.onSelectDropCourse = null;
+        this.selectedCourseId = null;
+    }
+  }
+
+  onCourseRemove(courseId: any) {
+    this.selectedCourses = this.selectedCourses.filter(id => id !== courseId);
+    console.log('Removed:', courseId, 'Array:', this.selectedCourses);
+  }
 
 
-onSelectOtherCourses(event: any) {
-  console.log('Selected:', event); 
 
-}
+  onSelectOtherCourses(event: any) {
+    console.log('Selected:', event);
+
+  }
 
 
   // course list for registration 
-    getCourseForRegistration() {
-   const params  = {
-      academic_session_Id: this.academicSessions[0].id,
-      course_year_id: this.year[0].id,
-      degree_programme_id:1,
-      college_id:5,
-      semester_id: this.semester[0].id,
+  getCourseForRegistration() {
+    const params = {
+      academic_session_id: this.studentData?.academic_session_id,
+      course_year_id: this.studentData?.course_year_id,
+      semester_id: this.studentData?.semester_id,
+      college_id: this.studentData?.college_id,
+      degree_programme_id: this.studentData?.degree_programme_id,
     }
-    this.HTTP.getParam('/course/get/getCourseFromAllotment/',params ,'academic').subscribe((result:any) => {
-      console.log('course list',result);
+    this.HTTP.getParam('/course/get/getCourseFromAllotment/', params, 'academic').subscribe((result: any) => {
+      console.log('course list', result);
       this.courseListForReg = result.body.data;
       if (this.courseListForReg && this.courseListForReg.length > 0) {
         // condition check
-        this.isRegistrationAllowed = 
+        this.isRegistrationAllowed =
           this.courseListForReg[0].registration_status_id !== 2;
       } else {
-        this.isRegistrationAllowed = true; 
+        this.isRegistrationAllowed = true;
       }
     })
   }
 
-  getFailedCourse(){
-    const params  = {
-      Academic_Session_Id: this.academicSessions[0].id - 1,
-      course_year_id : this.year[0].id - 1,
-      Semester_Id: this.semester[0].id,
-      ue_id: 20220725
+  getFailedCourse() {
+    const params = {
+      Academic_Session_Id: this.studentData?.academic_session_id - 1,
+      course_year_id: this.studentData?.course_year_id - 1,
+      Semester_Id: this.studentData?.semester_id,
+      ue_id: this.studentData?.ue_id
     }
-    this.HTTP.getParam('/course/get/getFailedCoursesForReg/',params ,'academic').subscribe((result:any) => {
+    this.HTTP.getParam('/course/get/getFailedCoursesForReg/', params, 'academic').subscribe((result: any) => {
       this.failedCoursesList = result.body.data;
-       // Automatically select failed courses
-    if (this.failedCoursesList && this.failedCoursesList.length > 0) {
-      this.autoSelectFailedCourses();
-    }    
+      // Automatically select failed courses
+      if (this.failedCoursesList && this.failedCoursesList.length > 0) {
+        this.autoSelectFailedCourses();
+      }
     })
   }
 
   // New method to automatically select failed courses
-autoSelectFailedCourses() {  
-  this.failedCoursesList.forEach((failedCourse: any) => {
-    // Check if this failed course is not already in selectedCourses
-    const isAlreadySelected = this.selectedCourses.find(c => 
-      c.course_id === failedCourse.course_id && 
-      c.course_nature_id === failedCourse.course_nature_id
-    );
-    
-    if (!isAlreadySelected) {
-      // Add failed course to selected courses
-     ;
-      
-      this.selectedCourses.push(failedCourse);
-    
-}
-  });
-  
-  // Optional: Show notification about auto-selected courses
-  if (this.failedCoursesList.length > 0) {
-    this.snackBar.open(
-      `${this.failedCoursesList.length} failed course(s) automatically selected`, 
-      'Close', 
-      {
-        duration: 3000,
-        verticalPosition: 'top',
-        horizontalPosition: 'center'
+  autoSelectFailedCourses() {
+    this.failedCoursesList.forEach((failedCourse: any) => {
+      // Check if this failed course is not already in selectedCourses
+      const isAlreadySelected = this.selectedCourses.find(c =>
+        c.course_id === failedCourse.course_id &&
+        c.course_nature_id === failedCourse.course_nature_id
+      );
+
+      if (!isAlreadySelected) {
+        // Add failed course to selected courses
+        ;
+
+        this.selectedCourses.push(failedCourse);
+
       }
-    );
-  }
-}
-
-// Helper method to check if a course is a failed course
-isFailedCourse(course: any): boolean {
-  if (!this.failedCoursesList || this.failedCoursesList.length === 0) {
-    return false;
-  }
-  return this.failedCoursesList.some((fc: { course_id: any; course_nature_id: any; }) => 
-    fc.course_id === course.course_id && fc.course_nature_id === course.course_nature_id
-  );
-}
-  
-//   selectCourse(course: any) {
-//   // Prevent duplicate (course_id + course_nature_id)
-//   if (this.selectedCourses.find(c => 
-//       c.course_id === course.course_id && c.course_nature_id === course.course_nature_id)) {
-//     this.snackBar.open('This course with the same nature is already selected', 'Close', {
-//       duration: 2000,
-//       verticalPosition: 'top',
-//       horizontalPosition: 'center'
-//     });
-//     return;
-//   }
-//   this.selectedCourses.push(course);
-// }
-
-selectCourse(course: any) {
-  // Prevent duplicate (course_id + course_nature_id)
-  if (this.selectedCourses.find(c => 
-      c.course_id === course.course_id && c.course_nature_id === course.course_nature_id)) {
-    this.snackBar.open('This course with the same nature is already selected', 'Close', {
-      duration: 2000,
-      verticalPosition: 'top',
-      horizontalPosition: 'center'
     });
-    return;
-  }
-  this.selectedCourses.push(course);
-}
 
-// removeCourse(courseId: number, courseNatureId: number) {
-//   // Remove only that exact pair
-//   this.selectedCourses = this.selectedCourses.filter(c => 
-//     !(c.course_id === courseId && c.course_nature_id === courseNatureId)
-//   );
-// }
-
-// Updated removeCourse method with protection for failed courses (optional)
-removeCourse(courseId: number, courseNatureId: number) {
-  // Optional: Check if this is a failed course and show confirmation
-  const isFailedCourse = this.failedCoursesList?.find((c: { course_id: number; course_nature_id: number; }) => 
-    c.course_id === courseId && c.course_nature_id === courseNatureId
-  );
-  
-  if (isFailedCourse) {
-    // Optional: Show confirmation dialog for removing failed courses
-    const confirmRemoval = confirm('This is a failed course. Are you sure you want to remove it?');
-    if (!confirmRemoval) {
-      return;
+    // Optional: Show notification about auto-selected courses
+    if (this.failedCoursesList.length > 0) {
+      this.snackBar.open(
+        `${this.failedCoursesList.length} failed course(s) automatically selected`,
+        'Close',
+        {
+          duration: 3000,
+          verticalPosition: 'top',
+          horizontalPosition: 'center'
+        }
+      );
     }
   }
-  
-  // Remove only that exact pair
-  this.selectedCourses = this.selectedCourses.filter(c => 
-    !(c.course_id === courseId && c.course_nature_id === courseNatureId)
-  );
-}
+
+  // Helper method to check if a course is a failed course
+  isFailedCourse(course: any): boolean {
+    if (!this.failedCoursesList || this.failedCoursesList.length === 0) {
+      return false;
+    }
+    return this.failedCoursesList.some((fc: { course_id: any; course_nature_id: any; }) =>
+      fc.course_id === course.course_id && fc.course_nature_id === course.course_nature_id
+    );
+  }
+
+  //   selectCourse(course: any) {
+  //   // Prevent duplicate (course_id + course_nature_id)
+  //   if (this.selectedCourses.find(c => 
+  //       c.course_id === course.course_id && c.course_nature_id === course.course_nature_id)) {
+  //     this.snackBar.open('This course with the same nature is already selected', 'Close', {
+  //       duration: 2000,
+  //       verticalPosition: 'top',
+  //       horizontalPosition: 'center'
+  //     });
+  //     return;
+  //   }
+  //   this.selectedCourses.push(course);
+  // }
+
+  selectCourse(course: any) {
+    // Prevent duplicate (course_id + course_nature_id)
+    if (this.selectedCourses.find(c =>
+      c.course_id === course.course_id && c.course_nature_id === course.course_nature_id)) {
+      this.snackBar.open('This course with the same nature is already selected', 'Close', {
+        duration: 2000,
+        verticalPosition: 'top',
+        horizontalPosition: 'center'
+      });
+      return;
+    }
+    this.selectedCourses.push(course);
+  }
+
+  // removeCourse(courseId: number, courseNatureId: number) {
+  //   // Remove only that exact pair
+  //   this.selectedCourses = this.selectedCourses.filter(c => 
+  //     !(c.course_id === courseId && c.course_nature_id === courseNatureId)
+  //   );
+  // }
+
+  // Updated removeCourse method with protection for failed courses (optional)
+  removeCourse(courseId: number, courseNatureId: number) {
+    // Optional: Check if this is a failed course and show confirmation
+    const isFailedCourse = this.failedCoursesList?.find((c: { course_id: number; course_nature_id: number; }) =>
+      c.course_id === courseId && c.course_nature_id === courseNatureId
+    );
+
+    if (isFailedCourse) {
+      // Optional: Show confirmation dialog for removing failed courses
+      const confirmRemoval = confirm('This is a failed course. Are you sure you want to remove it?');
+      if (!confirmRemoval) {
+        return;
+      }
+    }
+
+    // Remove only that exact pair
+    this.selectedCourses = this.selectedCourses.filter(c =>
+      !(c.course_id === courseId && c.course_nature_id === courseNatureId)
+    );
+  }
 
 
 
@@ -316,14 +280,14 @@ removeCourse(courseId: number, courseNatureId: number) {
       return;
     }
     console.warn(this.selectedCourses);
-    
 
-    if (this.stuRegistrationId[0].registration_id) {
-      const payload = {   
-        academic_session_id: this.academicSessions[0].id,
-        year_id: this.year[0].id,
-        semester_id: this.semester[0].id,
-        registration_id: this.stuRegistrationId[0].registration_id,
+
+    if (this.studentData?.registration_id) {
+      const payload = {
+        academic_session_id: this.studentData?.academic_session_id,
+        course_year_id: this.studentData?.course_year_id,
+        semester_id: this.studentData?.semester_id,
+        registration_id: this.studentData?.registration_id,
         courses: this.selectedCourses.map(course => ({
           course_id: course.course_id,
           course_type_id: course.course_type_id,
@@ -343,70 +307,70 @@ removeCourse(courseId: number, courseNatureId: number) {
             this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
           }
         }
-      ); 
+      );
       this.getRegisteredCourses();
     }
 
   }
 
-/* updateRegistrationStatus(){
-   const payload = {
-   registration_id: this.courseListForReg[0].registration_id,
-    }
-    console.log('Payload for updateCourseRegiStatus:', payload);
-    this.HTTP.putData('/course/update/updateCourseRegiStatus/', payload, 'academic').subscribe(
-      (res: any) => {
-        if (!res.body.error) {
-          this.alert.alertMessage("Course Registraion Status Updated.....!", "", "success");
-        } else {
-          this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
-        }
-      },
-      (error) => {
-        // Handle HTTP error
-        console.error('Error in Registraion Status:', error);
-        this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
+  /* updateRegistrationStatus(){
+     const payload = {
+     registration_id: this.courseListForReg[0].registration_id,
       }
-    );
-} */
+      console.log('Payload for updateCourseRegiStatus:', payload);
+      this.HTTP.putData('/course/update/updateCourseRegiStatus/', payload, 'academic').subscribe(
+        (res: any) => {
+          if (!res.body.error) {
+            this.alert.alertMessage("Course Registraion Status Updated.....!", "", "success");
+          } else {
+            this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
+          }
+        },
+        (error) => {
+          // Handle HTTP error
+          console.error('Error in Registraion Status:', error);
+          this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
+        }
+      );
+  } */
 
-onUpdate() {
+  onUpdate() {
     if (this.selectedCourses.length === 0) {
-    this.snackBar.open('Please select at least one course', 'Close', {
-      duration: 3000,
-      verticalPosition: 'top',
-      horizontalPosition: 'center'
-    });
-    return;
-  }
-  const payload = {
-    academic_session_id: this.academicSessions[0].id,
-    year_id: this.year[0].id,
-    semester_id: this.semester[0].id,
-    registration_id: this.stuRegistrationId[0].registration_id,
-    courses: this.selectedCourses.map(course => ({
-      course_id: course.course_id,
-      course_type_id: course.course_type_id,
-      course_nature_id: course.course_nature_id,
-    }))
-  };
+      this.snackBar.open('Please select at least one course', 'Close', {
+        duration: 3000,
+        verticalPosition: 'top',
+        horizontalPosition: 'center'
+      });
+      return;
+    }
+    const payload = {
+      academic_session_id: this.studentData?.academic_session_id,
+      course_year_id: this.studentData?.course_year_id,
+      semester_id: this.studentData?.semester_id,
+      registration_id: this.studentData?.registration_id,
+      courses: this.selectedCourses.map(course => ({
+        course_id: course.course_id,
+        course_type_id: course.course_type_id,
+        course_nature_id: course.course_nature_id,
+      }))
+    };
 
-     console.log('Sending payload to update API:', payload);
-  
-  this.HTTP.putData('/course/update/updateStudentCourseRegistration', payload, 'academic').subscribe(
+    console.log('Sending payload to update API:', payload);
+
+    this.HTTP.putData('/course/update/updateStudentCourseRegistration', payload, 'academic').subscribe(
       (res: any) => {
         console.log('Response from update API:', res);
-        
+
         if (!res.body.error) {
           this.alert.alertMessage("Record Updated...!", "", "success");
         } else {
           this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
         }
       }
-    ); 
-this.getRegisteredCourses();
-}
+    );
+    this.getRegisteredCourses();
+  }
 
 
-  
+
 }

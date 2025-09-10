@@ -276,6 +276,14 @@ tr td{
    
 }
 
+.course-legend ul{
+  display: flex;
+  align-items: flex-end;
+  li{
+    padding-left: 0.5em;
+  }
+}
+
 .legend-item {
     display: inline-flex;
     align-items: center;
@@ -315,8 +323,28 @@ tr td{
         display: block;
         margin-bottom: 5px;
     }
+
+    .course-legend{
+      padding: 0.5em;
+     ul{
+  display: inline;
+  align-items: flex-end;
+  li{
+    padding-left: 0em;
+  }
+    }
+
+}
     
     .ml-3 {
         margin-left: 0 !important;
     }
+}
+
+
+
+// ^ extra css for table
+
+.table-responsive {
+  overflow-x: auto;
 }

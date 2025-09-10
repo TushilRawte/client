@@ -1,234 +1,227 @@
+<section class="container-fluid">
+  <form [formGroup]="courseRegistrationForm">
+    <!-- <div class="header">
+    <h2>Course Registration</h2>
+  </div> -->
 
-<form [formGroup]="courseRegistrationForm" (ngSubmit)="onSubmit()">
-  <div class="header">
-    <!-- <h2>Course Registration</h2> -->
-  </div>
- 
-<mat-card class="basic-details-card">
-  <mat-card-content>
-    <div class="card-header-custom">
-      <mat-card-title>Basic Details</mat-card-title>
-    </div>
-
-    <div class="details-grid">
-      <div class="detail-item">
-        <label class="detail-label">Session:</label>
-        <div class="detail-value">{{ academicSessions[0].value }}</div>      
-      </div>
-      
-      <div class="detail-item">
-        <label class="detail-label">Year:</label>
-         <div class="detail-value">{{ year[0].value }}</div>
-      </div>
-      
-      <div class="detail-item">
-        <label class="detail-label">Semester:</label>
-         <div class="detail-value">{{ semester[0].value }}</div>
-      </div>
-      
-      <div class="detail-item">
-        <label class="detail-label">Academic Standing:</label>
-         <div class="detail-value">{{ academicStanding[0].value }}</div>
-      </div>
-
-      <div class="detail-item">
-        <label class="detail-label">College:</label>
-         <div class="detail-value">{{ collges[0].value }}</div>
-      </div>
-      
-      <div class="detail-item">
-        <label class="detail-label">Degree Programme:</label>
-         <div class="detail-value">{{ academicDegreeProgram[0].value }}</div>
-      </div>
-      
-      <div class="detail-item">
-        <label class="detail-label">Dean Committee:</label>
-         <div class="detail-value">{{ deanCommittee[0].value }}</div>
-      </div>
-    </div>
-  </mat-card-content>
-</mat-card>
-
-<mat-card class="mt-3">
-  <mat-card-content>
- 
-
-    <div class="course-list">
-      <div class="row">
-
-        <!-- Left column: Available Courses -->
-        <div class="col-md-6 section">
-          <h5>Major Courses (optional)</h5>
-
-           <table class="table table-bordered" >
-                    <thead class="table-header">
-                        <tr>
-                            <th>#</th>
-                            <th>Course Title</th>
-                            <th>Type</th>
-                            <th>Nature</th>
-                            <th>Add</th>
-                        </tr>
-                    </thead>
-                    <tbody id="availableCoursesTable">
-                        <tr *ngFor="let course of courseListForReg; let i = index">
-                            <td>{{ i + 1 }}</td>
-                             <td>{{ course.course_name }}</td>
-                              <td>{{ course.course_type_name_e }}</td>
-                               <td>{{ course.course_nature_name_e}}</td>
-                            <td>
-                                <button type="button"  color="primary" class=" btn-add"
-                                        (click)="selectCourse(course)">
-                                    <mat-icon>add</mat-icon> 
-                                </button>
-                                
-                            </td>
-                        </tr>
-                       
-                    </tbody>
-            </table>
-
-            <h5>Other Courses</h5>
-                  
-<ng-select 
-    [items]="otherDeptcourseListForReg"
-    bindLabel="course_name"
-    [multiple]="true"
-    [hideSelected]="true"
-    [closeOnSelect]="false"
-    appearance="outline"
-    (add)="onCourseAdd($event)" 
-    (remove)="onCourseRemove($event)">
-
-    <!-- Custom multi-label: show count instead of chips -->
-    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
-      <span *ngIf="items.length > 0"></span>
-    </ng-template>
-
-</ng-select>
+    <mat-card class="basic-details-card">
+      <mat-card-content>
+        <div class="card-header-custom">
+          <mat-card-title>Basic Details</mat-card-title>
+        </div>
+        <div>
+          <div class="row">
+            <div class="col-md-3 col-6">
+              <div class="detail-item">
+                <label class="detail-label">Dean Committee:</label>
+                <div class="detail-value">{{ studentData?.dean_committee_name_e }}</div>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="detail-item">
+                <label class="detail-label">Session:</label>
+                <div class="detail-value">{{ studentData?.academic_session_name_e}}</div>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="detail-item">
+                <label class="detail-label">Year:</label>
+                <div class="detail-value">{{ studentData?.course_year_name_e }}</div>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="detail-item">
+                <label class="detail-label">Semester:</label>
+                <div class="detail-value">{{ studentData?.semester_name_e }}</div>
+              </div>
+            </div>
 
 
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-3 col-6">
+              <div class="detail-item">
+                <label class="detail-label">Academic Standing:</label>
+                <div class="detail-value">{{studentData?.stu_acad_status_name_e}}</div>
+              </div>
 
-<!-- <div class="table-container">
-  <table class="table table-bordered">
-      <thead class="table-header">
-      <tr>
-        <th>#</th>
-        <th>Course Title</th>
-        <th>Type</th>
-        <th>Nature</th>
-        <th>Add</th>
-      </tr>
-    </thead>
-    <tbody id="availableCoursesTable">
-      <tr *ngFor="let course of otherDeptcourseListForReg; let i = index">
-        <td>{{ i + 1 }}</td>
-        <td>{{ course.course_name }}</td>
-        <td>{{ course.course_type_name_e }}</td>
-        <td>{{ course.course_nature_name_e}}</td>
-        <td>
-          <button type="button" color="primary" class="btn-add" (click)="selectCourse(course)">
-            <mat-icon>add</mat-icon>
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div> -->
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="detail-item">
+                <label class="detail-label">Study Status:</label>
+                <div class="detail-value">{{studentData?.stu_study_status_name_e}}</div>
+              </div>
+
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="detail-item">
+                <label class="detail-label">College:</label>
+                <div class="detail-value">{{ studentData?.college_name_e }}</div>
+              </div>
+
+            </div>
+            <div class="col-md-3 col-6">
+
+              <div class="detail-item">
+                <label class="detail-label">Degree Programme:</label>
+                <div class="detail-value">{{ studentData?.degree_programme_name_e }}</div>
+              </div>
+            </div>
+          </div>
 
         </div>
-        <!-- Right column: Selected Courses -->
-        <div class="col-md-6 section">
-    <h5>Selected Courses</h5>
-    
-    <table class="table table-bordered">
-        <thead class="table-header">
-            <tr>
-                <th>#</th>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="mt-3">
+      <mat-card-content>
+
+        <div class="course-list">
+
+          <div class="col-md-12 section">
+            <h5> <strong>Courses</strong> </h5>
+
+            <div class="table-responsive">
+           <table class="table table-bordered">
+              <thead class="table-header">
+                <tr>
+                  <th>#</th>
                   <th>Course Title</th>
-                <th>Type</th>
-                <th>Nature</th>
-                <th>Remove</th>
-            </tr>
-        </thead>
-        <tbody id="selectedCoursesTable">
-            <tr *ngFor="let course of selectedCourses; let i = index" 
-                [class.highlighted-row]="!isFailedCourse(course)"
-                [class.failed-course-row]="isFailedCourse(course)">
-                
-                <td>{{ i + 1 }}</td>
-                <td>{{ course.course_name }}</td>
-                <td>{{ course.course_type_name_e }}</td>
-                <td>{{ course.course_nature_name_e }}</td>
-                
-                <td>
-                    <button type="button" 
-                            color="danger" 
-                            class="btn-remove"
-                            [class.failed-course-remove]="isFailedCourse(course)"
-                            [disabled]="isFailedCourse(course)"
-                            (click)="removeCourse(course.course_id, course.course_nature_id)"
-                            [title]="isFailedCourse(course) ? 'Failed courses are mandatory and cannot be removed' : 'Remove Course'">
-                        <mat-icon>{{ isFailedCourse(course) ? 'lock' : 'close' }}</mat-icon> 
+                  <th>Teachers</th>
+                  <th>Type</th>
+                  <th>Nature</th>
+                  <th>C/O</th>
+                  <th>Remove</th>
+                </tr>
+              </thead>
+              <tbody id="selectedCoursesTable">
+                <tr *ngFor="let course of selectedCourses; let i = index"
+                  [class.highlighted-row]="!isFailedCourse(course)" [class.failed-course-row]="isFailedCourse(course)">
+
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ course.course_name }}</td>
+                  <td></td>
+                  <td>{{ course.course_type_name_e }}</td>
+                  <td>{{ course.course_nature_name_e }}</td>
+                  <td></td>
+                  <td>
+                    <button type="button" color="danger" class="btn-remove"
+                      [class.failed-course-remove]="isFailedCourse(course)" [disabled]="isFailedCourse(course)"
+                      (click)="removeCourse(course.course_id, course.course_nature_id)"
+                      [title]="isFailedCourse(course) ? 'Failed courses are mandatory and cannot be removed' : 'Remove Course'">
+                      <mat-icon>{{ isFailedCourse(course) ? 'lock' : 'close' }}</mat-icon>
                     </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    
-    <!-- Legend for color coding -->
-    <div class="course-legend mt-3">
-        <small class="text-muted">
-            <span class="legend-item">
-                <span class="legend-color normal-course"></span>
-                Normal Courses
-            </span>
-            <span class="legend-item ml-3" style="padding-left: 5px;">
-                <span class="legend-color failed-course"></span>
-                Failed Courses (Auto-selected)
-            </span>
-        </small>
-    </div>
-</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
 
-        <!-- <div class="col-md-6 section">
-          <h5>Selected Courses</h5>
+            <div class="course-legend mt-3">
+                <ul style="list-style: none; padding: 0; margin: 0;">
             
-             <table class="table table-bordered" >
-                    <thead class="table-header">
-                        <tr>
-                            <th>#</th>
-                            <th>Code</th>
-                            <th>Course Title</th>
-                            <th>Type</th>
-                            <th>Nature</th>
-                            <th>Remove</th>
-                        </tr>
-                    </thead>
-                    <tbody id="availableCoursesTable">
-                        <tr *ngFor="let course of selectedCourses; let i = index" class="highlighted-row" style="background-color: #f0f8ff;">
-                             <td>{{ i + 1 }}</td>
-                            <td>{{ course.course_code }}</td>
-                             <td>{{ course.course_title_e }}</td>
-                              <td>{{ course.course_type_name_e }}</td>
-                                   <td>{{ course.course_nature_name_e}}</td>
-                            <td>
-                                <button type="button" color="danger" class="btn-remove"
-                                (click)="removeCourse(course.course_id, course.course_nature_id)">
-                                <mat-icon>close</mat-icon> 
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-        </div> -->
-      </div>
-    </div>
-    <hr>
- <button  mat-raised-button color="primary" type="submit">Submit</button>  
-  <!-- <button *ngIf="isRegistrationAllowed" mat-raised-button color="primary" type="button">Update</button>  -->
-   <button (click)="onUpdate()" mat-raised-button color="primary" type="button">Update</button>
-</mat-card-content>
-</mat-card>
-</form>
+                  <li class="legend-item d-flex align-items-center">
+                    <span class="legend-color normal-course mr-2"></span>
+                    Normal Courses
+                  </li>
+            
+                  <li class="legend-item d-flex align-items-center mt-2">
+                    <span class="legend-color failed-course mr-2"></span>
+                    Failed Courses (Auto-selected)
+                  </li>
+            
+                </ul>
+            </div>
 
+      
+
+          </div>
+
+          <div class="col-6 mt-5">
+            <h5> <strong>Add More Courses</strong></h5>
+            <!-- <ng-select [items]="otherDeptcourseListForReg" bindLabel="course_name" [multiple]="true"
+            [closeOnSelect]="false" appearance="outline" (add)="onCourseAdd($event)" (remove)="onCourseRemove($event)">
+
+            <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+              <span *ngIf="items.length > 0"></span>
+            </ng-template>
+
+          </ng-select> -->
+          </div>
+
+          <div class="row">
+
+            <div class="col-md-6 col-8">
+              <ng-select 
+              [items]="otherDeptcourseListForReg" 
+              bindLabel="course_name" 
+              appearance="outline"
+              (change)="onCourseSelect($event)">
+              </ng-select>
+            </div>
+
+            <div class="col-md-2 col-2" *ngIf="onSelectDropCourse">
+              <button (click)="onCourseAdd()" mat-raised-button color="primary" type="button">Add</button>
+            </div>
+          </div>
+
+
+
+          <hr />
+          <!--   <div class="row">
+
+          <div class="col-md-12 section">
+            <div>
+              <h5>Major Courses (optional)</h5>
+
+              <table class="table table-bordered">
+                <thead class="table-header">
+                  <tr>
+                    <th>#</th>
+                    <th>Course Title</th>
+                    <th>Teachers</th>
+                    <th>Type</th>
+                    <th>Nature</th>
+                    <th>C/O</th>
+                    <th>Add</th>
+                  </tr>
+                </thead>
+                <tbody id="availableCoursesTable">
+                  <tr *ngFor="let course of courseListForReg; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ course.course_name }}</td>
+                    <td></td>
+                    <td>{{ course.course_type_name_e }}</td>
+                    <td>{{ course.course_nature_name_e}}</td>
+                    <td></td>
+                    <td>
+                      <button type="button" color="primary" class=" btn-add" (click)="selectCourse(course)">
+                        <mat-icon>add</mat-icon>
+                      </button>
+
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+
+      </div> -->
+
+        </div>
+        <div class="col-sm-3">
+          @if (studentData.registration_status_id == 2) {
+          <button type="button" (click)="onSubmit()" class="btn btn-primary">Submit courses</button>
+          } @else {
+          <button type="button" (click)="onUpdate()" class="btn btn-primary">Update courses</button>
+          }
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
+
+  </form>
+</section>
