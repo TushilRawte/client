@@ -78,68 +78,75 @@
 
         <div class="course-list">
 
-          <div class="col-md-12 section">
+          <div class="col-md-12 section" *ngIf="selectedCourses.length > 0">
             <h5> <strong>Courses</strong> </h5>
 
             <div class="table-responsive">
-           <table class="table table-bordered">
-              <thead class="table-header">
-                <tr>
-                  <th>#</th>
-                  <th>Course Title</th>
-                  <th>Teachers</th>
-                  <th>Type</th>
-                  <th>Nature</th>
-                  <th>C/O</th>
-                  <th>Remove</th>
-                </tr>
-              </thead>
-              <tbody id="selectedCoursesTable">
-                <tr *ngFor="let course of selectedCourses; let i = index"
-                  [class.highlighted-row]="!isFailedCourse(course)" [class.failed-course-row]="isFailedCourse(course)">
+              <table class="table table-bordered">
+                <thead class="table-header">
+                  <tr>
+                    <th>#</th>
+                    <th>Course Title</th>
+                    <th>Teachers</th>
+                    <th>Type</th>
+                    <th>Nature</th>
+                    <th>C/O</th>
+                    <th>Remove</th>
+                  </tr>
+                </thead>
+                <tbody id="selectedCoursesTable">
+                  <tr *ngFor="let course of selectedCourses; let i = index"
+                    [class.highlighted-row]="!isFailedCourse(course)"
+                    [class.failed-course-row]="isFailedCourse(course)">
 
-                  <td>{{ i + 1 }}</td>
-                  <td>{{ course.course_name }}</td>
-                  <td></td>
-                  <td>{{ course.course_type_name_e }}</td>
-                  <td>{{ course.course_nature_name_e }}</td>
-                  <td></td>
-                  <td>
-                    <button type="button" color="danger" class="btn-remove"
-                      [class.failed-course-remove]="isFailedCourse(course)" [disabled]="isFailedCourse(course)"
-                      (click)="removeCourse(course.course_id, course.course_nature_id)"
-                      [title]="isFailedCourse(course) ? 'Failed courses are mandatory and cannot be removed' : 'Remove Course'">
-                      <mat-icon>{{ isFailedCourse(course) ? 'lock' : 'close' }}</mat-icon>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ course.course_name }}</td>
+                    <td></td>
+                    <td>{{ course?.course_type_name_e }}</td>
+                    <td>{{ course?.course_nature_name_e }}</td>
+                    <td> {{ course?.cou_allot_type_name_e === 'Complusory' ? 'C' : (course?.cou_allot_type_name_e === 'Optional' ? 'O' : '') }}</td>
+                    <!-- <td>
+                      <select [(ngModel)]="course.cou_allot_type_name_e" class="custom-select">
+                        <option [value]="'Complusory'" [selected]="course.cou_allot_type_name_e === 'Complusory'">C</option>
+                        <option [value]="'Optional'" [selected]="course.cou_allot_type_name_e === 'Optional'">O</option>
+                      </select>
+                    </td> -->
+                    <td>
+                      <button type="button" color="danger" class="btn-remove"
+                        [class.failed-course-remove]="isFailedCourse(course)" [disabled]="isFailedCourse(course)"
+                        (click)="removeCourse(course.course_id, course.course_nature_id)"
+                        [title]="isFailedCourse(course) ? 'Failed courses are mandatory and cannot be removed' : 'Remove Course'">
+                        <mat-icon>{{ isFailedCourse(course) ? 'lock' : 'close' }}</mat-icon>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
             <div class="course-legend mt-3">
-                <ul style="list-style: none; padding: 0; margin: 0;">
-            
-                  <li class="legend-item d-flex align-items-center">
-                    <span class="legend-color normal-course mr-2"></span>
-                    Normal Courses
-                  </li>
-            
-                  <li class="legend-item d-flex align-items-center mt-2">
-                    <span class="legend-color failed-course mr-2"></span>
-                    Failed Courses (Auto-selected)
-                  </li>
-            
-                </ul>
+              <ul style="list-style: none; padding: 0; margin: 0;">
+
+                <li class="legend-item d-flex align-items-center">
+                  <span class="legend-color normal-course mr-2"></span>
+                  Normal Courses
+                </li>
+
+                <li class="legend-item d-flex align-items-center mt-2">
+                  <span class="legend-color failed-course mr-2"></span>
+                  Failed Courses (Auto-selected)
+                </li>
+
+              </ul>
             </div>
 
-      
+
 
           </div>
 
           <div class="col-6 mt-5">
             <h5> <strong>Add More Courses</strong></h5>
-            <!-- <ng-select [items]="otherDeptcourseListForReg" bindLabel="course_name" [multiple]="true"
+            <!-- <ng-select [items]="otherCourseFromAllotment" bindLabel="course_name" [multiple]="true"
             [closeOnSelect]="false" appearance="outline" (add)="onCourseAdd($event)" (remove)="onCourseRemove($event)">
 
             <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
@@ -152,16 +159,13 @@
           <div class="row">
 
             <div class="col-md-6 col-8">
-              <ng-select 
-              [items]="otherDeptcourseListForReg" 
-              bindLabel="course_name" 
-              appearance="outline"
-              (change)="onCourseSelect($event)">
+              <ng-select #courseSelect [items]="otherCourseFromAllotment" bindLabel="course_name" appearance="outline"
+                (change)="onCourseSelect($event)">
               </ng-select>
             </div>
 
             <div class="col-md-2 col-2" *ngIf="onSelectDropCourse">
-              <button (click)="onCourseAdd()" mat-raised-button color="primary" type="button">Add</button>
+              <button (click)="onCourseAdd(courseSelect)" mat-raised-button color="primary" type="button">Add</button>
             </div>
           </div>
 
@@ -212,7 +216,7 @@
 
         </div>
         <div class="col-sm-3">
-          @if (studentData.registration_status_id == 2) {
+          @if (studentData?.registration_status_id == 2) {
           <button type="button" (click)="onSubmit()" class="btn btn-primary">Submit courses</button>
           } @else {
           <button type="button" (click)="onUpdate()" class="btn btn-primary">Update courses</button>
