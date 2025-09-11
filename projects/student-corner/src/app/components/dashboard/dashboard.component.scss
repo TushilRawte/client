@@ -1,8 +1,7 @@
-// .section{
-//     // background-color: aliceblue;
-//      border: 1px solid #ccc;
-//     border-color: #ece9e9;
-// }
+
+// ^ old code s
+
+/* 
 
 .profile {
     background-color: #ffffff;
@@ -41,7 +40,6 @@
             color: #5427f5;
         }
 
-// cards
  .metric-card {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
@@ -111,4 +109,105 @@
 
         .table td {
             vertical-align: middle;
-        }
+        } */
+// ^ old code e
+
+
+
+// ^ new code start
+
+/* Card Hover Effects */
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+
+
+/* Table Responsive Fixes */
+@media (max-width: 768px) {
+  .table-responsive table {
+    font-size: 0.875rem;
+  }
+  
+  .table-responsive th,
+  .table-responsive td {
+    padding: 0.5rem 0.25rem;
+  }
+}
+
+
+/* Main content adjustment for desktop sidebar */
+.main-content {
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+
+}
+
+/* Custom Scrollbar */
+.table-responsive::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+
+/* Badge Styling */
+.badge {
+  font-size: 0.75em;
+  padding: 0.35em 0.65em;
+}
+
+/* Announcement Alert Dot */
+.announcement-item .text-danger {
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+
+
+// & common csss
+/* Responsive Typography */
+@media (max-width: 576px) {
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  .h4 {
+    font-size: 1.25rem;
+  }
+  
+  .card-body {
+    padding: 1rem 0.75rem;
+  }
+}
+
+
+/* Button Hover Effects */
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}

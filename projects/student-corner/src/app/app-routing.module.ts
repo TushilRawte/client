@@ -14,7 +14,7 @@ import { NewLayoutComponent } from './components/new-layout/new-layout.component
 const routes: Routes = [
 {
         path: '',
-        component: LayoutComponent,
+        component: NewLayoutComponent,
         children:[
             {path: '', component:DashboardComponent} ,
             {path: 'fee-receipt', component: FeeReceiptComponent},
@@ -28,9 +28,11 @@ const routes: Routes = [
       },
 
       {
-        path:'new',
-        component:NewLayoutComponent
+        path:'old',
+        component:LayoutComponent
       }
+
+      
 ];
 
 @NgModule({

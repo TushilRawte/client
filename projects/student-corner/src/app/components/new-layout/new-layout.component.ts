@@ -1,36 +1,37 @@
-import { Component } from '@angular/core';
+import { Component,Input } from '@angular/core';
 
 // ^ new code start
 
-export interface StatCard {
-  title: string;
-  value: string;
+
+export interface Student {
+  name: string;
+  program: string;
+  enrollmentNumber: string;
+  semester: string;
+  cgpa: number;
+  email: string;
+  phone: string;
+  department: string;
+  profileImage?: string;
+}
+
+export interface MenuItem {
   icon: string;
-  gradient: string;
+  label: string;
+  isActive: boolean;
+  hasSubmenu?: boolean;
+  isExpanded?: boolean;
+  submenus?: SubMenuItem[];
+  route?: string;
 }
 
-export interface ExamData {
-  subject: string;
-  date: string;
-  time: string;
-  rank: number;
-  studentName: string;
-  score: string;
-  isCurrentUser?: boolean;
+export interface SubMenuItem {
+  label: string;
+  route: string;
+  isActive?: boolean;
 }
 
-export interface LeaderboardData {
-  rank: number;
-  studentName: string;
-  score: string;
-  isCurrentUser?: boolean;
-}
 
-export interface Announcement {
-  date: string;
-  title: string;
-  hasAlert?: boolean;
-}
 
 
 // ^ new code end
@@ -44,186 +45,235 @@ export interface Announcement {
 })
 export class NewLayoutComponent {
 
+   studentData: any;
+     isSidebarOpen: boolean = false;
+    toggleSidebar(): void {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+  
+   searchQuery: string = '';
+
+  @Input() student: Student = {
+    name: 'John Doe',
+    program: 'Computer Science',
+    enrollmentNumber: 'CS2023001',
+    semester: '6th Semester',
+    cgpa: 8.5,
+    email: 'john.doe@university.edu',
+    phone: '+1 234 567 8900',
+    department: 'Computer Science & Engineering'
+  };
 
   
-
-  // ^ new code start
    currentUser = {
     name: 'Krishna',
     class: 'Class XII A',
     avatar: 'https://via.placeholder.com/32x32/007bff/ffffff?text=KR'
   };
 
-   searchQuery: string = '';
-   isSidebarOpen: boolean = false;
-    toggleSidebar(): void {
-    this.isSidebarOpen = !this.isSidebarOpen;
-  }
+  // ^ new code start
 
-  closeSidebar(): void {
-    this.isSidebarOpen = false;
-  }
-
-  currentMonth = 'April 2023';
-  currentDay = 9;
-
-  statCards: StatCard[] = [
-    {
-      title: 'Total Projects',
-      value: '20/50',
-      icon: '📊',
-      gradient: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)'
+  menuItems : MenuItem[] = [
+   { 
+      icon: 'fas fa-th-large', 
+      label: 'Dashboard', 
+      isActive: true,
+      route: '/dashboard'
     },
-    {
-      title: 'Attendance',
-      value: '70%',
-      icon: '📚',
-      gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'
+    { 
+      icon: 'fas fa-chalkboard-teacher', 
+      label: 'My Corner', 
+      isActive: false,
+      hasSubmenu: true,
+      isExpanded: false,
+      submenus: [
+        { label: 'Profile', route: '/classroom/live', isActive: false },
+      ]
     },
-    {
-      title: 'Marks secured',
-      value: '600/800',
-      icon: '📝',
-      gradient: 'linear-gradient(135deg, #d299c2 0%, #fef9d7 100%)'
+    { 
+      icon: 'fas fa-book', 
+      label: 'E-Krishi Pathshala', 
+      isActive: false,
+      hasSubmenu: false,
+      isExpanded: false,
+      submenus: [
+        { label: 'Exam Result', route: '/syllabus/view', isActive: false },
+      ]
     },
-    {
-      title: 'Leadership',
-      value: '3rd',
-      icon: '🏆',
-      gradient: 'linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)'
+    { 
+      icon: 'fas fa-chart-bar', 
+      label: 'Registration', 
+      isActive: false,
+      hasSubmenu: true,
+      isExpanded: false,
+      submenus: [
+        { label: 'Registration Cards', route: '/results/exams', isActive: false },
+      ]
+    },
+       { 
+      icon: 'fas fa-chart-bar', 
+      label: 'Fees', 
+      isActive: false,
+      hasSubmenu: true,
+      isExpanded: false,
+      submenus: [
+        { label: 'Fee Receipts', route: '/results/exams', isActive: false },
+        { label: 'Previous Fees', route: '/results/assignments', isActive: false },
+        { label: 'Payment Status', route: '/results/analytics', isActive: false },
+      ]
+    },
+    { 
+      icon: 'fas fa-graduation-cap', 
+      label: 'Exams', 
+      isActive: false,
+      hasSubmenu: true,
+      isExpanded: false,
+      submenus: [
+        { label: 'Admit Card', route: '/exams/upcoming', isActive: false },
+        { label: 'Previous Question Papers', route: '/exams/past', isActive: false },
+      ]
+    },
+    { 
+      icon: 'fas fa-graduation-cap', 
+      label: 'Result', 
+      isActive: false,
+      hasSubmenu: true,
+      isExpanded: false,
+      submenus: [
+        { label: 'Result', route: '/exams/upcoming', isActive: false },
+      ]
+    },
+    { 
+      icon: 'fas fa-calendar-alt', 
+      label: 'Timetable', 
+      isActive: false,
+      route: '/timetable'
+    },
+    { 
+      icon: 'fas fa-graduation-cap', 
+      label: 'Certificates', 
+      isActive: false,
+      hasSubmenu: true,
+      isExpanded: false,
+      submenus: [
+        { label: 'Apply Transfer Certificate', route: '/exams/upcoming', isActive: false },
+        { label: 'Apply Migration Certificate', route: '/exams/upcoming', isActive: false },
+        { label: 'Get SRC', route: '/exams/upcoming', isActive: false },
+      ]
+    },
+    { 
+      icon: 'fas fa-cog', 
+      label: 'Settings', 
+      isActive: false,
+      hasSubmenu: true,
+      isExpanded: false,
+      submenus: [
+        { label: 'Profile Settings', route: '/settings/profile', isActive: false },
+        { label: 'Notifications', route: '/settings/notifications', isActive: false },
+        { label: 'Privacy', route: '/settings/privacy', isActive: false },
+        { label: 'Account', route: '/settings/account', isActive: false }
+      ]
+    },
+    { 
+      icon: 'fas fa-sign-out-alt', 
+      label: 'Logout', 
+      isActive: false,
+      route: '/logout'
     }
   ];
 
-  upcomingExams: ExamData[] = [
-    {
-      subject: 'English I',
-      date: '18th May, 2023',
-      time: '08:00 - 09:00 am',
-      rank: 1,
-      studentName: 'Emily Rose',
-      score: '500/600'
-    },
-    {
-      subject: 'Physics',
-      date: '18th May, 2023',
-      time: '09:00 - 10:00 am',
-      rank: 2,
-      studentName: 'Daisy Cloe',
-      score: '580/600'
-    },
-    {
-      subject: 'Chemistry',
-      date: '18th May, 2023',
-      time: '08:00 - 02:00 pm',
-      rank: 3,
-      studentName: 'You',
-      score: '575/600',
-      isCurrentUser: true
-    },
-    {
-      subject: 'Math',
-      date: '18th May, 2023',
-      time: '04:00 - 06:00 pm',
-      rank: 4,
-      studentName: 'Mick Jhonathon',
-      score: '490/600'
-    },
-    {
-      subject: 'Hindi',
-      date: '18th May, 2023',
-      time: '12:00 - 01:00 pm',
-      rank: 5,
-      studentName: 'Jack Memba',
-      score: '460/600'
-    }
-  ];
-
-leaderboardData: LeaderboardData[] = [
-    { rank: 1, studentName: 'Emily Rose', score: '500/600' },
-    { rank: 2, studentName: 'Daisy Cloe', score: '01/09/2023' },
-    { rank: 3, studentName: 'You', score: '575/600', isCurrentUser: true },
-    { rank: 4, studentName: 'Mick Jhonathon', score: '490/600' },
-    { rank: 5, studentName: 'Jack Memba', score: '460/600' }
-  ];
-
-  announcements: Announcement[] = [
-    {
-      date: '01/05/2023',
-      title: 'Semester exams will start from 18th May...',
-      hasAlert: false
-    },
-    {
-      date: '01/05/2023',
-      title: 'Semester exams will start from 18th May...',
-      hasAlert: true
-    }
-  ];
-
-  menuItems = [
-    { icon: 'fas fa-th-large', label: 'Dashboard', isActive: true },
-    { icon: 'fas fa-chalkboard-teacher', label: 'My Corner', isActive: false },
-    { icon: 'fas fa-book', label: 'E-Krishi Pathshala', isActive: false },
-    { icon: 'fas fa-chart-bar', label: 'Reports', isActive: false },
-    { icon: 'fas fa-users', label: 'Team Lists', isActive: false },
-    { icon: 'fas fa-layer-group', label: 'Modules', isActive: false },
-    { icon: 'fas fa-graduation-cap', label: 'Exams', isActive: false },
-    { icon: 'fas fa-calendar-alt', label: 'Timetable', isActive: false },
-    { icon: 'fas fa-file-alt', label: 'Request leave', isActive: false },
-    { icon: 'fas fa-user-check', label: 'Attendance', isActive: false },
-    { icon: 'fas fa-cog', label: 'Settings', isActive: false },
-    { icon: 'fas fa-sign-out-alt', label: 'Logout', isActive: false }
-  ];
-
-  // Calendar data
-  calendarDays = [
-    ['27', '28', '29', '30', '1', '2', '3'],
-    ['4', '5', '6', '7', '8', '9', '10'],
-    ['11', '12', '13', '14', '15', '16', '17'],
-    ['18', '19', '20', '21', '22', '23', '24'],
-    ['25', '26', '27', '28', '29', '30', '1']
-  ];
-
-  ongoingClass = {
-    title: "PH's Law of designing Theory",
-    subject: 'Physics',
-    duration: '3:00:00',
-    status: 'On Share',
-    teacherImage: 'https://via.placeholder.com/80x60/007bff/ffffff?text=Teacher'
-  };
+  
 
   constructor() { }
 
   ngOnInit(): void { }
 
+
+    closeSidebar(): void {
+    this.isSidebarOpen = false;
+  }
   // Methods
-  onMenuClick(item: any): void {
-    this.menuItems.forEach(menu => menu.isActive = false);
-    item.isActive = true;
+  // onMenuClick(item: any): void {
+  //   this.menuItems.forEach(menu => menu.isActive = false);
+  //   item.isActive = true;
+  // }
+
+
+  // ^ new code s
+  onMenuClick(item: MenuItem): void {
+    if (item.hasSubmenu) {
+      // Toggle submenu expansion
+      item.isExpanded = !item.isExpanded;
+      
+      // Close other expanded menus (optional - for accordion behavior)
+      this.menuItems.forEach(menu => {
+        if (menu !== item && menu.hasSubmenu) {
+          menu.isExpanded = false;
+        }
+      });
+    } else {
+      // Handle regular menu items
+      this.menuItems.forEach(menu => {
+        menu.isActive = false;
+        if (menu.submenus) {
+          menu.submenus.forEach(sub => sub.isActive = false);
+        }
+      });
+      item.isActive = true;
+      
+      // Navigate to route (implement your routing logic here)
+      console.log('Navigating to:', item.route);
+    }
   }
 
-  joinClass(): void {
-    console.log('Joining class...');
+  // New method for submenu click
+  onSubmenuClick(parentItem: MenuItem, submenuItem: SubMenuItem): void {
+    // Reset all active states
+    this.menuItems.forEach(menu => {
+      menu.isActive = false;
+      if (menu.submenus) {
+        menu.submenus.forEach(sub => sub.isActive = false);
+      }
+    });
+
+    // Set parent as active and submenu as active
+    parentItem.isActive = true;
+    submenuItem.isActive = true;
+
+
+    // Navigate to submenu route
+    console.log('Navigating to submenu:', submenuItem.route);
+    
+    // Close sidebar on mobile after selection
+    this.closeSidebar();
   }
 
-  leaveClass(): void {
-    console.log('Leaving class...');
+
+    getStudentDetails() {
+    // ^ this data will get from login session
+    const academic_session_id = 23;
+    const course_year_id = 3;
+    const semester_id = 1;
+    const college_id = 5;
+    const degree_programme_id = 1;
+    const ue_id = 20220725;
+
+    const params = {
+      academic_session_id: academic_session_id,
+      course_year_id: course_year_id,
+      semester_id: semester_id,
+      college_id: college_id,
+      degree_programme_id: degree_programme_id,
+      ue_id: ue_id
+    }
+    // this.HTTP.getParam('/course/get/getStudentList/', params, 'academic').subscribe((result: any) => {
+    //   console.warn(result.body.data[0])
+    //   this.studentData = result.body.data[0];
+    // })
   }
 
-  getRankBadgeClass(rank: number): string {
-    return rank <= 3 ? 'bg-warning' : 'bg-secondary';
-  }
 
-  isToday(day: string): boolean {
-    return parseInt(day) === this.currentDay && !isNaN(parseInt(day));
-  }
 
-  previousMonth(): void {
-    console.log('Previous month');
-  }
-
-  nextMonth(): void {
-    console.log('Next month');
-  }
 }
 
 

@@ -38,10 +38,6 @@ export class CourseRegistrationComponent {
     });
   }
 
-
-
-
-
   getStudentDetails() {
     // ^ this data will get from login session
     const academic_session_id = 23;

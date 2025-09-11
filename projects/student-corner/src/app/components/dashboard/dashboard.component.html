@@ -1,4 +1,5 @@
-<div class="container">
+<!-- ^ old code s -->
+ <!-- <div class="container">
     <div class="row">
         <div class="col-md-3 section profile mt-3">
             <div class="btns ">
@@ -99,7 +100,6 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <!-- <div class="faculty-avatar me-2">JS</div> -->
                                                     <span>Dr. John Smith</span>
                                                 </div>
                                             </td>
@@ -114,7 +114,6 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <!-- <div class="faculty-avatar me-2">MJ</div> -->
                                                     <span>Prof. Maria Johnson</span>
                                                 </div>
                                             </td>
@@ -129,7 +128,6 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <!-- <div class="faculty-avatar me-2">RB</div> -->
                                                     <span>Dr. Robert Brown</span>
                                                 </div>
                                             </td>
@@ -144,7 +142,6 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <!-- <div class="faculty-avatar me-2">AL</div> -->
                                                     <span>Prof. Alice Lee</span>
                                                 </div>
                                             </td>
@@ -159,7 +156,6 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <!-- <div class="faculty-avatar me-2">DW</div> -->
                                                     <span>Dr. David Wilson</span>
                                                 </div>
                                             </td>
@@ -174,4 +170,246 @@
            </div>
         </div>
     </div>
-</div>
+</div> -->
+<!-- ^ old code e -->
+
+
+<!-- &new code start -->
+   <!-- Main Content -->
+    <main class="flex-grow-1 bg-light  main-content">
+      <div class="p-4">
+        <!-- Welcome Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 class="mb-1">👋 Hello {{ currentUser.name.split(' ')[0] }}!</h2>
+          </div>
+          <div class="text-muted small d-none d-md-block">
+            Home/Dashboard
+          </div>
+        </div>
+
+        <!-- Rest of your content remains the same -->
+        <div class="row g-4">
+          <!-- Stats Cards -->
+          <div class="col-12">
+            <div class="row g-3">
+              <div class="col-lg-3 col-md-6" *ngFor="let card of statCards">
+                <div class="card border-0 shadow-sm h-100" 
+                     [style.background]="card.gradient">
+                  <div class="card-body d-flex align-items-center">
+                    <div class="flex-grow-1">
+                      <div class="mb-1">{{ card.title }}</div>
+                      <div class="h4 mb-0 fw-bold">{{ card.value }}</div>
+                    </div>
+                    <div class="fs-1">{{ card.icon }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ongoing Class & Exams -->
+          <div class="col-lg-8">
+            <div class="row g-4">
+              <!-- Ongoing Class -->
+              <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                  <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">📚 Ongoing Class</h5>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="ongoingCheck">
+                      <label class="form-check-label" for="ongoingCheck"></label>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="d-flex flex-column flex-md-row align-items-md-center">
+                      <img [src]="ongoingClass.teacherImage" 
+                           class="rounded me-3 mb-3 mb-md-0" 
+                           width="80" 
+                           height="60"
+                           alt="Teacher">
+                      <div class="flex-grow-1">
+                        <h6 class="mb-1">{{ ongoingClass.title }}</h6>
+                        <div class="d-flex align-items-center text-muted small mb-2">
+                          <i class="fas fa-book me-1"></i>
+                          <span class="me-3">{{ ongoingClass.subject }}</span>
+                          <i class="fas fa-share me-1"></i>
+                          <span class="me-3">{{ ongoingClass.status }}</span>
+                          <i class="fas fa-clock me-1"></i>
+                          <span>{{ ongoingClass.duration }}</span>
+                        </div>
+                      </div>
+                      <div class="d-flex gap-2">
+                        <button class="btn btn-danger btn-sm" (click)="joinClass()">
+                          Join Class
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" (click)="leaveClass()">
+                          Leave class
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- student -->
+
+              <!-- Upcoming Exams -->
+              <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                  <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">📅 Upcoming Exams</h5>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="examCheck">
+                      <label class="form-check-label" for="examCheck"></label>
+                    </div>
+                  </div>
+                  <div class="card-body p-0">
+                    <div class="table-responsive">
+                      <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                          <tr>
+                            <th>Subject</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Rank</th>
+                            <th>Student name</th>
+                            <th>Score</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let exam of upcomingExams" 
+                              [class.table-warning]="exam.isCurrentUser">
+                            <td>{{ exam.subject }}</td>
+                            <td>{{ exam.date }}</td>
+                            <td>{{ exam.time }}</td>
+                            <td>
+                              <span class="badge" 
+                                    [class]="getRankBadgeClass(exam.rank)">
+                                {{ exam.rank.toString().padStart(2, '0') }}
+                              </span>
+                            </td>
+                            <td>{{ exam.studentName }}</td>
+                            <td [class.text-danger]="exam.isCurrentUser" 
+                                [class.fw-bold]="exam.isCurrentUser">
+                              {{ exam.score }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Sidebar -->
+          <div class="col-lg-4">
+            <!-- Calendar -->
+            <div class="card border-0 shadow-sm mb-4">
+              <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">{{ currentMonth }}</h6>
+                <div>
+                  <button class="btn btn-sm btn-link text-muted" (click)="previousMonth()">
+                    <i class="fas fa-chevron-left"></i>
+                  </button>
+                  <button class="btn btn-sm btn-link text-muted" (click)="nextMonth()">
+                    <i class="fas fa-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="calendar-grid">
+                  <div class="row text-center small text-muted mb-2">
+                    <div class="col">S</div>
+                    <div class="col">M</div>
+                    <div class="col">T</div>
+                    <div class="col">W</div>
+                    <div class="col">T</div>
+                    <div class="col">F</div>
+                    <div class="col">S</div>
+                  </div>
+                  <div class="row text-center" *ngFor="let week of calendarDays">
+                    <div class="col p-1" *ngFor="let day of week">
+                      <span *ngIf="!isToday(day)" 
+                            >
+                        {{ day }}
+                      </span>
+                      <span *ngIf="isToday(day)"
+                            class="bg-danger text-white rounded-circle d-inline-block" 
+                            style="width: 24px; height: 24px; line-height: 24px;">
+                        {{ day }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Leadership Board -->
+            <div class="card border-0 shadow-sm mb-4">
+              <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">🏆 Leadership Board</h6>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="leaderCheck">
+                  <label class="form-check-label" for="leaderCheck"></label>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-sm">
+                    <thead>
+                      <tr>
+                        <th>Rank</th>
+                        <th>Student name</th>
+                        <th>Score</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let leader of leaderboardData" 
+                          [class.table-warning]="leader.isCurrentUser">
+                        <td>
+                          <span class="badge" 
+                                [class]="getRankBadgeClass(leader.rank)">
+                            {{ leader.rank.toString().padStart(2, '0') }}
+                          </span>
+                        </td>
+                        <td>{{ leader.studentName }}</td>
+                        <td [class.text-danger]="leader.isCurrentUser">
+                          {{ leader.score }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Announcements -->
+            <div class="card border-0 shadow-sm">
+              <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">📢 Announcement</h6>
+                <a href="#" class="small text-danger">View all</a>
+              </div>
+              <div class="card-body">
+                <div *ngFor="let announcement of announcements; let last = last" 
+                     class="announcement-item"
+                     [class.mb-3]="!last"
+                     [class.pb-3]="!last" 
+                     [class.border-bottom]="!last">
+                  <div class="small text-muted">{{ announcement.date }}</div>
+                  <div class="small fw-semibold">{{ announcement.title }}</div>
+                  <a href="#" class="small text-danger">View</a>
+                  <div *ngIf="announcement.hasAlert" class="text-danger small mt-1">●</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+<!-- &new code end -->
+
