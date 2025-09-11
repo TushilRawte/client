@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
-import { HttpService, AlertService, PrintService } from 'shared';
-
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { HttpService, AlertService } from 'shared';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
 
 @Component({
@@ -13,14 +13,13 @@ import { HttpService, AlertService, PrintService } from 'shared';
 })
 export class CourseRegistrationComponent {
 
-  selectedCourses: any[] = [];
-  onSelectDropCourse: any;
+  selectedCourses: any[] = []; // & for storing selected courses
+  onSelectDropCourse: any;  // & for storing dropdown selected course 
   courseRegistrationForm!: FormGroup;
-  courseListForReg: any;
-  otherDeptcourseListForReg: any;
-  registeredCourseList: any;
-  isRegistrationAllowed: boolean = true;
-  failedCoursesList: any;
+  courseFromAllotment: any[]=[];
+  otherCourseFromAllotment: any[]=[];
+  registeredCourseList: any[]=[];
+  failedCoursesList: any[]=[];
   studentData: any;
 
 
@@ -34,13 +33,8 @@ export class CourseRegistrationComponent {
 
   mainforfun() {
     this.courseRegistrationForm = this.fb.group({
-
     });
   }
-
-
-
-
 
   getStudentDetails() {
     // ^ this data will get from login session
@@ -60,11 +54,10 @@ export class CourseRegistrationComponent {
       ue_id: ue_id
     }
     this.HTTP.getParam('/course/get/getStudentList/', params, 'academic').subscribe((result: any) => {
-      console.warn(result.body.data[0])
-      this.studentData = result.body.data[0];
-      this.getCourseForRegistration();
-      this.getOtherDeptCourseForRegistration();
+       this.studentData = !result.body.error ? result.body.data[0] : [];
+      this.getCourseFromAllotment();
       this.getRegisteredCourses();
+      this.getOtherCourseFromAllotment();
       this.getFailedCourse();
     })
   }
@@ -79,14 +72,14 @@ export class CourseRegistrationComponent {
       ue_id: this.studentData?.ue_id
     }
     this.HTTP.getParam('/course/get/getRegisteredCourseList/', params, 'academic').subscribe((result: any) => {
-      this.registeredCourseList = result.body.data;
+      this.registeredCourseList = !result.body.error ? result.body.data : [];
       this.selectedCourses = [...this.registeredCourseList];
       this.getFailedCourse();
     })
   }
 
 
-  getOtherDeptCourseForRegistration() {
+  getOtherCourseFromAllotment() {
     const params = {
       academic_session_id: this.studentData?.academic_session_id,
       course_year_id: this.studentData?.course_year_id,
@@ -94,8 +87,7 @@ export class CourseRegistrationComponent {
       semester_id: this.studentData?.semester_id,
     }
     this.HTTP.getParam('/course/get/getCourseFromAllotment/', params, 'academic').subscribe((result: any) => {
-      console.log('other dept course list', result);
-      this.otherDeptcourseListForReg = result.body.data;
+      this.otherCourseFromAllotment = !result.body.error ? result.body.data : [];
     })
   }
 
@@ -110,13 +102,24 @@ export class CourseRegistrationComponent {
     this.onSelectDropCourse = course
   }
 
-  onCourseAdd() {
-    if (this.onSelectDropCourse) {
-      console.log(this.onSelectDropCourse);
-      this.selectedCourses.push(this.onSelectDropCourse);
-      this.onSelectDropCourse = null;
-        this.selectedCourseId = null;
+  onCourseAdd(courseSelect: NgSelectComponent) {
+
+    const alreadyExists = this.selectedCourses.some(sc => sc.course_id === this.onSelectDropCourse?.course_id );
+    if (!alreadyExists) {
+       this.selectedCourses.push(this.onSelectDropCourse);
+      courseSelect.clearModel()
+    }else{
+       this.snackBar.open(
+        `${this.onSelectDropCourse?.course_name} course already selected`,
+        'Close',
+        {
+          duration: 3000,
+          verticalPosition: 'top',
+          horizontalPosition: 'center'
+        }
+      );
     }
+   
   }
 
   onCourseRemove(courseId: any) {
@@ -125,15 +128,8 @@ export class CourseRegistrationComponent {
   }
 
 
-
-  onSelectOtherCourses(event: any) {
-    console.log('Selected:', event);
-
-  }
-
-
   // course list for registration 
-  getCourseForRegistration() {
+  getCourseFromAllotment() {
     const params = {
       academic_session_id: this.studentData?.academic_session_id,
       course_year_id: this.studentData?.course_year_id,
@@ -142,15 +138,7 @@ export class CourseRegistrationComponent {
       degree_programme_id: this.studentData?.degree_programme_id,
     }
     this.HTTP.getParam('/course/get/getCourseFromAllotment/', params, 'academic').subscribe((result: any) => {
-      console.log('course list', result);
-      this.courseListForReg = result.body.data;
-      if (this.courseListForReg && this.courseListForReg.length > 0) {
-        // condition check
-        this.isRegistrationAllowed =
-          this.courseListForReg[0].registration_status_id !== 2;
-      } else {
-        this.isRegistrationAllowed = true;
-      }
+      this.courseFromAllotment = !result.body.error ? result.body.data : []
     })
   }
 
@@ -162,13 +150,16 @@ export class CourseRegistrationComponent {
       ue_id: this.studentData?.ue_id
     }
     this.HTTP.getParam('/course/get/getFailedCoursesForReg/', params, 'academic').subscribe((result: any) => {
-      this.failedCoursesList = result.body.data;
+      this.failedCoursesList = !result.body.error ? result.body.data : [];
       // Automatically select failed courses
       if (this.failedCoursesList && this.failedCoursesList.length > 0) {
         this.autoSelectFailedCourses();
       }
     })
   }
+
+
+
 
   // New method to automatically select failed courses
   autoSelectFailedCourses() {
@@ -315,7 +306,7 @@ export class CourseRegistrationComponent {
 
   /* updateRegistrationStatus(){
      const payload = {
-     registration_id: this.courseListForReg[0].registration_id,
+     registration_id: this.courseFromAllotment[0].registration_id,
       }
       console.log('Payload for updateCourseRegiStatus:', payload);
       this.HTTP.putData('/course/update/updateCourseRegiStatus/', payload, 'academic').subscribe(
