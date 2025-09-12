@@ -1,6 +1,6 @@
-import { Component,Input } from '@angular/core';
-
-// ^ new code start
+import { Component, Input } from '@angular/core';
+import { HttpService } from 'shared';
+import { Router } from '@angular/router';
 
 
 export interface Student {
@@ -45,13 +45,24 @@ export interface SubMenuItem {
 })
 export class NewLayoutComponent {
 
-   studentData: any;
-     isSidebarOpen: boolean = false;
-    toggleSidebar(): void {
+  studentData: any;
+  isSidebarOpen: boolean = false;
+  igkvUrl:string = 'https://igkv.ac.in/'
+
+
+
+  toggleSidebar(): void {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
-  
-   searchQuery: string = '';
+
+
+  constructor(private HTTP: HttpService,private router: Router) { }
+
+  ngOnInit(): void {
+    this.getStudentDetails();
+  }
+
+  searchQuery: string = '';
 
   @Input() student: Student = {
     name: 'John Doe',
@@ -64,78 +75,74 @@ export class NewLayoutComponent {
     department: 'Computer Science & Engineering'
   };
 
-  
-   currentUser = {
-    name: 'Krishna',
-    class: 'Class XII A',
-    avatar: 'https://via.placeholder.com/32x32/007bff/ffffff?text=KR'
-  };
+
 
   // ^ new code start
 
-  menuItems : MenuItem[] = [
-   { 
-      icon: 'fas fa-th-large', 
-      label: 'Dashboard', 
+  menuItems: MenuItem[] = [
+    {
+      icon: 'fas fa-th-large',
+      label: 'Dashboard',
       isActive: true,
-      route: '/dashboard'
+      route: 'dashboard'
     },
-    { 
-      icon: 'fas fa-chalkboard-teacher', 
-      label: 'My Corner', 
+    {
+      icon: 'fas fa-chalkboard-teacher',
+      label: 'My Corner',
       isActive: false,
       hasSubmenu: true,
       isExpanded: false,
       submenus: [
-        { label: 'Profile', route: '/classroom/live', isActive: false },
+        { label: 'Profile', route: 'profile', isActive: false },
       ]
     },
-    { 
-      icon: 'fas fa-book', 
-      label: 'E-Krishi Pathshala', 
+    {
+      icon: 'fas fa-book',
+      label: 'E-Krishi Pathshala',
       isActive: false,
       hasSubmenu: false,
       isExpanded: false,
       submenus: [
-        { label: 'Exam Result', route: '/syllabus/view', isActive: false },
+        { label: 'Exam Result', route: 'result', isActive: false },
       ]
     },
-    { 
-      icon: 'fas fa-chart-bar', 
-      label: 'Registration', 
+    {
+      icon: 'fas fa-chart-bar',
+      label: 'Registration',
       isActive: false,
       hasSubmenu: true,
       isExpanded: false,
       submenus: [
-        { label: 'Registration Cards', route: '/results/exams', isActive: false },
+        { label: 'Registration', route: '/course-registration', isActive: false },
+        { label: 'Registration Cards', route: 'registration-card', isActive: false },
       ]
     },
-       { 
-      icon: 'fas fa-chart-bar', 
-      label: 'Fees', 
+    {
+      icon: 'fas fa-chart-bar',
+      label: 'Fees',
       isActive: false,
       hasSubmenu: true,
       isExpanded: false,
       submenus: [
-        { label: 'Fee Receipts', route: '/results/exams', isActive: false },
+        { label: 'Fee Receipts', route: 'fee-receipt', isActive: false },
         { label: 'Previous Fees', route: '/results/assignments', isActive: false },
-        { label: 'Payment Status', route: '/results/analytics', isActive: false },
+        { label: 'Payment Status', route: 'payment-status', isActive: false },
       ]
     },
-    { 
-      icon: 'fas fa-graduation-cap', 
-      label: 'Exams', 
+    {
+      icon: 'fas fa-graduation-cap',
+      label: 'Exams',
       isActive: false,
       hasSubmenu: true,
       isExpanded: false,
       submenus: [
-        { label: 'Admit Card', route: '/exams/upcoming', isActive: false },
+        { label: 'Admit Card', route: 'admit-card', isActive: false },
         { label: 'Previous Question Papers', route: '/exams/past', isActive: false },
       ]
     },
-    { 
-      icon: 'fas fa-graduation-cap', 
-      label: 'Result', 
+    {
+      icon: 'fas fa-graduation-cap',
+      label: 'Result',
       isActive: false,
       hasSubmenu: true,
       isExpanded: false,
@@ -143,15 +150,15 @@ export class NewLayoutComponent {
         { label: 'Result', route: '/exams/upcoming', isActive: false },
       ]
     },
-    { 
-      icon: 'fas fa-calendar-alt', 
-      label: 'Timetable', 
+    {
+      icon: 'fas fa-calendar-alt',
+      label: 'Timetable',
       isActive: false,
       route: '/timetable'
     },
-    { 
-      icon: 'fas fa-graduation-cap', 
-      label: 'Certificates', 
+    {
+      icon: 'fas fa-graduation-cap',
+      label: 'Certificates',
       isActive: false,
       hasSubmenu: true,
       isExpanded: false,
@@ -161,9 +168,9 @@ export class NewLayoutComponent {
         { label: 'Get SRC', route: '/exams/upcoming', isActive: false },
       ]
     },
-    { 
-      icon: 'fas fa-cog', 
-      label: 'Settings', 
+    {
+      icon: 'fas fa-cog',
+      label: 'Settings',
       isActive: false,
       hasSubmenu: true,
       isExpanded: false,
@@ -174,22 +181,19 @@ export class NewLayoutComponent {
         { label: 'Account', route: '/settings/account', isActive: false }
       ]
     },
-    { 
-      icon: 'fas fa-sign-out-alt', 
-      label: 'Logout', 
+    {
+      icon: 'fas fa-sign-out-alt',
+      label: 'Logout',
       isActive: false,
       route: '/logout'
     }
   ];
 
-  
-
-  constructor() { }
-
-  ngOnInit(): void { }
 
 
-    closeSidebar(): void {
+
+
+  closeSidebar(): void {
     this.isSidebarOpen = false;
   }
   // Methods
@@ -204,7 +208,7 @@ export class NewLayoutComponent {
     if (item.hasSubmenu) {
       // Toggle submenu expansion
       item.isExpanded = !item.isExpanded;
-      
+
       // Close other expanded menus (optional - for accordion behavior)
       this.menuItems.forEach(menu => {
         if (menu !== item && menu.hasSubmenu) {
@@ -220,9 +224,12 @@ export class NewLayoutComponent {
         }
       });
       item.isActive = true;
-      
+
       // Navigate to route (implement your routing logic here)
       console.log('Navigating to:', item.route);
+         if (item.route) {
+      this.router.navigateByUrl(item.route);
+    }   
     }
   }
 
@@ -243,21 +250,21 @@ export class NewLayoutComponent {
 
     // Navigate to submenu route
     console.log('Navigating to submenu:', submenuItem.route);
-    
+    this.router.navigateByUrl(submenuItem.route);
+
     // Close sidebar on mobile after selection
     this.closeSidebar();
   }
 
 
-    getStudentDetails() {
+  getStudentDetails() {
     // ^ this data will get from login session
-    const academic_session_id = 23;
-    const course_year_id = 3;
+    const academic_session_id = 24;
+    const course_year_id = 2;
     const semester_id = 1;
-    const college_id = 5;
-    const degree_programme_id = 1;
-    const ue_id = 20220725;
-
+    const college_id = 7;
+    const degree_programme_id = 10;
+    const ue_id = 20230270;
     const params = {
       academic_session_id: academic_session_id,
       course_year_id: course_year_id,
@@ -266,10 +273,10 @@ export class NewLayoutComponent {
       degree_programme_id: degree_programme_id,
       ue_id: ue_id
     }
-    // this.HTTP.getParam('/course/get/getStudentList/', params, 'academic').subscribe((result: any) => {
-    //   console.warn(result.body.data[0])
-    //   this.studentData = result.body.data[0];
-    // })
+    this.HTTP.getParam('/course/get/getStudentList/', params, 'academic').subscribe((result: any) => {
+      console.warn(result.body.data[0])
+      this.studentData = result.body.data[0];
+    })
   }
 
 

@@ -16,7 +16,8 @@ const routes: Routes = [
         path: '',
         component: NewLayoutComponent,
         children:[
-            {path: '', component:DashboardComponent} ,
+            {path: '', redirectTo: 'dashboard',  pathMatch: 'full'},
+            {path: 'dashboard', component:DashboardComponent} ,
             {path: 'fee-receipt', component: FeeReceiptComponent},
             {path: 'registration-card', component: RegistrationCardComponent},
             {path: 'admit-card', component: AdmitCardComponent},
@@ -26,7 +27,6 @@ const routes: Routes = [
             {path: 'course-registration', component: CourseRegistrationComponent},
         ],
       },
-
       {
         path:'old',
         component:LayoutComponent

@@ -38,12 +38,12 @@ export class CourseRegistrationComponent {
 
   getStudentDetails() {
     // ^ this data will get from login session
-    const academic_session_id = 23;
-    const course_year_id = 3;
+    const academic_session_id = 24;
+    const course_year_id = 2;
     const semester_id = 1;
-    const college_id = 5;
-    const degree_programme_id = 1;
-    const ue_id = 20220725;
+    const college_id = 7;
+    const degree_programme_id = 10;
+    const ue_id = 20230270;
 
     const params = {
       academic_session_id: academic_session_id,
@@ -85,6 +85,7 @@ export class CourseRegistrationComponent {
       course_year_id: this.studentData?.course_year_id,
       college_id: this.studentData?.college_id,
       semester_id: this.studentData?.semester_id,
+      degree_programme_id_not:this.studentData?.degree_programme_id,
     }
     this.HTTP.getParam('/course/get/getCourseFromAllotment/', params, 'academic').subscribe((result: any) => {
       this.otherCourseFromAllotment = !result.body.error ? result.body.data : [];
@@ -144,7 +145,7 @@ export class CourseRegistrationComponent {
 
   getFailedCourse() {
     const params = {
-      Academic_Session_Id: this.studentData?.academic_session_id - 1,
+      academic_session_id: this.studentData?.academic_session_id - 1,
       course_year_id: this.studentData?.course_year_id - 1,
       Semester_Id: this.studentData?.semester_id,
       ue_id: this.studentData?.ue_id

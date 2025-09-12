@@ -33,10 +33,10 @@
         </button>
         <div class="dropdown">
           <button class="btn btn-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
-            <img [src]="currentUser.avatar" class="rounded-circle me-2" width="32" height="32" [alt]="currentUser.name">
+            <img [src]=" igkvUrl+studentData?.student_photo_path" class="rounded-circle me-2" width="32" height="32" [alt]="studentData?.name">
             <div class="text-start d-none d-sm-block">
-              <div class="small fw-bold text-dark">{{ currentUser.name }}</div>
-              <div class="small text-muted">{{ currentUser.class }}</div>
+              <div class="small fw-bold text-dark">{{ studentData?.student_name }}</div>
+              <div class="small text-muted">{{ studentData?.degree_programme_name_e }}</div>
             </div>
           </button>
           <ul class="dropdown-menu">
@@ -76,8 +76,7 @@
     <!-- ^ new code s -->
     <div class="sidebar-desktop d-none d-lg-block">
       <div class="">
-        <div class="small text-muted mb-3 fw-semibold text-center">MAIN MENU</div>
-        <nav class="nav flex-column">
+        <nav class="nav flex-column mt-3">
           <ng-container *ngFor="let item of menuItems">
             <!-- Main Menu Item -->
             <a class="nav-link d-flex align-items-center py-2 px-3 mb-1 rounded position-relative"
@@ -191,7 +190,10 @@
     </div>
 
     <!-- ^ main content -->
-    <router-outlet></router-outlet>
+     <div class="contaner-fluid w-100">
+       <router-outlet></router-outlet>
+     </div>
+   
 
     <!-- ^ new code e -->
     <!-- Mobile backdrop overlay -->

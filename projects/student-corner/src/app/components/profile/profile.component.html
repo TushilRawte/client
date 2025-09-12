@@ -173,7 +173,6 @@
         </div>
     </mat-card-content>
 </mat-card>
-
 <mat-card class="mt-3">
     <mat-card-content>
       <div class="card-header-custom">
@@ -250,3 +249,136 @@
         </div>
     </mat-card-content>
 </mat-card>
+
+
+
+<!-- ^ new code s -->
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10 col-sm-12">
+      <!-- Student Card -->
+      <div class="card student-card">
+        <!-- Card Header with Student Avatar and Name -->
+        <div class="card-header">
+          <div class="row align-items-center">
+            <div class="col-auto">
+              <div class="student-avatar">
+                <ng-container *ngIf="studentData?.student_photo_path; else avatarInitials">
+                  <img [src]="igkvUrl+studentData?.student_photo_path" [alt]="studentData?.student_name" class="avatar-img">
+                </ng-container>
+                <ng-template #avatarInitials>
+                  <!-- {{ getInitials() }} -->
+                </ng-template>
+              </div>
+            </div>
+            <div class="col">
+              <h3 class="mb-1 fw-bold student-name">{{ studentData?.student_name }}</h3>
+              <p class="mb-0 student-subtitle">Student Profile</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Card Body with Student Details -->
+        <div class="card-body p-4">
+          <div class="row g-3">
+            <!-- Program Information -->
+            <div class="col-md-6 col-sm-12">
+              <div class="info-row">
+                <div class="info-label">
+                  <i class="fas fa-graduation-cap icon"></i>Program
+                </div>
+                <div class="info-value">
+                  <span class="program-badge">{{ studentData?.degree_programme_name_e }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Enrollment Number -->
+            <div class="col-md-6 col-sm-12">
+              <div class="info-row">
+                <div class="info-label">
+                  <i class="fas fa-id-badge icon"></i>Enrollment Number
+                </div>
+                <div class="info-value">
+                  <span class="enrollment-chip">{{ studentData?.ue_id }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Semester -->
+            <div class="col-md-6 col-sm-12">
+              <div class="info-row">
+                <div class="info-label">
+                  <i class="fas fa-calendar-alt icon"></i>Current Semester
+                </div>
+                <div class="info-value">
+                  <span class="semester-info">{{ studentData?.semester_name_e }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- CGPA -->
+            <div class="col-md-6 col-sm-12">
+              <div class="info-row">
+                <div class="info-label">
+                  <i class="fas fa-star icon"></i>CGPA
+                </div>
+                <div class="info-value">
+                  <!-- <span class="cgpa-badge" [ngClass]="getCGPAClass()">
+                    {{ getFormattedCGPA() }}/10.0
+                  </span> -->
+                </div>
+              </div>
+            </div>
+            
+            <!-- Additional Information Row -->
+            <div class="col-12">
+              <div class="info-row additional-info">
+                <div class="row g-2">
+                  <!-- Email -->
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="info-label">
+                      <i class="fas fa-envelope icon"></i>Email
+                    </div>
+                    <div class="info-value small-text">
+                      <a [href]="'mailto:' + studentData?.email" class="email-link">
+                        {{ studentData?.email }}
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <!-- Phone -->
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="info-label">
+                      <i class="fas fa-phone icon"></i>Phone
+                    </div>
+                    <div class="info-value small-text">
+                      <a [href]="'tel:' + studentData?.phone" class="phone-link">
+                        {{ studentData?.phone }}
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <!-- Department -->
+                  <div class="col-lg-4 col-md-12 col-sm-12">
+                    <div class="info-label">
+                      <i class="fas fa-building icon"></i>Department
+                    </div>
+                    <div class="info-value small-text">{{ studentData?.department }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Optional Card Footer -->
+        <div class="card-footer text-center">
+          <small class="text-muted">
+            <i class="fas fa-clock"></i>
+            <!-- Last updated: {{ new Date() | date:'medium' }} -->
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- ^ new code e -->
