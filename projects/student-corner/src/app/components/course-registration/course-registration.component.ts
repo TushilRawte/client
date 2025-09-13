@@ -41,9 +41,9 @@ export class CourseRegistrationComponent {
     const academic_session_id = 24;
     const course_year_id = 2;
     const semester_id = 1;
-    const college_id = 7;
-    const degree_programme_id = 10;
-    const ue_id = 20230270;
+    const college_id = 5;
+    const degree_programme_id = 8;
+    const ue_id = 20190823;
 
     const params = {
       academic_session_id: academic_session_id,
@@ -58,7 +58,7 @@ export class CourseRegistrationComponent {
       this.getCourseFromAllotment();
       this.getRegisteredCourses();
       this.getOtherCourseFromAllotment();
-      this.getFailedCourse();
+     
     })
   }
 
@@ -74,7 +74,6 @@ export class CourseRegistrationComponent {
     this.HTTP.getParam('/course/get/getRegisteredCourseList/', params, 'academic').subscribe((result: any) => {
       this.registeredCourseList = !result.body.error ? result.body.data : [];
       this.selectedCourses = [...this.registeredCourseList];
-      this.getFailedCourse();
     })
   }
 
@@ -85,7 +84,8 @@ export class CourseRegistrationComponent {
       course_year_id: this.studentData?.course_year_id,
       college_id: this.studentData?.college_id,
       semester_id: this.studentData?.semester_id,
-      degree_programme_id_not:this.studentData?.degree_programme_id,
+      not_degree_programme_id:this.studentData?.degree_programme_id,  
+      degree_programme_id_not:true
     }
     this.HTTP.getParam('/course/get/getCourseFromAllotment/', params, 'academic').subscribe((result: any) => {
       this.otherCourseFromAllotment = !result.body.error ? result.body.data : [];
@@ -140,22 +140,27 @@ export class CourseRegistrationComponent {
     }
     this.HTTP.getParam('/course/get/getCourseFromAllotment/', params, 'academic').subscribe((result: any) => {
       this.courseFromAllotment = !result.body.error ? result.body.data : []
+      this.selectedCourses = [...this.courseFromAllotment];
+       if(this.studentData.course_failed_type == 'Y'){
+        this.getFailedCourse();
+      }
+
     })
   }
 
   getFailedCourse() {
     const params = {
       academic_session_id: this.studentData?.academic_session_id - 1,
-      course_year_id: this.studentData?.course_year_id - 1,
-      Semester_Id: this.studentData?.semester_id,
+      course_year_id: this.studentData?.course_year_id,
+      semester_id: this.studentData?.semester_id,
       ue_id: this.studentData?.ue_id
     }
     this.HTTP.getParam('/course/get/getFailedCoursesForReg/', params, 'academic').subscribe((result: any) => {
       this.failedCoursesList = !result.body.error ? result.body.data : [];
-      // Automatically select failed courses
-      if (this.failedCoursesList && this.failedCoursesList.length > 0) {
-        this.autoSelectFailedCourses();
-      }
+      // if (this.failedCoursesList && this.failedCoursesList.length > 0) {
+      //   this.autoSelectFailedCourses();
+      // }
+this.selectedCourses.push(...this.failedCoursesList);
     })
   }
 

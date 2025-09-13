@@ -38,12 +38,12 @@ export class ProfileComponent {
 
       getStudentDetails() {
     // ^ this data will get from login session
-    const academic_session_id = 24;
+   const academic_session_id = 24;
     const course_year_id = 2;
     const semester_id = 1;
-    const college_id = 7;
-    const degree_programme_id = 10;
-    const ue_id = 20230270;
+    const college_id = 5;
+    const degree_programme_id = 8;
+    const ue_id = 20190823;
 
     const params = {
       academic_session_id: academic_session_id,
