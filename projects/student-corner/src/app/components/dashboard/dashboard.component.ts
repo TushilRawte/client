@@ -190,11 +190,12 @@ leaderboardData: LeaderboardData[] = [
     getStudentDetails() {
     // ^ this data will get from login session
     const academic_session_id = 24;
-    const course_year_id = 2;
+    const course_year_id = 3;
     const semester_id = 1;
     const college_id = 5;
     const degree_programme_id = 8;
-    const ue_id = 20190823;
+    const ue_id = 20220056;
+
 
     const params = {
       academic_session_id: academic_session_id,
@@ -204,6 +205,8 @@ leaderboardData: LeaderboardData[] = [
       degree_programme_id: degree_programme_id,
       ue_id: ue_id
     }
+    sessionStorage.setItem('studentData', JSON.stringify(params));
+
     this.HTTP.getParam('/course/get/getStudentList/', params, 'academic').subscribe((result: any) => {
       console.warn(result.body.data[0])
       this.studentData = result.body.data[0];
@@ -211,5 +214,17 @@ leaderboardData: LeaderboardData[] = [
   }
 
 
+
+
+  //student data course repeater
+
+/*     const params = {
+      academic_session_id: academic_session_id,
+      course_year_id: course_year_id,
+      semester_id: semester_id,
+      college_id: college_id,
+      degree_programme_id: degree_programme_id,
+      ue_id: ue_id
+    } */
 
 }

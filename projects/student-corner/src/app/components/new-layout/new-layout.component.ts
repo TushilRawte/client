@@ -47,7 +47,8 @@ export class NewLayoutComponent {
 
   studentData: any;
   isSidebarOpen: boolean = false;
-  igkvUrl:string = 'https://igkv.ac.in/'
+  igkvUrl: string = 'https://igkv.ac.in/';
+  sessionData: any = {};
 
 
 
@@ -55,25 +56,19 @@ export class NewLayoutComponent {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
-
-  constructor(private HTTP: HttpService,private router: Router) { }
+  constructor(private HTTP: HttpService, private router: Router) { }
 
   ngOnInit(): void {
-    this.getStudentDetails();
+    const storedData = sessionStorage.getItem('studentData');
+    if (storedData) {
+      const studentData = JSON.parse(storedData);
+      this.sessionData = studentData
+      this.getStudentDetails();
+    }
   }
 
   searchQuery: string = '';
 
-  @Input() student: Student = {
-    name: 'John Doe',
-    program: 'Computer Science',
-    enrollmentNumber: 'CS2023001',
-    semester: '6th Semester',
-    cgpa: 8.5,
-    email: 'john.doe@university.edu',
-    phone: '+1 234 567 8900',
-    department: 'Computer Science & Engineering'
-  };
 
 
 
@@ -227,9 +222,9 @@ export class NewLayoutComponent {
 
       // Navigate to route (implement your routing logic here)
       console.log('Navigating to:', item.route);
-         if (item.route) {
-      this.router.navigateByUrl(item.route);
-    }   
+      if (item.route) {
+        this.router.navigateByUrl(item.route);
+      }
     }
   }
 
@@ -258,26 +253,24 @@ export class NewLayoutComponent {
 
 
   getStudentDetails() {
-    // ^ this data will get from login session
-  const academic_session_id = 24;
-    const course_year_id = 2;
-    const semester_id = 1;
-    const college_id = 5;
-    const degree_programme_id = 8;
-    const ue_id = 20190823;
     const params = {
-      academic_session_id: academic_session_id,
-      course_year_id: course_year_id,
-      semester_id: semester_id,
-      college_id: college_id,
-      degree_programme_id: degree_programme_id,
-      ue_id: ue_id
+      academic_session_id: this.sessionData?.academic_session_id,
+      course_year_id: this.sessionData?.course_year_id,
+      semester_id: this.sessionData?.semester_id,
+      college_id: this.sessionData?.college_id,
+      degree_programme_id: this.sessionData?.degree_programme_id,
+      ue_id: this.sessionData?.ue_id
     }
     this.HTTP.getParam('/course/get/getStudentList/', params, 'academic').subscribe((result: any) => {
       console.warn(result.body.data[0])
       this.studentData = result.body.data[0];
     })
+
+
   }
+
+
+
 
 
 
