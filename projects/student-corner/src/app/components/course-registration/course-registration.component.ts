@@ -166,13 +166,19 @@ export class CourseRegistrationComponent {
       this.regularCourseTemp.length ||
       this.failedCourseTemp.length
     ) {
-      this.selectedCourses = [
-        ...this.registeredCourseTemp,
-        ...this.regularCourseTemp,
-        ...this.failedCourseTemp
-      ];
-    }
+    // Sort registeredCourseTemp: compulsory first, then optional
+    const sortedRegisteredCourses = [
+      ...this.registeredCourseTemp.filter(c => c.cou_allot_type_name_e === 'Complusory'),
+      ...this.registeredCourseTemp.filter(c => c.cou_allot_type_name_e === 'Optional')
+    ];
+
+    this.selectedCourses = [
+      ...sortedRegisteredCourses,
+      ...this.regularCourseTemp,
+      ...this.failedCourseTemp
+    ];
   }
+}
 
 
 
@@ -205,7 +211,10 @@ export class CourseRegistrationComponent {
     } else {
       const snackRef = this.snackBar.open(
         `${this.onSelectDropCourse?.course_name} course already selected`,
-        'Close'
+        'Close',
+          {
+      duration: 3000,
+    }
       );
       snackRef.onAction().subscribe(() => {
         console.log('Snackbar action button clicked');
@@ -298,21 +307,12 @@ onUpdate() {
           }
         }
       );
-      this.getRegisteredCourses();
     }
 
   }
 
 
   updateData() {
-    if (this.selectedCourses.length === 0) {
-      this.snackBar.open('Please select at least one course', 'Close', {
-        duration: 3000,
-        verticalPosition: 'top',
-        horizontalPosition: 'center'
-      });
-      return;
-    }
     const payload = {
       academic_session_id: this.studentData?.academic_session_id,
       course_year_id: this.studentData?.course_year_id,
@@ -333,7 +333,7 @@ onUpdate() {
 
         if (!res.body.error) {
           this.alert.alertMessage("Record Updated...!", "", "success");
-          this.router.navigateByUrl('/course-registration')
+          this.getRegisteredCourses();
         } else {
           this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
         }

@@ -192,9 +192,9 @@ leaderboardData: LeaderboardData[] = [
     const academic_session_id = 24;
     const course_year_id = 3;
     const semester_id = 1;
-    const college_id = 5;
-    const degree_programme_id = 8;
-    const ue_id = 20220056;
+    const college_id = 53;
+    const degree_programme_id = 24;
+    const ue_id = 20191413;
 
 
     const params = {
@@ -226,5 +226,15 @@ leaderboardData: LeaderboardData[] = [
       degree_programme_id: degree_programme_id,
       ue_id: ue_id
     } */
+
+
+    //regular student
+    
+   /*    const academic_session_id = 24;
+    const course_year_id = 3;
+    const semester_id = 1;
+    const college_id = 5;
+    const degree_programme_id = 8;
+    const ue_id = 20220056; */
 
 }
