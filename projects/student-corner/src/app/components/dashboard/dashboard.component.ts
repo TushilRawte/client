@@ -193,8 +193,8 @@ leaderboardData: LeaderboardData[] = [
     const course_year_id = 3;
     const semester_id = 1;
     const college_id = 5;
-    const degree_programme_id = 4;
-    const ue_id = 20190267;
+    const degree_programme_id = 16;
+    const ue_id = 20220184;
 
 
     const params = {
@@ -236,5 +236,16 @@ leaderboardData: LeaderboardData[] = [
     const college_id = 5;
     const degree_programme_id = 8;
     const ue_id = 20220056; */
+
+//Academic Probation (OGPA improvement)
+
+  /*    const params = {
+      academic_session_id: academic_session_id,
+      course_year_id: course_year_id,
+      semester_id: semester_id,
+      college_id: college_id,
+      degree_programme_id: degree_programme_id,
+      ue_id: ue_id
+    } */
 
 }

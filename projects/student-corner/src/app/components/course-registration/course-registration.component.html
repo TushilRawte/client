@@ -11,55 +11,39 @@
         </div>
         <div>
           <div class="row">
-              <div class="col-md-3 col-6">
+              <div class="col-md-4 col-6">
               <div class="detail-item">
                 <label class="detail-label">UE ID:</label>
                 <div class="detail-value">{{ studentData?.ue_id }}</div>
               </div>
             </div>
-            <div class="col-md-3 col-6">
+            <div class="col-md-4 col-6">
               <div class="detail-item">
-                <label class="detail-label">Dean Committee:</label>
-                <div class="detail-value">{{ studentData?.dean_committee_name_e }}</div>
+                <label class="detail-label">Dean Committee & Session:</label>
+                <div class="detail-value">{{ studentData?.dean_committee_name_e }} , {{ studentData?.academic_session_name_e}}</div>
               </div>
             </div>
-            <div class="col-md-3 col-6">
-              <div class="detail-item">
-                <label class="detail-label">Session:</label>
-                <div class="detail-value">{{ studentData?.academic_session_name_e}}</div>
-              </div>
-            </div>
-            <div class="col-md-3 col-6">
+            <div class="col-md-4 col-6">
               <div class="detail-item">
                 <label class="detail-label">Year & Semester:</label>
                 <div class="detail-value">{{ studentData?.course_year_name_e}} , {{ studentData?.semester_name_e }}</div>
               </div>
             </div>
-
-          </div>
-          <div class="row mt-2">
-            <div class="col-md-3 col-6">
+            <div class="col-md-4 col-6">
               <div class="detail-item">
-                <label class="detail-label">Academic Standing:</label>
-                <div class="detail-value">{{studentData?.stu_acad_status_name_e}}</div>
+                <label class="detail-label">Academic Standing & Study Status:</label>
+                <div class="detail-value">{{studentData?.stu_acad_status_name_e}} , {{studentData?.stu_study_status_name_e}}</div>
               </div>
 
             </div>
-            <div class="col-md-3 col-6">
-              <div class="detail-item">
-                <label class="detail-label">Study Status:</label>
-                <div class="detail-value">{{studentData?.stu_study_status_name_e}}</div>
-              </div>
-
-            </div>
-            <div class="col-md-3 col-6">
+            <div class="col-md-4 col-6">
               <div class="detail-item">
                 <label class="detail-label">College:</label>
                 <div class="detail-value">{{ studentData?.college_name_e }}</div>
               </div>
 
             </div>
-            <div class="col-md-3 col-6">
+            <div class="col-md-4 col-6">
 
               <div class="detail-item">
                 <label class="detail-label">Degree Programme:</label>
@@ -88,7 +72,7 @@
                     <th>Course Title</th>
                     <th>Teachers</th>
                     <th>Type</th>
-                    <th>Nature</th>
+                    <th>Credit</th>
                     <th>C/O</th>
                     <th>Remove</th>
                   </tr>
@@ -102,14 +86,14 @@
                     <td>{{ course?.course_name }}</td>
                     <td>{{course?.teacher_name}}</td>
                     <td>{{ course?.course_type_name_e }}</td>
-                    <td>{{ course?.course_nature_name_e }}</td>
+                    <td>{{ course?.credit}}</td>
                     <td> {{ course?.cou_allot_type_name_e === 'Complusory' ? 'C' : (course?.cou_allot_type_name_e ===
                       'Optional' ? 'O' : '') }}</td>
                     <td>
                       <button type="button" color="danger" class="btn-remove"
                         [class.failed-course-remove]="isFailedCourse(course)"
                         [disabled]="isFailedCourse(course)  || course.cou_allot_type_name_e === 'Complusory'"
-                        (click)="onCourseRemove(course.course_id)"
+                        (click)="onCourseRemove(course.course_id,course.course_nature_id)"
                         [title]="isFailedCourse(course) ? 'Failed courses are mandatory and cannot be removed' : 'Remove Course'">
                         <mat-icon>{{ isFailedCourse(course) ? 'lock' : 'close' }}</mat-icon>
                       </button>
