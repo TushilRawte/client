@@ -56,7 +56,8 @@ import { MarksEntryImportComponent } from './marks entry/marks-entry-import/mark
         enabled: true,
         registrationStrategy: 'registerWhenStable:30000'
     }),
-    ReportComponent
+    ReportComponent,
+    ReporttableComponent
 ],
  providers: [
     provideAnimationsAsync()

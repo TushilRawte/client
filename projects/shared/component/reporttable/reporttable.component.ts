@@ -10,17 +10,17 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import {AuthService, HttpService, PrintService} from 'shared';
-import {take} from 'rxjs';
-import {MatCardModule} from '@angular/material/card';
-import {MatButtonModule} from '@angular/material/button';
-import {NgForOf, NgIf, NgTemplateOutlet} from '@angular/common';
-import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
-import {FormsModule} from '@angular/forms';
-import {MatIcon} from '@angular/material/icon';
-import {MatTooltip} from '@angular/material/tooltip';
+import { AuthService, HttpService, PrintService } from 'shared';
+import { take } from 'rxjs';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { NgForOf, NgIf, NgTemplateOutlet } from '@angular/common';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { FormsModule } from '@angular/forms';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 import * as XLSX from 'xlsx';
-import {ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 interface Option {
   is_read: boolean,
@@ -33,7 +33,8 @@ interface Option {
   button: string[],
   is_render: boolean,
   page: number,
-  pageSize: number
+  pageSize: number,
+  title?: string;
 }
 
 @Component({
@@ -57,7 +58,7 @@ export class ReporttableComponent implements OnInit, AfterViewInit, AfterContent
   @ViewChild('table') table!: ElementRef;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @Input() options!: Option;
-  @ContentChild('headerTemplate', {static: true}) headerTemplate!: TemplateRef<any>;
+  @ContentChild('headerTemplate', { static: true }) headerTemplate!: TemplateRef<any>;
   @ContentChild('rowTemplate') rowTemplate!: TemplateRef<any>;
 
   user: any
@@ -68,7 +69,7 @@ export class ReporttableComponent implements OnInit, AfterViewInit, AfterContent
   totalItems: number = 0;
 
   constructor(private http: HttpService, private print: PrintService, private auth: AuthService, private router: Router,
-              private route: ActivatedRoute, private cdr: ChangeDetectorRef) {
+    private route: ActivatedRoute, private cdr: ChangeDetectorRef) {
     this.user = this.auth.currentUser;
   }
 
@@ -108,16 +109,16 @@ export class ReporttableComponent implements OnInit, AfterViewInit, AfterContent
       this.pageSize = 10;
       this.router.navigate([], {
         relativeTo: this.route,
-        queryParams: {page: this.currentPage, pageSize: this.pageSize},
+        queryParams: { page: this.currentPage, pageSize: this.pageSize },
         queryParamsHandling: 'merge' // Merge with existing params
       }).then();
       this.resetOrChange()
       this.filteredData = this.options.dataSource.filter((item: any) => {
         return Object.values(item).some((value: any) => {
-            if (value) {
-              return value.toString().toLowerCase().includes(this.filterText.toLowerCase())
-            }
+          if (value) {
+            return value.toString().toLowerCase().includes(this.filterText.toLowerCase())
           }
+        }
         );
 
       });
@@ -128,55 +129,285 @@ export class ReporttableComponent implements OnInit, AfterViewInit, AfterContent
     this.currentPage = 0; // Reset to first page when filter changes
   }
 
+  // printData(): void {
+  //   let htmlContent = this.print_content.nativeElement.innerHTML;
+  //   this.print.printHTML(htmlContent).then(() => {
+  //     // if (res) this.fs_id = null
+  //   }).catch((error) => {
+  //     console.error('Print error:', error);
+  //   });
+  // }
+
+  // printData(): void {
+  //   this.temporarilyDisablePaginationAndRun(() => {
+  //     const htmlContent = this.print_content.nativeElement.innerHTML;
+  //     this.print.printHTML(htmlContent).catch((error) => {
+  //       console.error('Print error:', error);
+  //     });
+  //   });
+  // }
+
   printData(): void {
-    let htmlContent = this.print_content.nativeElement.innerHTML;
-    this.print.printHTML(htmlContent).then(() => {
-      // if (res) this.fs_id = null
-    }).catch((error) => {
-      console.error('Print error:', error);
+    this.temporarilyDisablePaginationAndRun(() => {
+      const htmlContent = this.print_content.nativeElement.innerHTML;
+
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'fixed';
+      iframe.style.right = '0';
+      iframe.style.bottom = '0';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = '0';
+
+      document.body.appendChild(iframe);
+
+      const doc = iframe.contentWindow?.document;
+
+      if (!doc) {
+        console.error("Failed to create iframe document for printing");
+        return;
+      }
+      const currentDateTime = new Date().toLocaleString();
+      doc.open();
+      doc.write(`
+      <html>
+        <head>
+          <title>Report</title>
+          <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+          <style>
+            @page {
+             margin: 5mm 6mm 10mm 6mm; /* top, right, bottom, left */
+             counter-increment: page;
+            }
+
+            body {
+              margin: 0;
+              padding: 0;
+            }
+
+            .print-wrapper {
+              padding: 20px;
+            }
+
+          /* Custom footer */
+          .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 20mm;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10mm;
+            font-size: 12px;
+            color: #444;
+          }
+
+          .footer .datetime::before {
+            content: "${currentDateTime}";
+            margig-top: -2rem;
+          }
+
+          .footer .pagenum::before {
+            content: counter(page);
+          }
+            .table {
+              width: 100%;
+              border-collapse: collapse;
+            }
+
+            .table-bordered th,
+            .table-bordered td {
+              border: 1px solid #dee2e6 !important;
+              padding: 0.75rem;
+            }
+
+            .text-center {
+              text-align: center !important;
+            }
+
+            .fw-bold {
+              font-weight: bold !important;
+            }
+
+            .mt-3 {
+              margin-top: 1rem !important;
+            }
+
+            .mt-4 {
+              margin-top: 1.5rem !important;
+            }
+
+            .mb-2 {
+              margin-bottom: 0.5rem !important;
+            }
+
+            .mb-4 {
+              margin-bottom: 1.5rem !important;
+            }
+
+            .m-1 {
+              margin: 0.25rem !important;
+            }
+
+            .row {
+              display: flex;
+              flex-wrap: wrap;
+            }
+
+            .d-print-none {
+              display: none !important;
+            }
+            .header-container {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+
+            .header-container .university-title {
+              font-family: 'Georgia', serif;
+              font-size: 24px;
+              font-weight: bold;
+              color: rgb(13, 181, 241);
+              text-shadow: 1px 1px 1px 1px #000000;
+              margin-left: 1rem;
+            }
+
+            img {
+                width: 70px;
+            }
+
+            .header-container img.university-logo {
+                width: 50px !important;
+                height: 50px !important;
+                object-fit: contain;
+                display: inline-block;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header-container">
+            <img src="logo.png" alt="logo" class="university-logo">
+            <h1 class="university-title">Indira Gandhi Krishi Vishwavidyalaya, Raipur (C.G.)</h1>
+          </div>
+          <br/>
+          <h5 class="text-center">${this.options.title}</h5>
+          <div class="print-wrapper">
+            ${htmlContent}
+          </div>
+        <div class="footer">
+         <!-- <div class="datetime"></div>
+          <div> 
+            I/C Exam/Observer 
+          </div>  -->
+         <!-- <div class="pagenum"></div> 
+          <div> 
+            Dean / Principal(With College Seal)
+          </div> -->
+        </div>
+        </body>
+      </html>
+    `);
+      doc.close();
+
+      iframe.onload = () => {
+        setTimeout(() => {
+          iframe.contentWindow?.focus();
+          iframe.contentWindow?.print();
+
+          // Optional: Clean up
+          document.body.removeChild(iframe);
+        }, 300);
+      };
     });
   }
+
+
+  // getPdf(): void {
+  //   const html = this.print_content.nativeElement.innerHTML;
+  //   this.http.postBlob(`/file/post/htmltoPdf`, {
+  //     html: html,
+  //     orientation: this.options.orientation
+  //   }, 'common').pipe(take(1)).subscribe(() => {
+  //     console.log("html to pdf")
+  //   })
+  // }
 
   getPdf(): void {
-    const html = this.print_content.nativeElement.innerHTML;
-    this.http.postBlob(`/file/htmltoPdf/`, {
-      html: html,
-      orientation: this.options.orientation
-    }, null).pipe(take(1)).subscribe(() => {
-      console.log("html to pdf")
-    })
-  }
-
-  copyTableData() {
-    if (!this.table) return;
-    let tableText = '';
-    const rows = this.table.nativeElement.querySelectorAll('tr');
-    rows.forEach((row: any) => {
-      const cells = row.querySelectorAll('th, td');
-      let rowText: string[] = [];
-      cells.forEach((cell: HTMLElement) => {
-        if (cell && !cell.classList.contains('d-print-none')) {
-          rowText.push(cell.innerText.trim());
-        } else {
-          console.log(cell)
-        }
+    this.temporarilyDisablePaginationAndRun(() => {
+      const html = this.print_content.nativeElement.innerHTML;
+      this.http.postBlob(`/file/post/htmltoPdf`, {
+        html: html,
+        orientation: this.options.orientation,
+        title: this.options?.title,
+        college_name_e: "abc fdghj ghhj hgjhkj gjhh hjjhhj"
+      }, 'common').pipe(take(1)).subscribe(() => {
+        console.log("html to pdf");
       });
-
-      tableText += rowText.join('\t') + '\n';
     });
-
-    // Fallback for older browsers or if Clipboard API fails
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(tableText).then(() => {
-        alert('Table copied successfully!');
-      }).catch(err => {
-        console.error('Clipboard API failed:', err);
-        this.fallbackCopy(tableText);
-      });
-    } else {
-      this.fallbackCopy(tableText);
-    }
   }
+
+
+  // copyTableData() {
+  //   if (!this.table) return;
+  //   let tableText = '';
+  //   const rows = this.table.nativeElement.querySelectorAll('tr');
+  //   rows.forEach((row: any) => {
+  //     const cells = row.querySelectorAll('th, td');
+  //     let rowText: string[] = [];
+  //     cells.forEach((cell: HTMLElement) => {
+  //       if (cell && !cell.classList.contains('d-print-none')) {
+  //         rowText.push(cell.innerText.trim());
+  //       } else {
+  //         console.log(cell)
+  //       }
+  //     });
+
+  //     tableText += rowText.join('\t') + '\n';
+  //   });
+
+  //   // Fallback for older browsers or if Clipboard API fails
+  //   if (navigator.clipboard) {
+  //     navigator.clipboard.writeText(tableText).then(() => {
+  //       alert('Table copied successfully!');
+  //     }).catch(err => {
+  //       console.error('Clipboard API failed:', err);
+  //       this.fallbackCopy(tableText);
+  //     });
+  //   } else {
+  //     this.fallbackCopy(tableText);
+  //   }
+  // }
+
+  copyTableData(): void {
+    this.temporarilyDisablePaginationAndRun(() => {
+      let tableText = '';
+      const rows = this.table.nativeElement.querySelectorAll('tr');
+      rows.forEach((row: any) => {
+        const cells = row.querySelectorAll('th, td');
+        let rowText: string[] = [];
+        cells.forEach((cell: HTMLElement) => {
+          if (cell && !cell.classList.contains('d-print-none')) {
+            rowText.push(cell.innerText.trim());
+          }
+        });
+        tableText += rowText.join('\t') + '\n';
+      });
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(tableText).then(() => {
+          alert('Table copied successfully!');
+        }).catch(err => {
+          console.error('Clipboard API failed:', err);
+          this.fallbackCopy(tableText);
+        });
+      } else {
+        this.fallbackCopy(tableText);
+      }
+    });
+  }
+
 
   fallbackCopy(tableText: string) {
     const textArea = document.createElement('textarea');
@@ -187,13 +418,24 @@ export class ReporttableComponent implements OnInit, AfterViewInit, AfterContent
     document.body.removeChild(textArea);
   }
 
-  getExcel() {
-    const htmlContent = this.table.nativeElement;
-    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(htmlContent);
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    XLSX.writeFile(wb, `Report.xlsx`);
+  // getExcel() {
+  //   const htmlContent = this.table.nativeElement;
+  //   const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(htmlContent);
+  //   const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  //   XLSX.writeFile(wb, `Report.xlsx`);
+  // }
+
+  getExcel(): void {
+    this.temporarilyDisablePaginationAndRun(() => {
+      const htmlContent = this.table.nativeElement;
+      const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(htmlContent);
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+      XLSX.writeFile(wb, `Report.xlsx`);
+    });
   }
+
 
   resetOrChange() {
     if (this.options.is_server_pagination && this.options.is_pagination) {
@@ -213,11 +455,30 @@ export class ReporttableComponent implements OnInit, AfterViewInit, AfterContent
       if (this.options.is_server_pagination && this.options.is_pagination) {
         this.router.navigate([], {
           relativeTo: this.route,
-          queryParams: {page: this.currentPage, pageSize: this.pageSize},
+          queryParams: { page: this.currentPage, pageSize: this.pageSize },
           queryParamsHandling: 'merge' // Merge with existing params
         }).then();
       }
 
     }
+  }
+
+
+  private temporarilyDisablePaginationAndRun(callback: () => void) {
+    const originalPagination = this.options.is_pagination;
+
+    // Temporarily disable pagination
+    this.options.is_pagination = false;
+
+    // Allow Angular to update the DOM
+    setTimeout(() => {
+      callback();
+
+      // Restore pagination after operation completes
+      setTimeout(() => {
+        this.options.is_pagination = originalPagination;
+        this.cdr.detectChanges(); // Trigger re-render with pagination
+      }, 500); // Delay enough to finish printing/export
+    }, 0);
   }
 }

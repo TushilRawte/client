@@ -3,3 +3,14 @@
   margin-top: -5px !important;
   margin-bottom: 9px !important;
 }
+
+
+@media print {
+  .d-print-none {
+    display: none !important;
+  }
+}
+
+.table-title{
+  color: rgb(3, 101, 69);
+}

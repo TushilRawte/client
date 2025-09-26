@@ -1,9 +1,9 @@
 <mat-card class="attendance-main">
   <mat-card-content>
-    <h3 class="fw-bold">Course Attendance Report</h3>
+    <h3 class="fw-bold page-title mb-4">Course Attendance Report</h3>
     <form [formGroup]="courseAttendanceReportFormGroup">
-      <div class="row">
-        <div class="col-md-3 col-12">
+      <div formGroupName="selection" class="row">
+        <div class="col-md-4 col-12">
           <mat-form-field appearance="outline" class="w-100">
             <mat-label>Session</mat-label>
             <mat-select placeholder="Session" formControlName="academic_session_id">
@@ -14,60 +14,12 @@
           </mat-form-field>
         </div>
 
-        <div class="col-md-9 col-12">
-          <!-- <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>College Name</mat-label>
-                        <mat-select placeholder="College Name" formControlName="college_name_e">
-                            <mat-option *ngFor="let server of collegeList" [value]="server.college_id">
-                                {{ server.college_name_e }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field> -->
-
-          <ng-select placeholder="College Name" formControlName="college_id" appearance="outline">
-            <ng-container *ngFor="let server of state.collegeList">
-              <ng-option [value]="server.college_id">
-                {{ server.college_name_e}}
-              </ng-option>
-            </ng-container>
-          </ng-select>
-        </div>
-
-        <div class="col-md-6 col-12">
-          <!-- <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Degree Programe</mat-label>
-            <mat-select placeholder="Degree Programe" formControlName="degree_programme_id">
-              <mat-option *ngFor="let server of state.degreeProgrammeList" [value]="server.degree_programme_id">
-                {{ server.degree_programme_name_e }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field> -->
-          <ng-select placeholder="Degree Programe" formControlName="degree_programme_id" appearance="outline">
-            <ng-container *ngFor="let server of state.degreeProgrammeList">
-              <ng-option [value]="server.degree_programme_id">
-                {{ server.degree_programme_name_e}}
-              </ng-option>
-            </ng-container>
-          </ng-select>
-        </div>
-
-        <div class="col-md-3 col-6">
+        <div class="col-md-4 col-6">
           <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Course Nature</mat-label>
-            <mat-select placeholder="Course Nature" formControlName="course_nature_id">
-              <mat-option *ngFor="let server of state.courseNatureList" [value]="server.course_nature_id">
-                {{ server.course_nature_name_e }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-3 col-6">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Exam Type</mat-label>
-            <mat-select placeholder="Exam Type" formControlName="exam_type_id">
-              <mat-option *ngFor="let server of state.examTypeList" [value]="server.exam_type_id">
-                {{ server.exam_type_name_e }}
+            <mat-label>Semester</mat-label>
+            <mat-select placeholder="Semester" formControlName="semester_id">
+              <mat-option *ngFor="let semester of state.semesterList" [value]="semester.semester_id">
+                {{ semester.semester_name_e }}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -75,52 +27,21 @@
 
         <div class="col-md-4 col-12">
           <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Dean Committee</mat-label>
-            <mat-select placeholder="Exam Type" formControlName="dean_committee_id">
-              <mat-option *ngFor="let server of state.deanCommitteeList" [value]="server.dean_committee_id">
-                {{ server.dean_committee_name_e }}
+            <mat-label>Degree Programme Type</mat-label>
+            <mat-select placeholder="Degree Programme Type" formControlName="degree_programme_type_id">
+              <mat-option *ngFor="let degreeProgramme of state.degreeProgrammeTypeList"
+                [value]="degreeProgramme.degree_programme_type_id">
+                {{ degreeProgramme.degree_programme_type_name_e }}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
 
-        <div class="col-md-4 col-6">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Course Year</mat-label>
-            <mat-select placeholder="Exam Type" formControlName="course_year_id">
-              <mat-option *ngFor="let server of state.courseYearList" [value]="server.course_year_id">
-                {{ server.course_year_name_e }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
-        <!-- [disabled]="state.semesterList.length === 1" -->
-        <div class="col-md-4 col-6">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Semester</mat-label>
-            <mat-select placeholder="Semester" formControlName="semester_id">
-              <mat-option *ngFor="let server of state.semesterList" [value]="server.semester_id">
-                {{ server.semester_name_e }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-6 col-12">
-          <!-- <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Course</mat-label>
-            <mat-select placeholder="Course" formControlName="course_id">
-              <mat-option *ngFor="let server of state.courseList" [value]="server.course_id">
-                {{ server.course_title_e }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field> -->
-
-          <ng-select placeholder="Course" formControlName="course_id" appearance="outline">
-            <ng-container *ngFor="let server of state.courseList">
-              <ng-option [value]="server.course_id">
-                {{ server.course_title_e}}
+        <div class="col-md-8 col-12">
+          <ng-select placeholder="College Name" formControlName="college_id" appearance="outline">
+            <ng-container *ngFor="let college of state.collegeList">
+              <ng-option [value]="college.college_id">
+                {{ college.college_name_e}}
               </ng-option>
             </ng-container>
           </ng-select>
@@ -128,8 +49,8 @@
 
         <div class="col-12 mt-md-3 d-flex justify-content-center">
           <div>
-            <button mat-raised-button color="primary" (click)="onStudentAttendanceList_click()">
-              Get Student List
+            <button mat-raised-button color="primary" (click)="getDetails_click()">
+              Get Details
             </button>
           </div>
         </div>
@@ -139,11 +60,112 @@
   </mat-card-content>
 </mat-card>
 
+<div *ngIf="state.matrixList && state.matrixList.length > 0" class="mt-3 mb-3">
+  <app-reporttable [options]="matrixTableOptions">
+    <ng-template #headerTemplate>
+      <tr>
+        <th>S.No.</th>
+        <th>Course Year</th>
+        <th>Exam Type</th>
+        <th>Course Nature</th>
+        <th>Dean Committee</th>
+        <th class="d-print-none">Get Courses</th>
+      </tr>
+    </ng-template>
+    <ng-template #rowTemplate let-row let-i="index">
+      <tr>
+        <td>{{i+1}}</td>
+        <td>{{ row.course_year_name_e }}</td>
+        <td>{{ row.exam_type_name_e }}</td>
+        <td>{{ row.course_nature_name_e }}</td>
+        <td>{{ row.dean_committee_name_e }}</td>
+        <td class="d-print-none cursor-pointer">
+          <mat-icon (click)="getCourses_btn(row)" class="text-success">
+            assignment
+          </mat-icon>
+        </td>
+      </tr>
+    </ng-template>
+  </app-reporttable>
+</div>
+
+<mat-card *ngIf="state.courseList && state.courseList.length > 0">
+  <div *ngIf="state.courseList && state.courseList.length > 0" class="mt-3 bg-white">
+    <app-reporttable [options]="courseListOption">
+      <ng-template #headerTemplate>
+        <tr>
+          <th>S.No.</th>
+          <th class="text-start">Course Name</th>
+          <th class="d-print-none">Get Reports</th>
+        </tr>
+      </ng-template>
+      <ng-template #rowTemplate let-row let-i="index">
+        <tr>
+          <!-- <td>{{ (options?.page * options?.pageSize) + i + 1 }}</td> -->
+          <td>{{i + 1}} </td>
+          <td class="text-start">{{ row.course_name }}</td>
+          <th class="d-print-none cursor-pointer">
+            <mat-icon (click)="getPdfReport_btn(row)" class="text-danger">
+              picture_as_pdf
+            </mat-icon>
+          </th>
+        </tr>
+      </ng-template>
+    </app-reporttable>
+  </div>
+</mat-card>
 
 
-<!-- Report Rendering -->
-<!-- <ng-container *ngIf="studentAttendaceList.reports && studentAttendaceList.reports.length > 0"> -->
-<ng-container *ngIf="studentAttendaceList.reports.length > 0">
-  <!-- <app-report [data]="studentAttendaceList" [infoFields]="infoFields" [tableColumns]="tableColumns">
-  </app-report> -->
-</ng-container>
+
+<!-- <div *ngIf="matrixList && matrixList.length > 0" class="mt-3">
+    <table class="row-border hover">
+        <thead>
+            <tr>
+                <th>Course Year</th>
+                <th>Exam Type</th>
+                <th>Course Nature</th>
+                <th>Dean Committee</th>
+                <th>Get Courses</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of matrixList">
+                <td>{{ item.course_year_name_e }}</td>
+                <td>{{ item.exam_type_name_e }}</td>
+                <td>{{ item.course_nature_name_e }}</td>
+                <td>{{ item.dean_committee_name_e }}</td>
+                <th>
+                    <mat-icon (click)="getCourses_btn(item)" class="text-success">
+                        assignment
+                    </mat-icon>
+                </th>
+            </tr>
+        </tbody>
+    </table>
+</div> -->
+
+
+<!-- <mat-card class="attendance-main">
+    <div *ngIf="courseList && courseList.length > 0" class="mt-3 bg-white">
+        <table class="row-border hover">
+            <thead>
+                <tr>
+                    <th>S.No.</th>
+                    <th class="text-start">Course Name</th>
+                    <th>Get Reports</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let course of courseList; let i = index">
+                    <td>{{ i +1}}</td>
+                    <td class="text-start">{{ course.course_name }}</td>
+                    <th>
+                        <mat-icon (click)="getPdfReport_btn(course)" class="text-danger">
+                            picture_as_pdf
+                        </mat-icon>
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</mat-card> -->
