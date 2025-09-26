@@ -1,0 +1,203 @@
+<!-- ^ new code -->
+<div class="container-fluid p-0">
+  <!-- Header -->
+  <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-white shadow-sm py-3">
+    <div class="container-fluid px-4">
+      <div class="d-flex align-items-center">
+        <button class="btn btn-link d-lg-none me-3 p-0" j type="button" (click)="toggleSidebar()"
+          [attr.aria-expanded]="isSidebarOpen" aria-controls="sidebar">
+          <i class="fas fa-bars fs-4"></i>
+        </button>
+        <div class="d-flex align-items-center">
+          <div class="bg-danger text-white rounded d-flex align-items-center justify-content-center me-2">
+            <span class="fw-bold p-3 text-center">Student Corner</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center flex-grow-1 justify-content-center d-none d-md-flex">
+        <div class="position-relative" class="custom-search">
+          <input type="text" class="form-control rounded-pill ps-5" placeholder="Search..." [(ngModel)]="searchQuery">
+          <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center">
+        <button class="btn btn-link text-muted me-3 position-relative">
+          <i class="fas fa-bell fs-5"></i>
+          <span
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cutom-notif">3</span>
+        </button>
+        <button class="btn btn-link text-muted me-3">
+          <i class="fas fa-sync fs-5"></i>
+        </button>
+        <div class="dropdown">
+          <button class="btn btn-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+            <img [src]=" igkvUrl+studentData?.student_photo_path" class="rounded-circle me-2" width="32" height="32" [alt]="studentData?.name">
+            <div class="text-start d-none d-sm-block">
+              <div class="small fw-bold text-dark">{{ studentData?.student_name }}</div>
+              <div class="small text-muted">{{ studentData?.degree_programme_name_e }}</div>
+            </div>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="d-flex">
+    <!-- Desktop Sidebar (always visible on large screens) -->
+    <!--   <div class="sidebar-desktop d-none d-lg-block">
+      <div class="px-3 py-4">
+        <div class="small text-muted mb-3 fw-semibold text-center">MAIN MENU</div>
+        <nav class="nav flex-column">
+          <a *ngFor="let item of menuItems" 
+             class="nav-link d-flex align-items-center py-2 px-3 mb-1 rounded"
+             [class.active]="item.isActive"
+             [class.text-muted]="!item.isActive"
+             href="#"
+             (click)="onMenuClick(item)">
+            <i [class]="item.icon + ' me-3'" 
+               [class.text-danger]="item.isActive"></i>
+            <span>{{ item.label }}</span>
+          </a>
+        </nav>
+      </div>
+    </div> -->
+
+
+    <!-- ^ new code s -->
+    <div class="sidebar-desktop d-none d-lg-block">
+      <div class="">
+        <nav class="nav flex-column mt-3">
+          <ng-container *ngFor="let item of menuItems">
+            <!-- Main Menu Item -->
+            <a class="nav-link d-flex align-items-center py-2 px-3 mb-1 rounded position-relative"
+              [class.active]="item.isActive" [class.text-muted]="!item.isActive" [class.has-submenu]="item.hasSubmenu"
+              href="#" (click)="onMenuClick(item); $event.preventDefault()">
+              <i [class]="item.icon + ' me-3'" [class.text-danger]="item.isActive"></i>
+              <span class="flex-grow-1">{{ item.label }}</span>
+
+              <!-- Dropdown arrow for items with submenus -->
+              <i *ngIf="item.hasSubmenu" class="fas fa-chevron-right submenu-arrow ms-2 transition-all"
+                [class.rotate-90]="item.isExpanded"></i>
+            </a>
+
+            <!-- Submenu Items -->
+            <div *ngIf="item.hasSubmenu && item.isExpanded" class="submenu-container ms-4 mb-2 animate-slide-down">
+              <a *ngFor="let submenu of item.submenus"
+                class="nav-link submenu-item d-flex align-items-center py-2 px-3 mb-1 rounded"
+                [class.active]="submenu.isActive" [class.text-muted]="!submenu.isActive" href="#"
+                (click)="onSubmenuClick(item, submenu); $event.preventDefault()">
+                <i class="fas fa-circle submenu-dot me-3" [class.text-danger]="submenu.isActive"></i>
+                <span>{{ submenu.label }}</span>
+              </a>
+            </div>
+          </ng-container>
+        </nav>
+      </div>
+    </div>
+    <!-- ^ new code e -->
+    <!-- Mobile Sidebar (offcanvas) -->
+    <!--  <div class="offcanvas offcanvas-start bg-white shadow-sm d-lg-none" 
+         id="sidebarMobile" 
+         [class.show]="isSidebarOpen"
+         style="width: 280px;"
+         tabindex="-1">
+      <div class="offcanvas-header d-lg-none border-bottom custom-mob-head">
+        <h5 class="offcanvas-title">
+          <div class="d-flex align-items-center">
+            <div class="bg-danger text-white rounded d-flex align-items-center justify-content-center me-2">
+              <span class="fw-bold small">Student Corner</span>
+            </div>
+          </div>
+        </h5>
+        <button type="button" 
+                class="btn-close" 
+                (click)="closeSidebar()"
+                aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body p-0">
+        <div class="px-3 py-4">
+          <div class="small text-muted mb-3 fw-semibold">MAIN MENU</div>
+          <nav class="nav flex-column">
+            <a *ngFor="let item of menuItems" 
+               class="nav-link d-flex align-items-center py-2 px-3 mb-1 rounded"
+               [class.active]="item.isActive"
+               [class.text-muted]="!item.isActive"
+               href="#"
+               (click)="onMenuClick(item); closeSidebar()">
+              <i [class]="item.icon + ' me-3'" 
+                 [class.text-danger]="item.isActive"></i>
+              <span>{{ item.label }}</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- ^ new code s -->
+    <!-- Mobile Sidebar -->
+    <div class="offcanvas-lg offcanvas-start bg-white shadow-sm d-lg-none" id="sidebar" [class.show]="isSidebarOpen"
+      style="width: 280px;" tabindex="-1">
+      <div class="offcanvas-header d-lg-none border-bottom">
+        <h5 class="offcanvas-title">
+          <div class="d-flex align-items-center">
+            <div class="bg-danger text-white rounded d-flex align-items-center justify-content-center me-2"
+              style="width: 32px; height: 32px;">
+              <span class="fw-bold small">Af</span>
+            </div>
+            <span class="fw-bold text-dark">Menu</span>
+          </div>
+        </h5>
+        <button type="button" class="btn-close" (click)="closeSidebar()" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body p-0">
+        <div class="px-3 py-4">
+          <div class="small text-muted mb-3 fw-semibold">MAIN MENU</div>
+          <nav class="nav flex-column">
+            <!-- Same drill-down structure as desktop -->
+            <ng-container *ngFor="let item of menuItems">
+              <a class="nav-link d-flex align-items-center py-2 px-3 mb-1 rounded position-relative"
+                [class.active]="item.isActive" [class.text-muted]="!item.isActive" [class.has-submenu]="item.hasSubmenu"
+                href="#" (click)="onMenuClick(item); $event.preventDefault()">
+                <i [class]="item.icon + ' me-3'" [class.text-danger]="item.isActive"></i>
+                <span class="flex-grow-1">{{ item.label }}</span>
+                <i *ngIf="item.hasSubmenu" class="fas fa-chevron-right submenu-arrow ms-2 transition-all"
+                  [class.rotate-90]="item.isExpanded"></i>
+              </a>
+
+              <div *ngIf="item.hasSubmenu && item.isExpanded" class="submenu-container ms-4 mb-2 animate-slide-down">
+                <a *ngFor="let submenu of item.submenus"
+                  class="nav-link submenu-item d-flex align-items-center py-2 px-3 mb-1 rounded"
+                  [class.active]="submenu.isActive" [class.text-muted]="!submenu.isActive" href="#"
+                  (click)="onSubmenuClick(item, submenu); $event.preventDefault()">
+                  <i class="fas fa-circle submenu-dot me-3" [class.text-danger]="submenu.isActive"></i>
+                  <span>{{ submenu.label }}</span>
+                </a>
+              </div>
+            </ng-container>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- ^ main content -->
+     <div class="contaner-fluid w-100">
+       <router-outlet></router-outlet>
+     </div>
+   
+
+    <!-- ^ new code e -->
+    <!-- Mobile backdrop overlay -->
+    <div *ngIf="isSidebarOpen" class="offcanvas-backdrop fade show d-lg-none" (click)="closeSidebar()"></div>
+
+  </div>
+</div>

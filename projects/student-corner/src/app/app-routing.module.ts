@@ -9,13 +9,15 @@ import { PaymentStatusComponent } from './components/payment-status/payment-stat
 import { ProfileComponent } from './components/profile/profile.component';
 import { ExaminationResultComponent } from './components/examination-result/examination-result.component';
 import { CourseRegistrationComponent } from './components/course-registration/course-registration.component';
+import { NewLayoutComponent } from './components/new-layout/new-layout.component';
 
 const routes: Routes = [
 {
         path: '',
-        component: LayoutComponent,
+        component: NewLayoutComponent,
         children:[
-            {path: '', component:DashboardComponent} ,
+            {path: '', redirectTo: 'dashboard',  pathMatch: 'full'},
+            {path: 'dashboard', component:DashboardComponent} ,
             {path: 'fee-receipt', component: FeeReceiptComponent},
             {path: 'registration-card', component: RegistrationCardComponent},
             {path: 'admit-card', component: AdmitCardComponent},
@@ -23,9 +25,14 @@ const routes: Routes = [
             {path: 'profile', component: ProfileComponent},
             {path: 'result', component: ExaminationResultComponent},
             {path: 'course-registration', component: CourseRegistrationComponent},
-
-        ]
+        ],
       },
+      {
+        path:'old',
+        component:LayoutComponent
+      }
+
+      
 ];
 
 @NgModule({

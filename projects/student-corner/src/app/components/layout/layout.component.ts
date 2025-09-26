@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+
+
 @Component({
   selector: 'app-layout',
   standalone: false,
@@ -21,7 +23,6 @@ export class LayoutComponent {
     );
   }
 
- // Dynamic menu items array
   menuItems = [
     {
       label: 'My Corner',
@@ -88,4 +89,11 @@ export class LayoutComponent {
    toggleMenu(index: number): void {
     this.menuItems[index].expanded = !this.menuItems[index].expanded;
   }
+
+
 }
+
+
+
+
+

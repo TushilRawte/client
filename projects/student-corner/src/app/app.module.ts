@@ -17,6 +17,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ExaminationResultComponent } from './components/examination-result/examination-result.component';
 import { CourseRegistrationComponent } from './components/course-registration/course-registration.component';
 import { FormsModule } from '@angular/forms';
+import { NewLayoutComponent } from './components/new-layout/new-layout.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { FormsModule } from '@angular/forms';
     ProfileComponent,
     ExaminationResultComponent,
     CourseRegistrationComponent,
+    NewLayoutComponent
 
     
   ],

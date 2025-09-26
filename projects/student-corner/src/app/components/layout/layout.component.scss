@@ -116,10 +116,13 @@
 
 
 
+// & old code start
+
 // layout.component.scss
-mat-sidenav{
+
+ mat-sidenav{
   background: #f8f9fa;
-  width: 280px;
+  width: 32em;
   height: 100%;
   border-right: 1px solid #e9ecef;
 }
@@ -172,17 +175,17 @@ mat-toolbar{
         font-size: smaller;
         color: rgb(150, 144, 144);
     }
-}
+} 
 
 // Menu Section Styles
-.menu-section {
+ .menu-section {
     margin-bottom: 2px;
 }
 
 .menu-item {
   display: flex !important;
   align-items: center;
-  justify-content: space-between; // ensures left and right elements align properly
+  justify-content: space-between; 
   padding: 12px 16px !important;
   color: #495057 !important;
   font-weight: 500;
@@ -231,7 +234,7 @@ mat-toolbar{
       transform: rotate(180deg);
     }
   }
-}
+} 
 
 
 
@@ -290,10 +293,10 @@ mat-toolbar{
     border-top-width: 1px;
     border-color: #dee2e6;
     margin: 0;
-}
+} 
 
 // Override Material List Item Styles
-::ng-deep {
+ ::ng-deep {
     .mat-list-item {
         &.menu-item {
             .mat-list-item-content {
@@ -319,4 +322,7 @@ mat-toolbar{
             }
         }
     }
-}
+} 
+
+// & old code end
+

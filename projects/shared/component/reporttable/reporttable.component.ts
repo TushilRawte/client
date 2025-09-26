@@ -149,7 +149,6 @@ export class ReporttableComponent implements OnInit, AfterViewInit, AfterContent
 
   copyTableData() {
     if (!this.table) return;
-
     let tableText = '';
     const rows = this.table.nativeElement.querySelectorAll('tr');
     rows.forEach((row: any) => {

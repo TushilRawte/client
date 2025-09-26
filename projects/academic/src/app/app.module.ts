@@ -52,11 +52,12 @@ import { MarksEntryImportComponent } from './marks entry/marks-entry-import/mark
     AppRoutingModule,
     CapslockDirective,
     FormsModule,
-        ServiceWorkerModule.register('ngsw-worker.js', {
-          enabled: true,
-          registrationStrategy: 'registerWhenStable:30000'
-        })
-  ],
+    ServiceWorkerModule.register('ngsw-worker.js', {
+        enabled: true,
+        registrationStrategy: 'registerWhenStable:30000'
+    }),
+    ReportComponent
+],
  providers: [
     provideAnimationsAsync()
   ],

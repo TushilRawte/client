@@ -54,7 +54,9 @@
     </mat-sidenav-content>
 </mat-sidenav-container> -->
 <!-- layout.component.html -->
-<mat-sidenav-container>
+
+
+ <mat-sidenav-container>
   <mat-sidenav #sidebar class="sidenav" fixedInViewport
   [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
   [mode]="(isHandset$ | async) ? 'push' : 'side'"
@@ -76,9 +78,9 @@
                   chevron_right
                 </mat-icon>
                 <span class="menu-label">{{menu.label}}</span>
-                <!-- <mat-icon class="dropdown-arrow " [class.expanded]="menu.expanded">
+                <mat-icon class="dropdown-arrow " [class.expanded]="menu.expanded">
                   keyboard_arrow_down
-                </mat-icon> -->
+                </mat-icon>
               </a>
 
               <!-- Dropdown Content -->
@@ -121,4 +123,8 @@
         </div>
     </mat-sidenav-content>
 </mat-sidenav-container>
+
+
+
+
 
