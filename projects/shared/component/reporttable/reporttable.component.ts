@@ -341,7 +341,6 @@ export class ReporttableComponent implements OnInit, AfterViewInit, AfterContent
         html: html,
         orientation: this.options.orientation,
         title: this.options?.title,
-        college_name_e: "abc fdghj ghhj hgjhkj gjhh hjjhhj"
       }, 'common').pipe(take(1)).subscribe(() => {
         console.log("html to pdf");
       });
