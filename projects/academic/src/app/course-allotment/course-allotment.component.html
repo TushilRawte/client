@@ -35,44 +35,37 @@
           </div>
     
           <div class="col-md-2 col-6">
-            <!-- <ng-select placeholder="Semester" 
-                       formControlName="semester_id" 
-                       appearance="outline" 
-                       (change)="onSemesterChange($event)">
-              <ng-option *ngFor="let semester of semesterList" 
-                         [value]="semester.semester_id">
-                {{ semester.semester_name_e }}
-              </ng-option>
-            </ng-select> -->
+
                 <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Semester</mat-label>
                 <mat-select placeholder="Semester" formControlName="semester_id" (selectionChange)="onSemesterChange($event.value)">
                   <mat-option *ngFor="let semester of semesterList" 
                            [value]="semester.semester_id">
-                    {{ semester.semester_name_e }}
+                    {{ semester?.semester_name_e }}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
           </div>
         </div>
+ 
         <div class="row mt-3">
             <ng-container class="card-header">Course Allotment</ng-container>
-            <table class="table    table-bordered">
+            <table class="tables    table-bordered">
               <thead>
-                <tr>
-                  <th>Year</th>
-                  <th>Dean Committee</th>
-                  <!-- <th>Batch</th> -->
-                  <th>Edit Course</th>
-                  <th>Course List</th>
-                  <th>Teacher Allotment</th>
-                  <th>Course Allotement Status</th>
-                  <th>Teacher Section Allotment</th>
+                <tr style="font-weight: 500; font-size: 14px;">
+                  <th class="imp">Year</th>
+                  <th class="imp">Dean Committee</th>
+                  <!-- <th class="imp">Batch</th> -->
+                  <th class="imp">Edit Course</th>
+                  <th class="imp">Course List</th>
+                  <th class="imp">Teacher Allotment</th>
+                  <th class="imp">Course Allotement Status</th>
+                  <th class="imp">Section Allotment</th>
                   <!-- <th>Print</th> -->
                 </tr>
               </thead>
-              <tbody>
-                <tr *ngFor="let item of courseYearList; let i = index">
+              <tbody >
+                <tr *ngFor="let item of courseYearList; let i = index" [ngClass]="{ 'highlight-row': highlightedIndex === i }" >
                   <td>{{ item.course_year_name_e }}</td>
                   <td>{{item.dean_committee_name_e}}</td>
                   <!-- <td>I & II</td> -->
@@ -81,20 +74,21 @@
                       <span class="a-btn">
                         <!-- <button [disabled]="hasSpecificProgramme && !showChildButton" mat-icon-button color="primary" type="button" (click)="openCourseGeneralCall(item)" ><mat-icon>add_circle</mat-icon>
                         </button> -->
-                        
-                        <button [disabled]="hasSpecificProgramme && !showChildButton" mat-icon-button color="primary" type="button" (click)="openCourseGenforUpdate(item)" ><mat-icon>edit</mat-icon></button>
+                        <!-- [disabled]="hasSpecificProgramme && !showChildButton" -->
+                        <button [disabled]="item.allotment_type === 'M'" mat-icon-button color="primary" type="button" (click)="openCourseGenforUpdate(item,i)" ><mat-icon>edit</mat-icon></button>
 
-                        <!-- <button mat-icon-button color="primary" type="button" (click)="openCourseGeneralforDilog(item)"><mat-icon>visibility</mat-icon></button> -->
+                        <!-- <button mat-icon-button color="primary" type="button" (click)="openCourseGeneralforDilog(item,i)"><mat-icon>visibility</mat-icon></button> -->
                       </span>
                     </div>
                   </td>
-                  <td>
+                  <td> 
+                    <!-- [disabled]="hasSpecificProgramme && !showChildButton" -->
                     <span class="a-btn">
                       <button 
                         type="button" 
                         class="a-btn link-type" 
-                        [disabled]="hasSpecificProgramme && !showChildButton" 
-                        (click)="previousYearaltBtn = true; getPreviousYearAllotment(item)" >
+                        [disabled]="isAllowed"
+                        (click)="previousYearaltBtn = true; getPreviousYearAllotment(item, i)" >
                         Get Courses for Allot
                       </button>
                     </span>
@@ -102,8 +96,8 @@
                   <td>
                     <div class="btnsection">
                       <span class="a-btn">
-                        <button  mat-icon-button color="primary" type="button" (click)="openCourseGenforUpdate(item)" ><mat-icon>person_edit</mat-icon></button>
-                        <button mat-icon-button color="primary" type="button" (click)="openCourseGeneralforDilog(item)"><mat-icon>visibility</mat-icon></button>
+                        <button  mat-icon-button color="primary" type="button" (click)="openCourseGenforUpdate(item, i)" ><mat-icon>person_edit</mat-icon></button>
+                        <!-- <button mat-icon-button color="primary" type="button" (click)="openCourseGeneralforDilog(item,i)"><mat-icon>visibility</mat-icon></button> -->
                       </span>
                     </div>
                   </td>
@@ -117,7 +111,7 @@
                   </span>
                   </td>
                   <td>
-                    <button mat-icon-button color="primary" type="button" (click)="openTeachSectionDilog(item)"><mat-icon>visibility</mat-icon></button>
+                    <button [disabled]="!section_required" mat-icon-button color="primary" type="button" (click)="openTeachSectionDilog(item, i)"><mat-icon>visibility</mat-icon></button>
                   </td>
                   <!-- <td>
                     <button (click)="getDataForPrint(item);" mat-raised-button color="primary" matTooltip="Print"  class="tools mx-auto"> <mat-icon>print</mat-icon> </button>
@@ -126,39 +120,33 @@
               </tbody>
             </table>
         </div>
-          <app-courseallot-dashboard [data]="currentData" ></app-courseallot-dashboard>
+          <!-- <app-courseallot-dashboard [data]="currentData" ></app-courseallot-dashboard> -->
         <div class="row course-allot mt-3" *ngIf="showCourse">
             <div class="row">
-              <!-- <div class="O-course">
-                <div class="col-md-4 col-6">
-                  <label>Other Department Course</label>
-                  <mat-checkbox [(ngModel)]="isAllCourse" (change)="toggleCourseSection()">Yes</mat-checkbox>
-                </div>
-                  <div class="col-md-8 col-6" (click)="toggleCourseSection()" >
-                    <ng-select placeholder="Course" formControlName="course_id" appearance="outline" (change)="onCourseChange($event)">
-                      <ng-container *ngFor="let item of allCourses">
-                        <ng-option [value]="item.course_id">{{ item.course_name }}</ng-option>
+              <ng-container *ngIf="isAddMoreCourses">
+                  <ng-container *ngIf="isHideModuleSection">
+                <div class="col-md-6 col-6">
+                    <ng-select placeholder="Module" formControlName="course_module_id" (change)="onModuleChange($event)" appearance="outline" >
+                      <ng-container *ngFor="let item of moduleList">
+                        <ng-option [value]="item?.course_module_id">{{ item?.module_name}}</ng-option>
                       </ng-container>
                     </ng-select>
                   </div>
-              </div>
-              
-              <div class="col-md-8 col-6" *ngIf="!isAllCourse">
-                <ng-select placeholder="Course" formControlName="course_id" appearance="outline" (change)="onCourseChange($event)">
-                  <ng-container *ngFor="let item of courseList">
-                    <ng-option [value]="item.course_id">{{ item.course_name }}</ng-option>
-                  </ng-container>
-                </ng-select>
-              </div> -->
-
+                     <div class="col-md-6 col-6">
+                    <ng-select placeholder="Batch Group" formControlName="course_module_batch_group_id" appearance="outline" >
+                      <ng-container *ngFor="let item of moduleBatchGroupList">
+                        <ng-option [value]="item?.course_module_batch_group_id">{{ item?.course_module_batch_group_name_e}}</ng-option>
+                      </ng-container>
+                    </ng-select>
+                  </div>
+              </ng-container>
              <ng-container *ngIf="ifShowContainer">
-                <div class="col-md-2 col-3 align-items-center" >
+                <!-- <div class="col-md-2 col-3 align-items-center" >
                   <label>Other Department Course</label>
                   <mat-checkbox [(ngModel)]="isAllCourse" (change)="toggleCourseSection()">Yes</mat-checkbox>
                 </div>
               
                 <div class="col-md-6 col-12 mt-2">
-                  <!-- If Other Course is selected -->
                   <ng-select *ngIf="isAllCourse"
                              placeholder="Other Deparment Course"
                              formControlName="course_id"
@@ -169,7 +157,6 @@
                     </ng-option>
                   </ng-select>
               
-                  <!-- If Regular Course -->
                   <ng-select *ngIf="!isAllCourse"
                              placeholder="Course"
                              formControlName="course_id"
@@ -186,7 +173,39 @@
                       <mat-label>Course Nature</mat-label>
                       <input matInput formControlName="course_nature" readonly>
                     </mat-form-field>
-                  </div>
+                  </div> -->
+                                    <div class="col-md-2 col-3 align-items-center">
+                      <label>Other Department Course</label>
+                      <mat-checkbox formControlName="isAllCourse">
+                        Yes
+                      </mat-checkbox>
+                    </div>
+
+                    <div class="col-md-6 col-12 mt-2" [formGroup]="courseAllotFormGroup">
+                      <!-- If Other Course is selected -->
+                      <ng-select *ngIf="courseAllotFormGroup.get('isAllCourse')?.value"
+                                placeholder="Other Department Course"
+                                formControlName="course_id"
+                                appearance="outline"
+                                (change)="onCourseChange($event)"
+                                [readonly]="hasSpecificProgramme && !showChildButton">
+                        <ng-option *ngFor="let item of allCourses" [value]="item.course_id">
+                          {{ item.course_name }}
+                        </ng-option>
+                      </ng-select>
+
+                      <!-- If Regular Course -->
+                      <ng-select *ngIf="!courseAllotFormGroup.get('isAllCourse')?.value"
+                                placeholder="Course"
+                                formControlName="course_id"
+                                appearance="outline"
+                                (change)="onCourseChange($event)"
+                                [readonly]="hasSpecificProgramme && !showChildButton">
+                        <ng-option *ngFor="let item of courseList" [value]="item.course_id">
+                          {{ item.course_name }}
+                        </ng-option>
+                      </ng-select>
+                    </div>
                   
                   <div class="col-md-2 col-6">
                     <mat-form-field appearance="outline">
@@ -194,35 +213,21 @@
                       <input matInput formControlName="total_credit" readonly>
                     </mat-form-field>
                   </div>
-                         <div class="col-md-4 col-6">
-                    <ng-select placeholder="Module" formControlName="course_module_id" appearance="outline" >
-                      <ng-container *ngFor="let item of moduleList">
-                        <ng-option [value]="item?.course_module_id">{{ item?.module_name}}</ng-option>
-                      </ng-container>
-                    </ng-select>
-                  </div>
-                     <div class="col-md-2 col-6">
-                    <ng-select placeholder="Batch Group" formControlName="course_module_batch_group_id" appearance="outline" >
-                      <ng-container *ngFor="let item of moduleBatchGroupList">
-                        <ng-option [value]="item?.course_module_batch_group_id">{{ item?.course_module_batch_group_name_e}}</ng-option>
-                      </ng-container>
-                    </ng-select>
-                  </div>
                   <div class="col-md-2 col-6">
-                    <ng-select placeholder="Course Type" formControlName="course_type_id" appearance="outline">
+                    <ng-select placeholder="Course Type" formControlName="course_type_id" appearance="outline" [readonly]="hasSpecificProgramme && !showChildButton">
                       <ng-container *ngFor="let item of courseTypeList">
                         <ng-option [value]="item.course_type_id">{{ item.course_type_name_e }}</ng-option>
                       </ng-container>
                     </ng-select>
                   </div>
                   <div class="col-md-2 col-6">
-                    <ng-select placeholder="Course Allotement Type" formControlName="cou_allot_type_id" appearance="outline">
+                    <ng-select placeholder="Course Allotement Type" formControlName="cou_allot_type_id" appearance="outline" [readonly]="hasSpecificProgramme && !showChildButton">
                       <ng-container *ngFor="let item of courseAllotType">
                         <ng-option [value]="item.cou_allot_type_id">{{ item.cou_allot_type_name_e }}</ng-option>
                       </ng-container>
                     </ng-select>
                   </div>
-                  <div class="col-md-2 col-6">
+                  <div class="col-md-3 col-6">
                     <ng-select placeholder="Teacher" formControlName="emp_id" appearance="outline" [multiple]="true">
                       <ng-container *ngFor="let item of teacherList">
                         <ng-option [value]="item?.emp_id">{{ item?.emp_name || 'unknown' }}</ng-option>
@@ -230,53 +235,24 @@
                     </ng-select>
                   </div>
              </ng-container>
-                <div class="col-md-6 col-12 mt-2">
+                <div class="col-md-5 col-12 mt-2">
                   <!-- <button *ngIf="isaddRow == true" type="button" class="btn btn-primary" (click)="addRowToTable()">+ Add Row</button> -->
-
                   <button  type="button" class="btn btn-primary" (click)="addRowToTable()">+ Add Row</button>
-                  <button *ngIf="isEdit" class="btn btn-primary" (click)="submitUpdatedRow()">Edit Selected Course & Teachers</button>
+                  <button style="margin-left: 3px;" *ngIf="isEdit" class="btn btn-primary" (click)="submitUpdatedRow()">Update Selected Course & Teachers</button>
                   <!-- <button  class="btn btn-primary" (click)="submitUpdatedRow()">Update</button>  -->
                 </div>
+              </ng-container>
+            
               </div>
           </div>
 
-          <!-- Table to show added rows -->
-          <!-- <div *ngIf="courserows.controls.length > 0" class="mt-3">
-            <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Course</th>
-                    <th>Course Type</th>
-                    <th>Course Nature</th>
-                    <th>Credit</th>
-                    <th>Allotment Type</th>
-                    <th>Teachers</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let row of courserows.controls; let i = index" [formGroupName]="i">
-                    <td>{{ row.get('Course_Name')?.value }}</td>
-                    <td>{{ getCourseTypeName(row.get('Course_Type_Id')?.value) }}</td>
-                    <td>{{ row.get('Course_Nature')?.value }}</td>
-                    <td>{{ row.get('Total_Credit')?.value }}</td>
-                    <td>{{ getAllotmentTypeName(row.get('Cou_Allot_Type_Id')?.value) }}</td>
-                    <td>
-                      <span *ngFor="let teacher of getTeacherArray(row); let last = last">
-                        {{ getTeacherName(teacher.Emp_Id) }}{{ !last ? ', ' : '' }}
-                      </span>
-                    </td>
-                    <td>
-                      <button mat-icon-button color="warn" (click)="removeRow(i)">
-                        <mat-icon>delete</mat-icon>
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-          </div> -->
-
           <!-- <div *ngIf="courseAllotFormGroup.get('courserows')?.value?.length > 0" class="mt-3"> -->
+          <div class="row mt-3" *ngIf="isAddmoreCoursesBtnShow">
+            <div class="col text-end">
+              <button class="btn btn-primary" (click)="visibleForm()">+ Add More Courses</button>
+            </div>
+          </div>
+
           <div  class="mt-3">
             <table class="table table-bordered">
               <thead>
@@ -287,6 +263,8 @@
                   <th>Course Type</th>
                   <th>Course Nature</th>
                   <th>Credit</th>
+                  <th *ngIf="isHideModuleSection">Module</th>
+                  <th *ngIf="isHideModuleSection">Group</th>
                   <th>Allotment Type</th>
                   <th>Teachers</th>
                   <th>Delete</th>
@@ -294,12 +272,14 @@
                 </tr>
               </thead>
               <tbody formArrayName="courserows">
-                <tr *ngFor="let row of courserows.controls; let i = index" [formGroupName]="i">
+                <tr *ngFor="let row of courserows.controls; let i = index" [formGroupName]="i" [class.disabled-row]="row.get('eligible_course')?.value === 'N'">
                   <td>{{ i + 1 }}</td>
                   <td>{{ row.get('course_name')?.value }}</td>
                   <td>{{ getCourseTypeName(row.get('course_type_id')?.value) }}</td>
                   <td>{{ row.get('course_nature')?.value }}</td>
                   <td>{{ row.get('total_credit')?.value }}</td>
+                  <td *ngIf="isHideModuleSection">{{ getModuleName(row.get('course_module_id')?.value) }}</td>
+                  <td *ngIf="isHideModuleSection">{{ getBatchGroup(row.get('course_module_batch_group_id')?.value)}}</td>
                   <td>{{ getAllotmentTypeName(row.get('cou_allot_type_id')?.value) }}</td>
                   <td>
                     <span *ngFor="let teacher of getTeacherArray(row); let last = last">
@@ -316,7 +296,8 @@
                   </td>
                   <td>
                     <!-- *ngIf="isShowbutton == true" -->
-                    <button  mat-icon-button color="primary" (click)="editRow(row, i)">
+                     <!-- [disabled]="isFilalizeThanHideDeleteButton" -->
+                    <button    mat-icon-button color="primary"(click)="visibleForm()" (click)="editRow(row, i)">
                       <mat-icon>edit</mat-icon>
                     </button>
                   </td>
@@ -324,6 +305,16 @@
               </tbody>
             </table>
           </div>
+        <ng-container>
+          <p style="color: red; font-weight: bold; margin: 5px 0;">
+           Note:   ⚠ Disabled courses are not allotted, they are only shown for reference.
+          </p>
+        </ng-container>
+         <ng-container >
+             <mat-checkbox formControlName="section_required">
+                Is Section Allotment Required
+              </mat-checkbox>
+         </ng-container>
           <div class="col-md-4 col-12 mt-2">
             <button type="submit" class="btn btn-primary" *ngIf="isSbumitBtn == true" (click)="onSubmit()" >Allot Course</button>
             <!-- <button type="submit" class="btn btn-primary" (click)="onSubmit()" >Allot Course</button> -->

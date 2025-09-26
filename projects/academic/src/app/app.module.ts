@@ -20,6 +20,9 @@ import { TeacherSectionAllotmentComponent } from './teacher-section-allotment/te
 import { StudentSectionAllotmentComponent } from './student-section-allotment/student-section-allotment.component';
 import { TeacherAllotmentComponent } from './teacher-allotment/teacher-allotment.component';
 import { ViewCourseallotmentComponent } from './view-courseallotment/view-courseallotment.component';
+import { MarksEntryAdminComponent } from './marks entry/marks-entry-admin/marks-entry-admin.component';
+import { MarksEntryFacultyComponent } from './marks entry/marks-entry-faculty/marks-entry-faculty.component';
+import { MarksEntryImportComponent } from './marks entry/marks-entry-import/marks-entry-import.component';
 
 
 @NgModule({
@@ -37,6 +40,9 @@ import { ViewCourseallotmentComponent } from './view-courseallotment/view-course
     StudentSectionAllotmentComponent,
     CourseAttendanceComponent,
     CourseAttendanceReportComponent,
+    MarksEntryAdminComponent,
+    MarksEntryFacultyComponent,
+    MarksEntryImportComponent,
 
   ],
   imports: [

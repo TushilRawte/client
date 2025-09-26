@@ -64,6 +64,19 @@ export class CourseAllotmentComponent {
   moduleBatchGroupList:any
   isShowCourseListTable: boolean = false
   isShowUpdateButton: boolean = false
+  isHideModuleSection:boolean= false
+  isAddMoreCourses:boolean= false
+  isAddmoreCoursesBtnShow:boolean = false
+  highlightedIndex: number | null = null;
+  masterCollegeList:any
+  isMasterCollege:boolean = false;
+  selectedDegreeProgrammeTypeId:any
+  section_required: any;
+  section_allotment_button:boolean = false;
+  isFilalizeThanHideDeleteButton: boolean = false;
+  allotment_type_for_flag:any
+   isAllowed:boolean = false;
+
   
 
   toggleCourseSection(): void {
@@ -85,6 +98,7 @@ export class CourseAllotmentComponent {
     this.getallCourse();
     this.getModuleList();
     this.getModuleBatchGroup();
+    this.getMasterCollege()
   }
   
   mainforfun() {
@@ -103,64 +117,76 @@ export class CourseAllotmentComponent {
       cou_allot_type_id: ['', Validators.required],
       course_nature: [''],  
       course_module_id: [''],  
-      course_module_batch_group_id: [''],  
+      course_module_batch_group_id: [''],
+      section_required: [false],  
       total_credit: [''],   
+      isAllCourse: [false],
       emp_id: [[]], 
       courserows: this.fb.array([])
     });
 
   }
 
+addRowToTable() {
+  const teachers = this.courseAllotFormGroup.get('emp_id')?.value;
 
-  addRowToTable() {
-    const teachers = this.courseAllotFormGroup.get('emp_id')?.value;
-    // if (!teachers || teachers.length === 0) {
-    //   alert('Please select at least one teacher');
-    //   return;
-    // }
-  
-    const selectedCourse = this.courseList.find(
-      (course: { course_id: any; }) => course.course_id === this.courseAllotFormGroup.get('course_id')?.value
-    );
-  
-    const newCourseRow = this.fb.group({
-      course_id: [this.courseAllotFormGroup.get('course_id')?.value],
-      course_name: [selectedCourse?.course_name],  // Store name for display
-      course_nature: [selectedCourse?.course_nature],  // Store nature
-      total_credit: [selectedCourse?.credit],  // Store credit
-      course_type_id: [this.courseAllotFormGroup.get('course_type_id')?.value],
-      cou_allot_type_id: [this.courseAllotFormGroup.get('cou_allot_type_id')?.value],
-      course_module_id: [this.courseAllotFormGroup.get('course_module_id')?.value],
-      course_module_batch_group_id: [this.courseAllotFormGroup.get('course_module_batch_group_id')?.value],
-      // teacherRows: this.fb.array(
-      //   teachers.map((teacherId: any) => this.fb.group({
-      //     emp_id: [teacherId]
-      //   }))
-      // )
-      teacherRows: this.fb.array(
-        (teachers || []).map((teacherId: any) => this.fb.group({
-          emp_id: [teacherId]
-        }))
-      )
-    });
+  const courseId = this.courseAllotFormGroup.get('course_id')?.value;
+  const courseTypeId = this.courseAllotFormGroup.get('course_type_id')?.value;
 
-    this.courserows.push(newCourseRow);
-    console.log('New course row added:', newCourseRow.value);
-    console.log('new array created ==>',this.courserows);
-    this.courseAllotFormGroup.get('course_id')?.reset();
-    // Reset form fields
-    this.courseAllotFormGroup.patchValue({
-      course_id: '',
-      course_type_id: '',
-      cou_allot_type_id: '',
-      emp_id: [],
-      course_nature: '',
-      total_credit: '',
-      course_module_id: '',
-      course_module_batch_group_id: '',
-    });
-    this.isShowbutton = false
+  const selectedCourse = this.courseList.find(
+    (course: { course_id: any }) => course.course_id === courseId
+  );
+if (!courseId || !courseTypeId ) {
+    alert('Please select Course, Course Type, and Allotment Type before adding.');
+    return;
   }
+  // ✅ Check for duplicates based on course_id + course_type_id
+  const isDuplicate = this.courserows.controls.some(
+    (row) =>
+      row.get('course_id')?.value === courseId &&
+      row.get('course_type_id')?.value === courseTypeId
+  );
+
+  if (isDuplicate) {
+    alert('This course with the selected type is already added!');
+    return; // stop execution
+  }
+
+  const newCourseRow = this.fb.group({
+    course_id: [courseId],
+    course_name: [selectedCourse?.course_name],
+    course_nature: [selectedCourse?.course_nature],
+    total_credit: [selectedCourse?.credit],
+    course_type_id: [courseTypeId],
+    cou_allot_type_id: [this.courseAllotFormGroup.get('cou_allot_type_id')?.value],
+    course_module_id: [this.courseAllotFormGroup.get('course_module_id')?.value],
+    course_module_batch_group_id: [this.courseAllotFormGroup.get('course_module_batch_group_id')?.value],
+    teacherRows: this.fb.array(
+      (teachers || []).map((teacherId: any) =>
+        this.fb.group({
+          emp_id: [teacherId],
+        })
+      )
+    ),
+  });
+
+  this.courserows.push(newCourseRow);
+
+  console.log('New course row added:', newCourseRow.value);
+
+  // ✅ Reset form
+   this.courseAllotFormGroup.patchValue({
+    course_id: '',
+    course_type_id: '',
+    cou_allot_type_id: '',
+    emp_id: [],
+    course_nature: '',
+    total_credit: '',
+    course_module_id: '',
+    course_module_batch_group_id: '',
+  });
+  this.isShowbutton = false;
+}
 
   prepareSubmitData() {
     const formValue = this.courseAllotFormGroup.value;
@@ -170,6 +196,7 @@ export class CourseAllotmentComponent {
       degree_programme_id: formValue.degree_programme_id,
       course_year_id: formValue.courseYear.course_year_id,
       semester_id: formValue.semester_id,
+      section_required: formValue.section_required ? 'Y' : 'N',
       // dean_committee_id: formValue.deanCommittee.dean_committee_id,
       dean_committee_id: formValue.deanCommittee.dean_committee_id,
       batch_id: formValue.batch_id,
@@ -187,41 +214,6 @@ export class CourseAllotmentComponent {
     };
   }
 
-  // onSubmit(): any {
-  //   const submitData = this.prepareSubmitData();
-  //   let apiUrl = '';
-  //   let finalPayload: any;
-
-  //   if (this.isMultiCollege === true) {
-  //     const colg_obj = this.childCollegeList
-  //     finalPayload = {
-  //       acaddata: submitData,
-  //       colgdata: colg_obj
-  //     };
-  //     // apiUrl = '/course/post/saveCourseAllotmentForMltiClg/';
-  // } else if (this.isSVclg === true) {
-  //   const colg_obj = this.childCollegeList
-  //   finalPayload = {
-  //     acaddata: submitData,
-  //     colgdata: colg_obj
-  //   };
-  //     // apiUrl = '/course/post/saveCourseAllotmentForMltiClg/'; 
-  // } else {
-  //     finalPayload = submitData;
-  //     // apiUrl = '/course/post/saveCourseAllotment/';
-  // }
-  //   console.log('Final data to submit:', finalPayload);
-  //   this.HTTP.postData(apiUrl, finalPayload, 'academic').subscribe(res => {
-  //     if (!res.body.error) {
-  //       this.alert.alertMessage("Record Inserted...!", "", "success");
-  //       this.resetForm();
-
-  //     } else {
-  //       this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
-  //     }
-  //   });
-  // }
-
 
   onSubmit(): any {
     const submitData = this.prepareSubmitData();
@@ -229,10 +221,10 @@ export class CourseAllotmentComponent {
     let finalPayload: any;
   
     // ✅ New condition: if showChildButton & hasSpecificProgramme are both true
-    if (this.showChildButton && this.hasSpecificProgramme) {
+    if (this.isMasterCollege) {
       const colg_obj = this.childCollegeList;
       finalPayload = {
-        acaddata: submitData,
+        acaddata: submitData, 
         colgdata: colg_obj
       };
       apiUrl = '/course/post/saveCourseAllotmentForMltiClg/';
@@ -242,17 +234,47 @@ export class CourseAllotmentComponent {
     }
     console.log('Final data to submit:', finalPayload);
   
-    this.HTTP.postData(apiUrl, finalPayload, 'academic').subscribe(res => {
-      if (!res.body.error) {
-        this.alert.alertMessage("Record Inserted...!", "", "success");
-        this.resetForm();
-      } else {
-        this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
-      }
-    });
+    // this.HTTP.postData(apiUrl, finalPayload, 'academic').subscribe(res => {
+    //   if (!res.body.error) {
+    //     this.alert.alertMessage("Record Inserted...!", "", "success");
+    //     this.clearCourseTable();
+    //   } else {
+    //     this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
+    //   }
+    // });
   }
-  
 
+
+
+  // onSubmit(): any {
+  //   const submitData = this.prepareSubmitData();
+  //   let apiUrl = '';
+  //   let finalPayload: any;
+  
+  //   // ✅ New condition: if showChildButton & hasSpecificProgramme are both true
+  //   if (this.showChildButton && this.hasSpecificProgramme) {
+  //     const colg_obj = this.childCollegeList;
+  //     finalPayload = {
+  //       acaddata: submitData,
+  //       colgdata: colg_obj
+  //     };
+  //     apiUrl = '/course/post/saveCourseAllotmentForMltiClg/';
+  //   } else {
+  //     finalPayload = submitData;
+  //     apiUrl = '/course/post/saveCourseAllotment/';
+  //   }
+  //   console.log('Final data to submit:', finalPayload);
+  
+  //   this.HTTP.postData(apiUrl, finalPayload, 'academic').subscribe(res => {
+  //     if (!res.body.error) {
+  //       this.alert.alertMessage("Record Inserted...!", "", "success");
+  //       this.clearCourseTable();
+  //     } else {
+  //       this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
+  //     }
+  //   });
+  // }
+  
   resetForm(): void {
     this.courseAllotFormGroup.reset()
     this.currentData = null;
@@ -311,6 +333,14 @@ getCourseTypeName(id: number): string {
   return this.courseTypeList.find((c: { course_type_id: number; }) => c.course_type_id === id)?.course_type_name_e || '';
 }
 
+getModuleName(id: number): string {
+  return this.moduleList.find((m: { course_module_id: number; }) => m.course_module_id === id)?.module_name || '';
+}
+
+getBatchGroup(id: number): string {
+  return this.moduleBatchGroupList.find((bg: { course_module_batch_group_id: number; }) => bg.course_module_batch_group_id === id)?.course_module_batch_group_name_e || '';
+}
+
 getAllotmentTypeName(id: number): string {
   return this.courseAllotType.find((c: { cou_allot_type_id: number; }) => c.cou_allot_type_id === id)?.cou_allot_type_name_e || '';
 }
@@ -332,6 +362,12 @@ removeRow(index: number) {
   this.courserows.removeAt(index);
 }
 
+clearCourseTable() {
+  while (this.courserows.length !== 0) {
+    this.courserows.removeAt(0);
+  }
+}
+
   getAcademicSession() {
 
     this.HTTP.getParam('/master/get/getAcademicSession1/',{},'academic').subscribe((result:any) => {
@@ -351,6 +387,8 @@ removeRow(index: number) {
   // console.log('Selected College ID:', college_id);
   this.getDegreeProgramme(college_id); 
   this.getChildCollegeForCounselling(college_id); 
+  this.courseAllotFormGroup.get('degree_programme_id')?.reset();
+  this.courseYearList = [];
  }
 
 
@@ -374,15 +412,47 @@ getChildCollegeForCounselling(m_college_id: number) {
 }
 
 
-  getDegreeProgramme(college_id:number) {
-    this.HTTP.getParam('/master/get/getDegreePrograamList/',{college_id},'academic').subscribe((result:any) => {
-      // console.log('GP',result);
+  // getDegreeProgramme(college_id:number) {
+  //   this.HTTP.getParam('/master/get/getDegreePrograamList/',{college_id},'academic').subscribe((result:any) => {
+  //     // console.log('GP',result);
+  //     this.degreeProgramme = result.body.data;
+  //   })
+  // }
+
+getDegreeProgramme(college_id: number) {
+  this.HTTP.getParam('/master/get/getDegreePrograamList/', { college_id }, 'academic')
+    .subscribe((result: any) => {
       this.degreeProgramme = result.body.data;
-    })
-  }
+      console.log('Initial Degree Programme:', this.degreeProgramme);
+
+      // Add hardcoded objects only if college_id = 5
+      if (college_id === 5) {
+        const extraProgrammes = [
+          {
+            degree_programme_id: 14,
+            degree_programme_name_e: "M.Sc.(Ag.) (PGS)",
+            degree_id: 12,
+            subject_id: 139
+          },
+          {
+            degree_programme_id: 37,
+            degree_programme_name_e: "Ph.D in Agriculture (PGS)",
+            degree_id: 5,
+            subject_id: 139
+          }
+        ];
+
+        // Push into array
+        this.degreeProgramme.push(...extraProgrammes);
+      }
+
+      console.log('Final Degree Programme:', this.degreeProgramme);
+    });
+}
+
 
   getallCourse() {
-    this.HTTP.getParam('/master/get/getCourseList/',{},'academic').subscribe((result:any) => {
+    this.HTTP.getParam('/master/get/getCourseForAllot/',{},'academic').subscribe((result:any) => {
       // console.log(result);
       this.allCourses = result.body.data;
     })
@@ -394,15 +464,17 @@ getChildCollegeForCounselling(m_college_id: number) {
       this.moduleBatchGroupList = result.body.data;
     })
   }
+
   hasSpecificProgramme: boolean = false;
   onDegreeProgrammeChange(degree_programme_id: number) {
     const selected = this.degreeProgramme.find((p: { degree_programme_id: number; }) => p.degree_programme_id === degree_programme_id);
     const degree_id = selected?.degree_id;
     const subject_id = selected?.subject_id;
-    
+    const degree_programme_type_id = selected?.degree_programme_type_id;
     // console.log('degree_id to send:', degree_id);
     this.selectedDegree = degree_id
     this.selectedSubject = subject_id;
+    this.selectedDegreeProgrammeTypeId = degree_programme_type_id;
     // ✅ Check if selected degree_programme_id is 1, 2, or 3
   this.hasSpecificProgramme = [1, 2, 3].includes(degree_programme_id);
   // console.log('hasSpecificProgramme:', this.hasSpecificProgramme);
@@ -417,12 +489,14 @@ getChildCollegeForCounselling(m_college_id: number) {
     })
   }
 
+
 //  / Method to call when semester dropdown changes
 onSemesterChange(semester_id: number) {
-  // console.log('Semester changed:', semester_id);
+  console.log('Semester changed:', semester_id);
   this.getCourseYearList();
+  this.clearCourseTable()
+  this.isAddMoreCourses = false
         // this.isShowCourseListTable = false;
-
 }
 
 onIsAllCourseChange(isAllCourse: boolean) {}
@@ -447,7 +521,11 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     this.HTTP.getParam('/master/get/getYearDeancmtList/',params ,'academic').subscribe((result:any) => {
       // console.log('course Year',result);
       this.courseYearList = result.body.data;
-      console.log('Course Year List:', this.courseYearList);
+   if (!this.courseYearList || (Array.isArray(this.courseYearList) && this.courseYearList.length === 0)) {
+    alert('In this semester no student found');
+    return;
+  }
+      // console.log('Course Year List:', this.courseYearList);
       
       if (this.courseYearList && this.courseYearList.length > 0) {
         // Loop through each year row and call status API
@@ -468,8 +546,6 @@ onIsAllCourseChange(isAllCourse: boolean) {}
           });
         });
       }
-
-
     })
   }
 
@@ -481,11 +557,44 @@ onIsAllCourseChange(isAllCourse: boolean) {}
       alert('Please fill all required fields ...');
       return;
     }
+   const  syllabusWise= 'true'
     const params = {
       semester_id: formValue.semester_id,
       dean_committee_id: this.selectedDnCmt,
       degree_id: this.selectedDegree,
-      course_subject_id: this.selectedSubject
+      course_subject_id: this.selectedSubject,
+      syllabusWise: syllabusWise
+      
+      // course_year_id: this.selectedCourseYearId
+    };
+    this.HTTP.getParam('/master/get/getCourseForAllot/',params ,'academic').subscribe((result:any) => {
+      // console.log(result);
+      this.courseList = result.body.data;
+    })
+  }
+
+  onModuleChange(course_module_id:any){
+     this.getModuleCourseList(course_module_id)
+  }
+
+    getModuleCourseList(course_module_id:any) {
+    const formValue = this.courseAllotFormGroup.value;
+    if (
+      !formValue.semester_id 
+    ) {
+      alert('Please fill all required fields ...');
+      return;
+    }
+   const  moduleWise= 'true'
+    const params = {
+      semester_id: formValue.semester_id,
+      dean_committee_id: this.selectedDnCmt,
+      degree_id: this.selectedDegree,
+      course_subject_id: this.selectedSubject,
+      course_module_id:course_module_id,
+      moduleWise: moduleWise
+      
+      // course_year_id: this.selectedCourseYearId
     };
     this.HTTP.getParam('/master/get/getCourseForAllot/',params ,'academic').subscribe((result:any) => {
       // console.log(result);
@@ -543,6 +652,13 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     })
   }
 
+    getMasterCollege() {
+    this.HTTP.getParam('/master/get/getMasterCollege/',{} ,'academic').subscribe((result:any) => {
+      console.log(result);
+      this.masterCollegeList = result.body.data;
+    })
+  }
+
   getCourseforUpdate() {
     const formValue = this.courseAllotFormGroup.value;
     if (
@@ -568,11 +684,15 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     
     this.HTTP.getParam('/master/get/getCourseForUpdate/', params, 'academic').subscribe(
       (result: any) => {
-        // console.log('Full API Response:', result); // First, log the complete response
-        
+         
         if (result.body?.data?.courserows) {
           // console.log('Data found:', result.body?.data?.courserows);
          this.new_row = result.body?.data?.courserows
+        this.section_required = result.body?.data?.courserows[0]?.section_required
+        this.courseAllotFormGroup.patchValue({
+          section_required: result.body?.data?.courserows[0]?.section_required === 'Y'
+        });
+
           this.populateCourseTable(result.body?.data?.courserows);
         } else {
           console.warn('No courserows found in response', result);
@@ -583,6 +703,18 @@ onIsAllCourseChange(isAllCourse: boolean) {}
       }
     );
   }
+
+  // check selected  year id = 5 for IV year in UG
+checkCourseYear(selectedCourseYearId:any) {
+  const courseYearId = selectedCourseYearId
+  console.log('Selected Course Year ID:', courseYearId);
+  
+  if (courseYearId === 5) {
+    this.isHideModuleSection = true;
+  } else {
+    this.isHideModuleSection = false;
+  }
+}
 
   // send data and open Teacher Allotment View dilog
   openDilog(item:any) {
@@ -606,6 +738,9 @@ onIsAllCourseChange(isAllCourse: boolean) {}
    
     this.sendToDash = this.selectedCourseData = {
       session: sessionObj?.academic_session_name_e || '',
+      academic_session_id: formValue.academic_session_id,
+      college_id: formValue.college_id,
+      degree_programme_type_id: this.selectedDegreeProgrammeTypeId,
       college: collegeObj?.college_name_e || '',
       programme: programmeObj?.degree_programme_name_e || '',
       semester: semesterObj?.semester_name_e || '',
@@ -654,8 +789,10 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     );
   }
 
-    openTeachSectionDilog(item:any) {
+    openTeachSectionDilog(item:any,i :number) {
     const formValue = this.courseAllotFormGroup.value;
+    this.highlightedIndex = i;
+
     if (
       !formValue.academic_session_id ||
       !formValue.college_id ||
@@ -675,6 +812,9 @@ onIsAllCourseChange(isAllCourse: boolean) {}
    
     this.sendToDash = this.selectedCourseData = {
       session: sessionObj?.academic_session_name_e || '',
+      academic_session_id: formValue.academic_session_id,
+      college_id: formValue.college_id,
+      degree_programme_type_id: this.selectedDegreeProgrammeTypeId,
       college: collegeObj?.college_name_e || '',
       programme: programmeObj?.degree_programme_name_e || '',
       semester: semesterObj?.semester_name_e || '',
@@ -693,18 +833,20 @@ onIsAllCourseChange(isAllCourse: boolean) {}
       semester_id: formValue.semester_id,
       dean_committee_id: item?.dean_committee_id, 
     };
-    this.HTTP.getParam('/master/get/getCourseForUpdate/', params, 'academic').subscribe(
+    this.HTTP.getParam('/master/get/getCourseTeacherForSectionAllot/', params, 'academic').subscribe(
       (result: any) => {
         // console.log('Full API Response:', result); // First, log the complete response 
         
-        if (result.body?.data?.courserows) {
+        if (result.body?.data) {
           // console.log('Data found:', result.body?.data?.courserows);
-         this.new_row = result.body?.data?.courserows
+         this.new_row = result.body?.data
+         console.log('teacher section',this.new_row);
+         
           // this.populateCourseTable(result.body?.data?.courserows);
           // ✅ Open Dialog and send data
         this.dialog.open(TeacherSectionAllotmentComponent, {
-          width: '1100px',
-          height:'600px',
+          width: '1200px',
+          height:'700px',
 
           data: {
             courseData: this.new_row,
@@ -721,6 +863,11 @@ onIsAllCourseChange(isAllCourse: boolean) {}
         console.error('API Error:', error);
       }
     );
+  }
+  
+
+  allotSection(){
+    alert('Allot Section clicked')
   }
 
   // Populate table with API data
@@ -754,13 +901,15 @@ onIsAllCourseChange(isAllCourse: boolean) {}
         course_module_id: course.course_module_id,
         course_module_batch_group_id: course.course_module_batch_group_id,
         course_nature: course.course_nature,
+        eligible_course: course.eligible_course,
         total_credit: course.credit || 0,
         teacherRows: teacherArray  // Matches your insert structure
       }));
     });
+    console.log('All prepared courserows:', this.courserows.value);
   }
 
-  openCourseGenforUpdate(item:any){
+  openCourseGenforUpdate(item:any,i:number){
     this.openCourseGeneral(item)
     this.getCourseforUpdate()
     this.resetCourseAllotmentFields()
@@ -771,6 +920,32 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     this.isEdit = false;
     this.ifShowContainer = true
     this.isShowUpdateButton = true
+    this.isAddmoreCoursesBtnShow = true
+    this.isAddMoreCourses = false
+    this.highlightedIndex = i;
+    const allotment_type = item?.allotment_type
+    this.checkAllotmentType(allotment_type)
+    console.log(allotment_type);
+    
+    this.allotment_type_for_flag = allotment_type
+    this.checkAllotmentFinalize()
+
+  }
+
+  checkAllotmentType(allotment_type:string){
+    if(allotment_type === 'M'){
+      console.log('multiple calling');
+      
+      this.isMasterCollege = true
+    }
+    else{
+      this.isMasterCollege=false
+    }
+    if (this.isMasterCollege) {
+      // this.courseAllotFormGroup.get('course_id')?.disable();
+    } else {
+      // this.courseAllotFormGroup.get('course_id')?.enable();
+    }
   }
 
   openCourseGeneralCall(item: any): void {
@@ -786,13 +961,17 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     this.checkIfSvClgAndDnCmt5(item)
   }
 
-  openCourseGeneralforDilog(item:any){
+  openCourseGeneralforDilog(item:any,i:any){
      this.openDilog(item)
   }
 
-  getPreviousYearAllotment(item: any) {
+  getPreviousYearAllotment(item: any, i:number) {
      this.ifShowContainer = true
      this.isShowUpdateButton = false
+    this.isAddmoreCoursesBtnShow = true
+    this.isAddMoreCourses = false
+    this.highlightedIndex = i;
+
     this.openCourseGeneral(item)
     const formValue = this.courseAllotFormGroup.value;
     if (
@@ -824,6 +1003,7 @@ onIsAllCourseChange(isAllCourse: boolean) {}
           this.populateCourseTable(result.body?.data?.courserows);
         } else {
           alert('No previous year allotment data found.');
+           this.clearCourseTable();
         }
       }, 
       (error) => {  
@@ -930,6 +1110,7 @@ onIsAllCourseChange(isAllCourse: boolean) {}
       this.isMultiCollege = false;
     }
   }
+
   checkIfSvClgAndDnCmt5(item:any){
     const formValue = this.courseAllotFormGroup.value.college_id;
     console.log('selected clg id', formValue);
@@ -941,6 +1122,27 @@ onIsAllCourseChange(isAllCourse: boolean) {}
       this.isSVclg = false;
     }
   }
+
+  checkAllotmentFinalize(){
+        const formValue = this.courseAllotFormGroup.value;
+      const params = {
+      academic_session_id: formValue.academic_session_id , // Assuming previous year is current year - 1
+      college_id: formValue.college_id,
+      degree_programme_id: formValue.degree_programme_id,
+      course_year_id: formValue.courseYear?.course_year_id,  
+      semester_id: formValue.semester_id,
+      dean_committee_id: formValue.deanCommittee?.dean_committee_id, 
+    };
+              this.HTTP.getParam('/master/get/checkCourseFinalizeStatus', params, 'academic')
+          .subscribe((response: any) => {
+            const finalizeYN = response?.body?.data[0].finalize_yn;
+            if(finalizeYN === 'Y'){
+              this.isFilalizeThanHideDeleteButton = true
+            }
+            // this.courseYearList[index].finalizeStatus = finalizeYN; 
+          });
+  }
+
 
    // Open openCourseGeneral function  get data and when click add  icon in course allotment main form 
    openCourseGeneral(item: any): void {
@@ -976,36 +1178,113 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     this.selectedCourseYearId = item.course_year_id;
     this.showCourse = true;
     this.selectedDnCmt = item.dean_committee_id;
-    this.getCourseList()
+    this.getCourseList();
+   this.checkCourseYear(this.selectedCourseYearId);
+
   }
 
-  editRow(row:any, index: number) {
-    console.log("i am called");
-    this.editIndex = index;
-    this.courseAllotFormGroup.patchValue({
-      course_id: row.get('course_id')?.value,
-      course_type_id: row.get('course_type_id')?.value,
-      cou_allot_type_id: row.get('cou_allot_type_id')?.value,
-      course_module_id: row.get('course_module_id')?.value,
-      course_module_batch_group_id: row.get('course_module_batch_group_id')?.value,
-      course_nature: row.get('course_nature')?.value,
-      total_credit: row.get('total_credit')?.value,
-      // emp_id: row.get('teacherRows')?.value.map((t: any) => t.emp_id)
-      emp_id: (row.get('teacherRows')?.value || [])
-  .map((t: any) => t.emp_id)
-  .filter((id: number | null) => id !== null && id !== undefined)
+editRow(row: any, index: number) {
+  this.editIndex = index;
 
-    });
-    console.log('value',this.courseAllotFormGroup.value);
-    // Store primary keys for backend update
-    this.editingPrimaryKeys = {
-      allotment_detail_id: row.get('allotment_detail_id')?.value,
-      allotment_main_id: row.get('allotment_main_id')?.value,
-      teacherRows: row.get('teacherRows')?.value
-    };
-    this.isEdit = true;
-    this.isaddRow = false; 
+  const course_id = row.get('course_id')?.value;
+  const course_name = row.get('course_name')?.value;
+
+  // ✅ Ensure missing course is added to the dropdown list BEFORE patch
+  if (course_id && course_name && !this.courseList.some((c: { course_id: any; }) => c.course_id === course_id)) {
+    this.allCourses = [
+      ...this.allCourses,
+      { course_id, course_name }
+    ];
   }
+
+  // ✅ Now patch values
+  this.courseAllotFormGroup.patchValue({
+    course_id: course_id || null,
+    course_type_id: row.get('course_type_id')?.value,
+    cou_allot_type_id: row.get('cou_allot_type_id')?.value,
+    course_module_id: row.get('course_module_id')?.value,
+    course_module_batch_group_id: row.get('course_module_batch_group_id')?.value,
+    course_nature: row.get('course_nature')?.value,
+    total_credit: row.get('total_credit')?.value,
+    emp_id: (row.get('teacherRows')?.value || [])
+      .map((t: any) => t.emp_id)
+      .filter((id: number | null) => id !== null && id !== undefined)
+  });
+
+  // Store primary keys for backend update
+  this.editingPrimaryKeys = {
+    allotment_detail_id: row.get('allotment_detail_id')?.value,
+    allotment_main_id: row.get('allotment_main_id')?.value,
+    teacherRows: row.get('teacherRows')?.value
+  };
+
+  this.isEdit = true;
+  this.isaddRow = false;
+
+  console.log('Form after patch:', this.courseAllotFormGroup.value);
+}
+
+checkAllotmentAction() {
+  const formValue = this.courseAllotFormGroup.value;
+
+
+  if (
+    (formValue.degree_programme_id === 1 &&
+      this.allotment_type_for_flag === 'M' &&
+      formValue.college_id === 5) ||
+
+    (formValue.degree_programme_id === 2 &&
+      this.allotment_type_for_flag === 'M' &&
+      formValue.college_id === 70) ||
+
+     (formValue.degree_programme_id === 3 &&
+      this.allotment_type_for_flag === 'M' &&
+      formValue.college_id === 53)  ||
+
+    (this.allotment_type_for_flag === 'I')
+  ) {
+    this.isAllowed = true;
+  } else {
+    this.isAllowed = false;
+  }
+
+  console.log('isAllowed:', this.isAllowed);
+}
+
+
+
+
+
+
+  //  before
+  // editRow(row:any, index: number) {
+  //   console.log("i am called");
+  //   this.editIndex = index;
+  //   this.courseAllotFormGroup.patchValue({
+  //     course_id: row.get('course_id')?.value,
+  //     course_type_id: row.get('course_type_id')?.value,
+  //     cou_allot_type_id: row.get('cou_allot_type_id')?.value,
+  //     course_module_id: row.get('course_module_id')?.value,
+  //     course_module_batch_group_id: row.get('course_module_batch_group_id')?.value,
+  //     course_nature: row.get('course_nature')?.value,
+  //     total_credit: row.get('total_credit')?.value,
+  //     // emp_id: row.get('teacherRows')?.value.map((t: any) => t.emp_id)
+  //     emp_id: (row.get('teacherRows')?.value || [])
+  // .map((t: any) => t.emp_id)
+  // .filter((id: number | null) => id !== null && id !== undefined)
+
+  //   });
+  //   console.log('value',this.courseAllotFormGroup.value);
+  //   // Store primary keys for backend update
+  //   this.editingPrimaryKeys = {
+  //     allotment_detail_id: row.get('allotment_detail_id')?.value,
+  //     allotment_main_id: row.get('allotment_main_id')?.value,
+  //     teacherRows: row.get('teacherRows')?.value
+  //   };
+  //   this.isEdit = true;
+  //   this.isaddRow = false; 
+
+  // }
 
   // submitUpdatedRow() {
   //   const formValue = this.courseAllotFormGroup.value;
@@ -1059,7 +1338,6 @@ onIsAllCourseChange(isAllCourse: boolean) {}
       cou_allot_type_id: formValue.cou_allot_type_id,
       course_nature: formValue.course_nature,
       total_credit: formValue.total_credit,
-      
       teacherRows: (formValue.emp_id || []).map((empId: any) => {
         const oldTeacher = this.editingPrimaryKeys.teacherRows.find((t: any) => t.emp_id === empId);
         return {
@@ -1085,50 +1363,47 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     );
   }
 
-  // onUpdateCouesNew(): any {
-  //   const submitData = this.prepareSubmitData();
-  //   const payload = this.courserows.value
-  //   let apiUrl = '/course/update/updateAllotedCourseAndTeacher/';
-  //   let finalPayload: any;
-  
-  //   // ✅ New condition: if showChildButton & hasSpecificProgramme are both true
-  //   // if (this.showChildButton && this.hasSpecificProgramme) {
-  //   //   const colg_obj = this.childCollegeList;
-  //   //   finalPayload = {
-  //   //     acaddata: submitData,
-  //   //     colgdata: colg_obj
-  //   //   };
-  //   //   apiUrl = '/course/post/saveCourseAllotmentForMltiClg/';
-  //   // } else {
-  //   //   finalPayload = submitData;
-  //   //   apiUrl = '/course/post/saveCourseAllotment/';
-  //   // }
-  
-  //   console.log('Final data to submit:', payload);
-  
-  //   // this.HTTP.putData(apiUrl, payload, 'academic').subscribe(res => {
-  //   //   if (!res.body.error) {
-  //   //     this.alert.alertMessage("Record Updated...!", "", "success");
-  //   //     this.resetForm();
-  //   //   } else {
-  //   //     this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
-  //   //   }
-  //   // });
-  // }
-
-  onUpdateCouesNew(): any {
+onUpdateCouesNew(): any {
+  const formValue = this.courseAllotFormGroup.value;
   const payload = this.courserows.value;
-  // Get common allotment_main_id from first row
-  const commonAllotmentMainId = payload[0]?.allotment_main_id 
-  // Ensure every row has allotment_main_id
-  const finalPayload = payload.map((row: any) => ({
+
+  // 🔹 Filter out rows where eligible_course = 'N'
+  const filteredPayload = payload.filter((row: any) => row.eligible_course !== 'N');
+
+  // 🔹 Get common allotment_main_id from first row
+  const commonAllotmentMainId = filteredPayload[0]?.allotment_main_id;
+
+  // 🔹 Ensure every row has allotment_main_id
+  const finalPayload = filteredPayload.map((row: any) => ({
     ...row,
     allotment_main_id: row.allotment_main_id || commonAllotmentMainId
   }));
 
-  let apiUrl = '/course/update/updateAllotedCourseAndTeacher/';
-  console.log('Final data to submit:', finalPayload);
-  this.HTTP.putData(apiUrl, finalPayload, 'academic').subscribe(res => {
+  let apiUrl = '';
+  let body: any = {};
+
+  if (this.isMasterCollege) {
+    // ✅ Master college API
+    apiUrl = '/course/update/updateAllotedCourseAndTeacherByCollegeId/';
+    body = {
+      academic_session_id: formValue.academic_session_id,
+      college_id: formValue.college_id,
+      degree_programme_id: formValue.degree_programme_id,
+      course_year_id: formValue.courseYear?.course_year_id,
+      semester_id: formValue.semester_id,
+      dean_committee_id: formValue.deanCommittee?.dean_committee_id,
+      courseList: finalPayload
+    };
+  } else {
+    // ✅ Normal college API
+    apiUrl = '/course/update/updateAllotedCourseAndTeacher/';
+    body = finalPayload;
+  }
+
+  console.log('Final data to submit:', body);
+
+  // 🔹 API call
+  this.HTTP.putData(apiUrl, body, 'academic').subscribe(res => {
     if (!res.body.error) {
       this.alert.alertMessage("Record Updated...!", "", "success");
       this.getCourseforUpdate();
@@ -1138,6 +1413,79 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     }
   });
 }
+
+
+
+//   onUpdateCouesNew(): any {
+//   const payload = this.courserows.value;
+//   // 🔹 Filter out rows where eligible_course = 'N'
+//   const filteredPayload = payload.filter((row: any) => row.eligible_course !== 'N');
+//   // Get common allotment_main_id from first row
+//   const commonAllotmentMainId = filteredPayload[0]?.allotment_main_id 
+//   // Ensure every row has allotment_main_id
+//   const finalPayload = filteredPayload.map((row: any) => ({
+//     ...row,
+//     allotment_main_id: row.allotment_main_id || commonAllotmentMainId
+//   }));
+
+//   let apiUrl = '/course/update/updateAllotedCourseAndTeacher/';
+//   console.log('Final data to submit:', finalPayload);
+//   this.HTTP.putData(apiUrl, finalPayload, 'academic').subscribe(res => {
+//     if (!res.body.error) {
+//       this.alert.alertMessage("Record Updated...!", "", "success");
+//       this.getCourseforUpdate();
+//       this.resetCourseAllotForms();
+//     } else {
+//       this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
+//     }
+//   });
+// }
+
+
+
+// onUpdateCouesNew(): any {
+//   const formValue = this.courseAllotFormGroup.value;
+//   const payload = this.courserows.value;
+
+//   // 🔹 Filter out rows where eligible_course = 'N'
+//   const filteredPayload = payload.filter((row: any) => row.eligible_course !== 'N');
+
+//   // 🔹 Get common allotment_main_id from first row
+//   const commonAllotmentMainId = filteredPayload[0]?.allotment_main_id;
+
+//   // 🔹 Ensure every row has allotment_main_id
+//   const finalPayload = filteredPayload.map((row: any) => ({
+//     ...row,
+//     allotment_main_id: row.allotment_main_id || commonAllotmentMainId
+//   }));
+
+//   // 🔹 Prepare final object with ALL parameters
+//   const requestBody = {
+//       academic_session_id: formValue.academic_session_id,
+//       college_id: formValue.college_id,
+//       degree_programme_id: formValue.degree_programme_id,
+//       course_year_id: formValue.courseYear?.course_year_id,  
+//       semester_id: formValue.semester_id,
+//       dean_committee_id: formValue.deanCommittee?.dean_committee_id,    
+//       courseList: finalPayload   
+//   };
+
+//   let apiUrl = '/course/update/updateAllotedCourseAndTeacherByCollegeId/';
+//   console.log('Final data to submit:', requestBody);
+//     this.HTTP.putData(apiUrl, requestBody, 'academic').subscribe(res => {
+//     if (!res.body.error) {
+//       this.alert.alertMessage("Record Updated...!", "", "success");
+//       this.getCourseforUpdate();
+//       this.resetCourseAllotForms();
+//     } else {
+//       this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
+//     }
+//   });
+
+
+// }
+
+
  
   // Reset the form 
   resetCourseAllotmentFields(): void {
@@ -1147,6 +1495,8 @@ onIsAllCourseChange(isAllCourse: boolean) {}
       cou_allot_type_id: '',
       course_nature: '',
       total_credit: '',
+      course_module_id: '',
+      course_module_batch_group_id:'',
     });
     this.courseAllotFormGroup.get('course_id')?.reset();
     this.courseAllotFormGroup.get('course_type_id')?.reset();
@@ -1154,6 +1504,8 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     this.courseAllotFormGroup.get('course_nature')?.reset();
     this.courseAllotFormGroup.get('total_credit')?.reset();
     this.courseAllotFormGroup.get('emp_id')?.reset();
+    this.courseAllotFormGroup.get('course_module_id')?.reset();
+    this.courseAllotFormGroup.get('course_module_batch_group_id')?.reset();
   }
 
   clearcourserows() {
@@ -1249,6 +1601,10 @@ resetCourseAllotForms() {
 
 clearCourseRowstable() {
 this.isShowCourseListTable = true
+}
+
+visibleForm(){
+  this.isAddMoreCourses = true
 }
 
 

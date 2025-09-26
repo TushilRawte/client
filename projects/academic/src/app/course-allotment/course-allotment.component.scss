@@ -45,4 +45,42 @@
     font-weight: bold;
     font-size: 14px;
   }
-    
+
+  table tbody tr td{
+        text-align: left !important;
+  }
+//  highlisht the slected rows
+/* course-table.component.css */
+.highlight-row {
+  background-color: #d1ecf1 !important; /* light blue highlight */
+}
+
+// table styles
+.tables{
+  padding: 11px;
+  //  padding-left: ;
+  caption-side: bottom;
+  border-collapse: collapse;
+  text-align: center !important;
+  border-color: inherit;
+  border-style: solid;
+  border-width: 0;
+  border: groove 1px #ddd;
+}
+
+.imp{
+  padding: 8px;
+}
+
+a:hover {
+ color: rgb(41, 109, 204);
+
+  font-size: 14px;
+}
+
+// disable 
+.disabled-row {
+  opacity: 0.5;             /* make it look greyed out */
+  pointer-events: none;     /* disable clicks on the row & its children */
+  background-color: #e0e0e0; /* light grey background (optional) */
+}

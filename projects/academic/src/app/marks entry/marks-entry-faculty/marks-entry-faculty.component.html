@@ -1,0 +1,175 @@
+<mat-card>
+    <mat-card-content>
+        <form [formGroup]="marksEntryFacultyFormGroup">
+            <div class="row">
+                <div class="col-md-3 col-6" *ngIf="showEmpIdField">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Employee Id</mat-label>
+                        <input matInput placeholder="Ex. 10072" formControlName="emp_id">
+                    </mat-form-field>
+                </div>
+                <div class="col-md-3 col-6">
+                    <ng-select placeholder="Session" formControlName="academic_session_id" appearance="outline">
+                        <ng-container *ngFor="let server of acadmcSesnList">
+                            <ng-option [value]="server.academic_session_id">{{ server.academic_session_name_e
+                                }}</ng-option>
+                        </ng-container>
+                    </ng-select>
+                </div>
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Semester</mat-label>
+                        <mat-select placeholder="Semester" formControlName="semester_id">
+                            <mat-option *ngFor="let semester of semesterList" [value]="semester.semester_id">
+                                {{ semester?.semester_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Degree Programme Type</mat-label>
+                        <mat-select placeholder="Degree Programme Type" formControlName="degree_programme_type_id">
+                            <mat-option *ngFor="let server of degreeProgrammeTypeList"
+                                [value]="server.degree_programme_type_id">
+                                {{ server.degree_programme_type_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                     <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Valuation Type</mat-label>
+                        <mat-select placeholder="Valuation Type" formControlName="valuation_type_id">
+                            <mat-option *ngFor="let server of valuationTypeList"
+                                [value]="server.valuation_type_id">
+                                {{ server.valuation_type_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                 <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Exam Type</mat-label>
+                        <mat-select placeholder="Exam Type" formControlName="exam_type_id">
+                            <mat-option *ngFor="let server of examTypeList"
+                                [value]="server.exam_type_id">
+                                {{ server.exam_type_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                 <div class="col-md-3 col-6">
+            <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Exam Paper Type</mat-label>
+            <mat-select placeholder="Exam Paper Type"
+              (selectionChange)="onExamPaperTypeChange($event.value)">
+              <mat-option *ngFor="let server of getExamPaperTypeList"
+                [value]="server">
+               {{ server.exam_paper_type_name_e }}
+              </mat-option>
+               </mat-select>
+               </mat-form-field>
+
+                </div>
+                <div class="col-md-2 mt-4">
+              <button class="btn btn-primary" type="button" (click)="getCourseList()" >Get List</button>
+            </div>
+            </div>
+          <div class="row mt-3">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Course Name</th>
+              <th>Course Code</th>
+              <!-- <th>Degree Programme Type</th> -->
+              <th>Dean Commeettee</th>
+              <!-- <th>Batch</th> -->
+              <th>Course Year</th>
+              <th>Student Count</th>
+              <th>Marks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of courseList; let i = index">
+                <td>{{i+1}}</td>
+              <td>{{ item.course_title_e }}</td>
+              <td>{{ item.course_code }}</td>
+              <td>{{ item.dean_committee_name_e }}</td>
+              <td>{{ item.course_year_name_e }}</td>
+              <td>{{ item.student_count }}</td>
+              <td> <button class="btn btn-primary" (click)="getCourseListParticularData(item)" ><mat-icon>login</mat-icon></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+                <div class="row mt-3">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Student Name</th>
+              <th>Student ID</th>
+              <th>Max Marks</th>
+              <th>Obtained Marks</th>
+              <th>Remark</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <!-- <tbody> -->
+            <!-- <tr *ngFor="let item of attandanceList; let i = index">
+                <td>{{i+1}}</td>
+                <td>{{item.student_name}}</td>
+                <td>{{item.ue_id}}</td>
+                <td>10</td>
+                <td>
+                  <input type="number" formControlName="obtained_marks" style="width: 50px;">
+                  <div *ngIf="marksEntryFacultyFormGroup.get('obtained_marks')?.hasError('min') && marksEntryFacultyFormGroup.get('obtained_marks')?.touched">
+                  Value cannot be negative
+                  </div>
+                </td>
+                <td>    
+                  <select class="form-select" >
+                    <option value="">Select Section</option>
+                    <option *ngFor="let s of remarkList" [value]="s.remark_id">
+                      {{ s.remark_name_e }}
+                    </option>
+                  </select></td>
+            </tr> -->
+
+            
+          <!-- </tbody> -->
+           <tbody formArrayName="students">
+  <tr *ngFor="let student of students.controls; let i = index" [formGroupName]="i">
+    <td>{{ i + 1 }}</td>
+    <td>{{ student.value.student_name }}</td>
+    <td>{{ student.value.ue_id }}</td>
+    <td>10</td>
+    <td>
+      <input type="number" formControlName="obtained_marks" style="width: 60px;">
+      <div *ngIf="student.get('obtained_marks')?.hasError('min') && student.get('obtained_marks')?.touched">
+        Value cannot be negative
+      </div>
+    </td>
+    <td>
+      <select class="form-select" formControlName="remark_id">
+        <option value="">Select Remark</option>
+        <option *ngFor="let s of remarkList" [value]="s.remark_id">
+          {{ s.remark_name_e }}
+        </option>
+      </select>
+    </td>
+    <td></td>
+  </tr>
+</tbody>
+
+        </table>
+           <div class="col-md-2 mt-4">
+              <button class="btn btn-primary" type="button" (click)="onSubmit()" >Submit</button>
+            </div>
+      </div>
+        </form>
+    </mat-card-content>
+</mat-card>

@@ -25,6 +25,7 @@ export class CourseRegistrationComponent {
   registeredCourseList: any;
   isRegistrationAllowed: boolean = true;
   failedCoursesList: any;
+  remarkList: any;
    
   constructor(private snackBar: MatSnackBar,private fb : FormBuilder,private HTTP : HttpService,private alert: AlertService) {}
 
@@ -104,6 +105,8 @@ export class CourseRegistrationComponent {
       this.semesterList = result.body.data;
     })
   }
+
+
 
     getRegisteredCourses(){
       const params = {

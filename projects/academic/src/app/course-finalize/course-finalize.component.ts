@@ -45,6 +45,13 @@ export class CourseFinalizeComponent implements OnInit {
   allotmentMain_id:any
   print_data: any;
   currentDateTime = new Date().toLocaleString();
+  finalaizeStaus: any;
+  showFinalizeButton: boolean = false;
+  showUnfinalizeButton: boolean = false;
+  isFinalizedStatusbtn: any;
+  
+
+
 
   constructor(
     private HTTP: HttpService,
@@ -139,6 +146,7 @@ export class CourseFinalizeComponent implements OnInit {
 onSemesterChange(semester_id: number) {
   console.log('Semester changed:', semester_id);
   this.getCourseYearList();
+  this.responseData = [];
 }
 
 
@@ -178,16 +186,18 @@ onSemesterChange(semester_id: number) {
           //   console.log('Allotment status for row', index, ':', exists);
           //   this.courseYearList[index].allotmentStatus = exists;
           // });
+          
           this.HTTP.getParam('/master/get/checkCourseAllotment', checkParams, 'academic')
           .subscribe((response: any) => {
             const exists = response?.body?.data?.[0]?.data_exists === 1;
             row.allotmentStatus = exists; // ✅ Update directly on the row
+            
           });
           this.HTTP.getParam('/master/get/checkCourseFinalizeStatus', checkParams, 'academic')
           .subscribe((response: any) => {
             console.log('Response for finalize status:', response);
             const finalizeYN = response?.body?.data[0].finalize_yn;
-            console.log('ddd', finalizeYN);
+            this.isFinalizedStatusbtn = finalizeYN;
             this.courseYearList[index].finalizeStatus = finalizeYN; 
           });
         });
@@ -255,12 +265,61 @@ onSemesterChange(semester_id: number) {
       (result: any) => {
         this.responseData = result.body.data;
         this.print_row = result.body?.data?.courserows;
-        this.isShowbutton = true;
+        // this.isShowbutton = true;  
         
       })
 
   }
 
+
+    chckFinlize(item:any){
+    const formValue = this.finalizecourseFormGroup.value;
+    if (
+      !formValue.academic_session_id ||
+      !formValue.college_id ||
+      !formValue.degree_programme_id ||
+      !formValue.semester_id ||
+      !item.course_year_id ||
+      !item.dean_committee_id
+    ) {
+      alert('Please fill all required fields before Print.');
+      return;
+    }
+    const params = {
+      academic_session_id: formValue.academic_session_id,
+      college_id: formValue.college_id,
+      degree_programme_id: formValue.degree_programme_id,
+      semester_id: formValue.semester_id,
+      dean_committee_id: item?.dean_committee_id, 
+      course_year_id: item?.course_year_id,  
+    };
+this.HTTP.getParam('/master/get/checkCourseFinalizeStatus/', params, "academic")
+  .subscribe((result: any) => {
+    const data = result.body?.data;
+
+    // if (!data || data.length === 0) {
+    //   alert('No course allotted');
+    //   this.showUnfinalizeButton = false;
+    //   this.showFinalizeButton = false;
+    //   return;
+    // }
+
+    this.finalaizeStaus = data[0]; // take first record
+    console.log('check finalize', this.finalaizeStaus);
+
+    if (this.finalaizeStaus.finalize_yn === 'Y') {
+      this.showUnfinalizeButton = true;
+      this.showFinalizeButton = false;
+    } else if (this.finalaizeStaus.finalize_yn === 'N') {
+      this.showUnfinalizeButton = false;
+      this.showFinalizeButton = true;
+    } else {
+      this.showUnfinalizeButton = false;
+      this.showFinalizeButton = false;
+    }
+  });
+
+  }
 
   getCourseFoprint(item:any){
     const formValue = this.finalizecourseFormGroup.value;
@@ -336,75 +395,148 @@ onSemesterChange(semester_id: number) {
     }
   }
 
-  deleteAllotment(item:any){
-    const formValue = this.finalizecourseFormGroup.value;
-    if (
-      !formValue.academic_session_id ||
-      !formValue.college_id ||
-      !formValue.degree_programme_id ||
-      !formValue.semester_id ||
-      !item.course_year_id ||
-      !item.dean_committee_id
-    ) {
-      alert('Please fill all required fields before Print.');
-      return;
-    }
-    const params = {
-      academic_session_id: formValue.academic_session_id,
-      college_id: formValue.college_id,
-      degree_programme_id: formValue.degree_programme_id,
-      semester_id: formValue.semester_id,
-      dean_committee_id: item?.dean_committee_id, 
-      course_year_id: item?.course_year_id,  
-    };
-    this.HTTP.getParam('/master/get/checkCourseFinalizeStatus', params, 'academic')
-  .subscribe({
-    next: (response: any) => {
-      const allotmentData = response?.body?.data;
-
-      if (Array.isArray(allotmentData) && allotmentData.length > 0 && allotmentData[0].allotment_main_id) {
-        this.allotmentMain_id = allotmentData[0].allotment_main_id;
-        console.log('Allotment Main ID:', this.allotmentMain_id);
-
-        // Ask for delete confirmation
-        const confirmDelete = window.confirm('⚠️ Are you sure you want to delete this course allotment?');
-
-        if (confirmDelete) {
-          const deleteParams = {
-            allotment_main_id: this.allotmentMain_id
-          };
-
-          this.HTTP.deleteData('/course/delete/deleteMultipleCourse', deleteParams, 'academic')
-            .subscribe({
-              next: (deleteRes: any) => {
-                console.log('✅ Delete successful:', deleteRes);
-                alert('✅ Course allotment deleted successfully.');
-                this.print_row = [];
-                this.responseData = [];
-              },
-              error: (deleteErr) => {
-                console.error('❌ Delete API failed:', deleteErr);
-                alert('❌ Failed to delete the course. Please try again.');
-              }
-            });
-        } else {
-          console.log('⛔ Deletion cancelled by user.');
-        }
-
-      } else {
-        alert('⚠️ No course allotted to delete.');
-      }
-    },
-    error: (err) => {
-      console.error('❌ Error while fetching allotment_main_id:', err);
-      alert('❌ Error while checking course finalize status.');
-    }
-  });
-
-
-
-
+  deleteAllotment(item: any) {
+  const formValue = this.finalizecourseFormGroup.value;
+  if (
+    !formValue.academic_session_id ||
+    !formValue.college_id ||
+    !formValue.degree_programme_id ||
+    !formValue.semester_id ||
+    !item.course_year_id ||
+    !item.dean_committee_id
+  ) {
+    alert('Please fill all required fields before Print.');
+    return;
   }
+
+  const params = {
+    academic_session_id: formValue.academic_session_id,
+    college_id: formValue.college_id,
+    degree_programme_id: formValue.degree_programme_id,
+    semester_id: formValue.semester_id,
+    dean_committee_id: item?.dean_committee_id,
+    course_year_id: item?.course_year_id,
+  };
+
+  this.HTTP.getParam('/master/get/checkCourseFinalizeStatus', params, 'academic')
+    .subscribe({
+      next: (response: any) => {
+        const allotmentData = response?.body?.data;
+
+        if (Array.isArray(allotmentData) && allotmentData.length > 0) {
+          const { allotment_main_id, finalize_yn } = allotmentData[0] || {};
+
+          if (finalize_yn === 'Y') {
+            alert('⚠️ Course finalized. Please unfinalize first before deleting.');
+            return; // stop here
+          }
+
+          if (allotment_main_id) {
+            this.allotmentMain_id = allotment_main_id;
+            console.log('Allotment Main ID:', this.allotmentMain_id);
+
+            // Ask for delete confirmation
+            const confirmDelete = window.confirm('⚠️ Are you sure you want to delete this course allotment?');
+
+            if (confirmDelete) {
+              const deleteParams = {
+                allotment_main_id: this.allotmentMain_id
+              };
+
+              this.HTTP.deleteData('/course/delete/deleteMultipleCourse', deleteParams, 'academic')
+                .subscribe({
+                  next: (deleteRes: any) => {
+                    console.log('✅ Delete successful:', deleteRes);
+                    alert('✅ Course allotment deleted successfully.');
+                    this.print_row = [];
+                    this.responseData = [];
+                  },
+                  error: (deleteErr) => {
+                    console.error('❌ Delete API failed:', deleteErr);
+                    alert('❌ Failed to delete the course. Please try again.');
+                  }
+                });
+            } else {
+              console.log('⛔ Deletion cancelled by user.');
+            }
+          }
+        } else {
+          alert('⚠️ No course allotted to delete.');
+        }
+      },
+      error: (err) => {
+        console.error('❌ Error while fetching allotment_main_id:', err);
+        alert('❌ Error while checking course finalize status.');
+      }
+    });
+}
+
+
+  // deleteAllotment(item:any){
+  //   const formValue = this.finalizecourseFormGroup.value;
+  //   if (
+  //     !formValue.academic_session_id ||
+  //     !formValue.college_id ||
+  //     !formValue.degree_programme_id ||
+  //     !formValue.semester_id ||
+  //     !item.course_year_id ||
+  //     !item.dean_committee_id
+  //   ) {
+  //     alert('Please fill all required fields before Print.');
+  //     return;
+  //   }
+  //   const params = {
+  //     academic_session_id: formValue.academic_session_id,
+  //     college_id: formValue.college_id,
+  //     degree_programme_id: formValue.degree_programme_id,
+  //     semester_id: formValue.semester_id,
+  //     dean_committee_id: item?.dean_committee_id, 
+  //     course_year_id: item?.course_year_id,  
+  //   };
+  //   this.HTTP.getParam('/master/get/checkCourseFinalizeStatus', params, 'academic')
+  // .subscribe({
+  //   next: (response: any) => {
+  //     const allotmentData = response?.body?.data;
+  //     console.log('all',allotmentData);
+      
+  //     if (Array.isArray(allotmentData) && allotmentData.length > 0 && allotmentData[0].allotment_main_id) {
+  //       this.allotmentMain_id = allotmentData[0].allotment_main_id;
+  //       console.log('Allotment Main ID:', this.allotmentMain_id);
+        
+  //       const confirmDelete = window.confirm('⚠️ Are you sure you want to delete this course allotment?');
+
+  //       if (confirmDelete) {
+  //         const deleteParams = {
+  //           allotment_main_id: this.allotmentMain_id
+  //         };
+
+  //         this.HTTP.deleteData('/course/delete/deleteMultipleCourse', deleteParams, 'academic')
+  //           .subscribe({
+  //             next: (deleteRes: any) => {
+  //               console.log('✅ Delete successful:', deleteRes);
+  //               alert('✅ Course allotment deleted successfully.');
+  //               this.print_row = [];
+  //               this.responseData = [];
+  //             },
+  //             error: (deleteErr) => {
+  //               console.error('❌ Delete API failed:', deleteErr);
+  //               alert('❌ Failed to delete the course. Please try again.');
+  //             }
+  //           });
+  //       } else {
+  //         console.log('⛔ Deletion cancelled by user.');
+  //       }
+
+  //     } else {
+  //       alert('⚠️ No course allotted to delete.');
+  //     }
+  //   },
+  //   error: (err) => {
+  //     console.error('❌ Error while fetching allotment_main_id:', err);
+  //     alert('❌ Error while checking course finalize status.');
+  //   }
+  // });
+  // }
 
   // Finalize and Unfinalize Course Allotment Methods ------------------------------
 
