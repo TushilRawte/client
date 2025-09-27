@@ -1,16 +1,12 @@
 <section class="container-fluid">
   <form [formGroup]="courseRegistrationForm">
-    <!-- <div class="header">
-    <h2>Course Registration</h2>
-  </div> -->
-
     <mat-card class="basic-details-card">
       <mat-card-content>
         <div class="card-header-custom">
-          <mat-card-title>Basic Details</mat-card-title>
+          <mat-card-title>Course Registration</mat-card-title>
         </div>
-        <div>
-          <div class="row">
+        <div *ngIf="studentData">
+          <div class="row std-details">
               <div class="col-md-4 col-6">
               <div class="detail-item">
                 <label class="detail-label">UE ID:</label>
@@ -51,21 +47,18 @@
               </div>
             </div>
           </div>
-
         </div>
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="mt-3">
+    <mat-card class="mt-3" *ngIf="selectedCourses.length > 0">
       <mat-card-content>
-
         <div class="course-list">
-
           <div class="col-md-12 section">
             <h5> <strong>Courses</strong> </h5>
 
             <div class="table-responsive">
-              <table class="table table-bordered">
+              <table class="table table-bordered custom-striped">
                 <thead class="table-header">
                   <tr>
                     <th>#</th>
@@ -141,54 +134,8 @@
               </div>
             </div>
           </div>
-
-
-
-
-
           <hr />
-          <!-- <div class="row">
-
-          <div class="col-md-12 section">
-            <div>
-              <h5>Major Courses (optional)</h5>
-
-              <table class="table table-bordered">
-                <thead class="table-header">
-                  <tr>
-                    <th>#</th>
-                    <th>Course Title</th>
-                    <th>Teachers</th>
-                    <th>Type</th>
-                    <th>Nature</th>
-                    <th>C/O</th>
-                    <th>Add</th>
-                  </tr>
-                </thead>
-                <tbody id="availableCoursesTable">
-                  <tr *ngFor="let course of courseFromAllotment; let i = index">
-                    <td>{{ i + 1 }}</td>
-                    <td>{{ course.course_name }}</td>
-                    <td></td>
-                    <td>{{ course.course_type_name_e }}</td>
-                    <td>{{ course.course_nature_name_e}}</td>
-                    <td></td>
-                    <td>
-                      <button type="button" color="primary" class=" btn-add" (click)="selectCourse(course)">
-                        <mat-icon>add</mat-icon>
-                      </button>
-
-                    </td>
-                  </tr>
-
-                </tbody>
-              </table>
-            </div>
-          </div>
-          
-
-          </div> -->
-
+         
         </div>
         <div class="col-sm-3">
           @if (studentData?.registration_status_id == 2) {

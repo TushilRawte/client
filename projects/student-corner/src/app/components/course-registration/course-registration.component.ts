@@ -23,7 +23,7 @@ export class CourseRegistrationComponent {
   otherCourseFromAllotment: any[] = [];
   registeredCourseList: any[] = [];
   failedCoursesList: any[] = [];
-  studentData: any;
+  studentData: any = null;
   sessionData: any = {};
 
   constructor(
@@ -121,7 +121,7 @@ export class CourseRegistrationComponent {
             shouldLoadAllotment = true; // failed in final year
           }
         }
-        
+
         // Regular courses
         if (course_regular_type === 'Y') {
           shouldLoadAllotment = true;
@@ -158,7 +158,7 @@ export class CourseRegistrationComponent {
     });
   }
 
-  // course list for registration
+  // ^ course list for registration
   getCourseFromAllotment() {
     const params = {
       academic_session_id: this.studentData?.academic_session_id,
@@ -193,7 +193,7 @@ export class CourseRegistrationComponent {
       dean_committee_id: this.studentData?.dean_committee_id,
     };
 
-    // First, get the failed courses
+    // ^ First, get the failed courses
     this.HTTP.getParam(
       '/course/get/getFailedCoursesForReg/',
       paramsForFailed,
@@ -397,7 +397,6 @@ export class CourseRegistrationComponent {
   saveData() {
     if (this.studentData?.registration_id) {
       const payload = this.payloadForReg();
-      console.log('payload data', payload);
 
       this.HTTP.postData(
         '/course/post/saveStudentCourseRegistration',

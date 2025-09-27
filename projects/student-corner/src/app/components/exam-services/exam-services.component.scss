@@ -1,0 +1,4 @@
+/* put in styles.scss (global), or use ::ng-deep if inside component */
+.row-selected td {
+  background-color: #fbb9d8  !important; /* light green */
+}
