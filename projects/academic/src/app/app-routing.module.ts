@@ -11,6 +11,8 @@ import { CourseRegistrationUnfinlizeComponent } from './course-registration-unfi
 import { StudentSectionAllotmentComponent } from './student-section-allotment/student-section-allotment.component';
 import { CourseAttendanceComponent } from './attendance/course-attendance/course-attendance.component';
 import { CourseAttendanceReportComponent } from './attendance/course-attendance-report/course-attendance-report.component';
+import { MarksEntryFacultyComponent } from './marks entry/marks-entry-faculty/marks-entry-faculty.component';
+import { MarksEntryImportComponent } from './marks entry/marks-entry-import/marks-entry-import.component';
 
 const routes: Routes = [
   {
@@ -73,6 +75,16 @@ const routes: Routes = [
       {
         path: 'course-attendance-report',  // getRegisteredCourses
         component: CourseAttendanceReportComponent,
+        pathMatch: 'full',
+      },
+       {
+        path: 'marks-entry-faculty',  // getRegisteredCourses
+        component: MarksEntryFacultyComponent,
+        pathMatch: 'full',
+      },
+             {
+        path: 'marks-entry-import',  // getRegisteredCourses
+        component: MarksEntryImportComponent,
         pathMatch: 'full',
       },
       // { path: 'student-corner', loadChildren: () => import('./student-corner/student-corner.module').then(m => m.StudentCornerModule) },

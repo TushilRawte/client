@@ -1,26 +1,33 @@
 <mat-card>
   <mat-card-content>
-    <form [formGroup]="studentSectionAlotFormGroup">
+    <form [formGroup]="studentSectionAlotFormGroup" (submit)="onSubmit()">
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
           <ng-select placeholder="Session" formControlName="academic_session_id" appearance="outline">
             <ng-container *ngFor="let server of acadmcSesnList">
               <ng-option [value]="server.academic_session_id">{{ server.academic_session_name_e }}</ng-option>
             </ng-container>
           </ng-select>
         </div>
+        <div class="col-md-4 col-6">
+          <ng-select placeholder="College" formControlName="college_id" appearance="outline">
+            <ng-container *ngFor="let server of collegeList">
+              <ng-option [value]="server.college_id">{{ server.college_name_e }}</ng-option>
+            </ng-container>
+          </ng-select>
+        </div>
 
-        <div class="col-md-3 col-6">
+        <div class="col-md-2 col-6">
           <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Degree Programme</mat-label>
-            <mat-select placeholder="Degree Programme" formControlName="degree_programme_id">
-              <mat-option *ngFor="let server of degreeProgramme" [value]="server.degree_programme_id">
-                {{ server.degree_programme_name_e }}
+            <mat-label>Degree Programme Type</mat-label>
+            <mat-select placeholder="Degree Programme Type" formControlName="degree_programme_type_id">
+              <mat-option *ngFor="let server of getDegreeProgramTypeList" [value]="server.degree_programme_type_id">
+                {{ server.degree_programme_type_name_e }}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="col-md-3 col-6">
+        <div class="col-md-2 col-6">
           <mat-form-field appearance="outline" class="w-100">
             <mat-label>Semester</mat-label>
             <mat-select placeholder="Semester" formControlName="semester_id">
@@ -30,7 +37,7 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="col-md-3 col-6">
+        <div class="col-md-2 col-6">
           <mat-form-field appearance="outline" class="w-100">
             <mat-label>Year</mat-label>
             <mat-select placeholder="Year" formControlName="course_year_id">
@@ -40,38 +47,75 @@
             </mat-select>
           </mat-form-field>
         </div>
+        <div class="col-md-2 ">
+          <button class="btn btn-primary" type="button" (click)="getStudentList()">Get Student</button>
+        </div>
+        <div class="row mt-3">
+          <mat-form-field appearance="outline" class="w-100 mt-3">
+            <mat-label>Allot Section to Selected Students</mat-label>
+            <mat-select (selectionChange)="onTopSectionChange($event.value)">
+              <mat-option value="">Select Section</mat-option>
+              <mat-option *ngFor="let s of sections" [value]="s.section_id">
+                {{ s.section_name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
       </div>
       <div class="row">
-        <div formArrayName="sectionrows">
-          <!-- <div *ngFor="let row of sectionrows.controls; let i = index" [formGroupName]="i">
-            <input formControlName="ue_id" placeholder="UE ID" />
-            <input formControlName="section_id" placeholder="Section ID" />
-          </div> -->
-          <table class="table table-bordered mt-3">
+        <div>
+          <table class="table table-bordered mt-3" formArrayName="sectionrows">
             <thead>
               <tr>
                 <th>#</th>
+                <th>Select</th>
                 <th>UE ID</th>
                 <th>Name</th>
                 <th>Academic Status</th>
                 <th>Allot Section</th>
               </tr>
             </thead>
-                <tbody formArrayName="sectionrows">
+            <tbody>
               <tr *ngFor="let row of sectionrows.controls; let i = index" [formGroupName]="i">
-                <!-- Serial no -->
                 <td>{{ i + 1 }}</td>
-
-                <!-- UE ID -->
+                <td>
+                  <mat-checkbox formControlName="selected"></mat-checkbox>
+                </td>
                 <td>{{ row.get('ue_id')?.value }}</td>
-
-                <!-- Student Name -->
                 <td>{{ row.get('student_name')?.value }}</td>
+                <td>{{ row.get('stu_acad_status_name_e')?.value }}</td>
+                <td>
+                  <select class="form-select" formControlName="section_id">
+                    <option value="">Select Section</option>
+                    <option *ngFor="let s of sections" [value]="s.section_id">
+                      {{ s.section_name }}
+                    </option>
+                  </select>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-                <!-- Academic Status -->
-                <td>{{ row.get('academic_status')?.value }}</td>
-
-                <!-- Section Dropdown -->
+          <!-- <table class="table table-bordered mt-3" formArrayName="sectionrows">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Select</th>
+                <th>UE ID</th>
+                <th>Name</th>
+                <th>Academic Status</th>
+                <th>Allot Section</th>
+              </tr>
+            </thead>
+                <tbody >
+              <tr *ngFor="let row of sectionrows.controls; let i = index" [formGroupName]="i">
+                <td>{{ i + 1 }}</td>
+                <td>
+                  <mat-checkbox class="example-margin" ></mat-checkbox>
+                </td>
+                <td>{{ row.get('ue_id')?.value }}</td>
+                <td>{{ row.get('student_name')?.value }}</td>
+                <td>{{ row.get('stu_acad_status_name_e')?.value }}</td>
                 <td>
                   <select class="form-select" formControlName="section_id">
                     <option value="">Select Section</option>
@@ -82,7 +126,13 @@
                 </td>
               </tr>
               </tbody>
-          </table>
+          </table> -->
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          <button class="btn btn-primary">Submit</button>
         </div>
       </div>
     </form>
