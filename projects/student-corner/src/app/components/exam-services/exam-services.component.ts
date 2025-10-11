@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { HttpService, AlertService } from 'shared';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SharedExamService } from '../../../../services/shared-exam.service';
 
 @Component({
   selector: 'app-exam-services',
@@ -13,31 +14,36 @@ import Swal from 'sweetalert2';
 export class ExamServicesComponent {
   studentData: any = null;
   sessionData: any = {};
-  stdApplyForm!: FormGroup;
-  registeredCourseList: any[] = [];
   selectedCourses: any[] = [];
+  coursesListAndMarks: any[] = [];
+  appliedCoursesListAndMarks: any[] = [];
 
   constructor(
-    private fb: FormBuilder,
     private HTTP: HttpService,
     private alert: AlertService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
+    private sharedExamService: SharedExamService
   ) {}
+
+  tableOptions: any = {
+    is_read: true,
+    listLength: 0,
+    dataSource: [],
+    button: [],
+    title: 'Courses List',
+  };
 
   ngOnInit() {
     const storedData = sessionStorage.getItem('studentData');
     if (storedData) {
       const studentData = JSON.parse(storedData);
       this.sessionData = studentData;
-      this.mainforfun();
+      this.getStudentDetails();
     } else {
       this.router.navigateByUrl('/dashboard');
     }
-  }
-
-  mainforfun() {
-    this.stdApplyForm = this.fb.group({});
-    this.getStudentDetails();
   }
 
   getStudentDetails() {
@@ -63,26 +69,68 @@ export class ExamServicesComponent {
       'academic'
     ).subscribe((result: any) => {
       this.studentData = !result.body.error ? result.body.data[0] : [];
-      this.getRegisteredCourses();
+      this.getMarksForRevalRetotalApply();
     });
   }
 
-  getRegisteredCourses() {
+  getAppliedCourseList() {
     const params = {
       academic_session_id: this.studentData?.academic_session_id,
-      course_year_id: this.studentData?.course_year_id,
-      semester_id: this.studentData?.semester_id,
-      college_id: this.studentData?.college_id,
       degree_programme_id: this.studentData?.degree_programme_id,
-      ue_id: this.studentData?.ue_id,
+      student_master_id: this.studentData?.ue_id,
     };
     this.HTTP.getParam(
-      '/course/get/getRegisteredCourseList/',
+      '/course/get/getAppliedCourseList/',
       params,
       'academic'
     ).subscribe((result: any) => {
-      this.registeredCourseList = !result.body.error ? result.body.data : [];
+      this.appliedCoursesListAndMarks = !result.body.error
+        ? result.body.data
+        : [];
+      if (this.appliedCoursesListAndMarks.length > 0) {
+        const appliedIds = this.appliedCoursesListAndMarks.map(
+          (a) => a.course_id
+        );
+        this.selectedCourses = this.coursesListAndMarks.filter((c) =>
+          appliedIds.includes(c.course_id)
+        );
+      }
     });
+  }
+
+  getMarksForRevalRetotalApply() {
+    const params = {
+      academic_session_id: this.studentData?.academic_session_id,
+      semester_id: this.studentData?.semester_id,
+      course_semester_id: this.studentData?.semester_id,
+      college_id: this.studentData?.college_id,
+      ue_id: this.studentData?.ue_id,
+    };
+    this.HTTP.getParam(
+      '/course/get/getMarksForRevalRetotalApply/',
+      params,
+      'academic'
+    ).subscribe((result: any) => {
+      this.coursesListAndMarks = !result.body.error ? result.body.data : [];
+      this.tableOptions.dataSource = this.coursesListAndMarks;
+      this.tableOptions.listLength = this.coursesListAndMarks.length;
+      this.getAppliedCourseList();
+    });
+  }
+
+  onCheckboxClick(course: any, event: MouseEvent) {
+    if (
+      (this.selectedCourses.length >= 2 && !this.isSelected(course)) ||
+      course.eligible_yn === 'N'
+    ) {
+      this.snackBar.open(
+        course.eligible_yn === 'N'
+          ? 'This course is not eligible.'
+          : 'You can only select up to 2 courses.',
+        'Close',
+        { duration: 3000 }
+      );
+    }
   }
 
   onRowCheck(course: any, event: any) {
@@ -95,8 +143,14 @@ export class ExamServicesComponent {
     }
   }
 
+  isApplied(course: any): boolean {
+    return this.appliedCoursesListAndMarks?.some(
+      (a) => a.course_id === course.course_id
+    );
+  }
+
   isSelected(course: any): boolean {
-    return this.selectedCourses.includes(course);
+    return this.selectedCourses?.some((a) => a.course_id === course.course_id);
   }
 
   onSubmit() {
@@ -118,8 +172,6 @@ export class ExamServicesComponent {
 
   saveData() {
     const payload = this.payloadForExamService();
-    console.log(this.selectedCourses);
-    console.log('final payload', payload);
     this.HTTP.postData(
       '/course/post/saveStudentExamServices',
       payload,
@@ -155,7 +207,8 @@ export class ExamServicesComponent {
 
   updateData() {
     const payload = {
-      revaluation_main_id: 8,
+      revaluation_main_id:
+        this.appliedCoursesListAndMarks[0]?.revaluation_main_id,
       courses: this.selectedCourses,
     };
     this.HTTP.putData(
@@ -196,5 +249,15 @@ export class ExamServicesComponent {
     };
   }
 
-  
+  goToPayment() {
+    const examData = {
+      appliedCourseYear: this.selectedCourses[0]?.course_year_id,
+      appliedSemester: this.selectedCourses[0]?.semester_id,
+      appliedAcademic: this.selectedCourses[0]?.academic_session_id,
+      no_of_subject:this.selectedCourses.length
+    };
+    this.sharedExamService.setExamData(examData);
+    this.router.navigate(['payment'], { relativeTo: this.route });
+  }
+
 }

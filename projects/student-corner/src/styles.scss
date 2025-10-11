@@ -48,38 +48,71 @@
 }
 
 
-// *  table
+
+/* Make table scrollable */
 .table-responsive {
-    overflow-x: auto;
+  overflow-x: auto;
 }
 
-.table-responsive table tr:nth-child(even) {
-  background-color: #b11010 !important;
-}
-tr td {
-    font-size: 12px !important;
-}
-
-tr {
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.table > tbody > tr > td, .table > {
-    padding: 0 2px;
-}
-
-
-.custom-striped tbody tr:nth-child(even) td {
-  background-color: #f9f9f9; 
-}
-
-/* styles.scss (global) */
-table.table.custom-striped > thead > tr > th {
-  background-color: #297dd1 !important; /* material blue */
+/* Header style - applied to all tables except Angular Material calendar */
+table > thead:not(.mat-calendar-table-header) > tr > th {
+  background-color: #297dd1 !important; 
   color: #ffffff !important;
-    font-size: 1em;
+  font-size: 1em;
+  font-weight: 500;
+  vertical-align: middle;
   border-color: rgba(0,0,0,0.12);
 }
+
+/* Alternate row color */
+table > tbody > tr:nth-child(even) td {
+  background-color: #f5f5f5; 
+}
+
+/* Row text styling */
+table > tbody > tr > td {
+  font-size: 12px !important;
+  padding: 8px 0px !important; 
+  color: #212121;  
+}
+
+/* Row borders */
+table > tbody > tr {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Optional: highlight selected row */
+table > tbody > tr.row-selected {
+  background-color: #c8e6c9 !important;
+}
+
+/* Make checkboxes smaller inside tables */
+table td .mat-mdc-checkbox , table td .mat-icon {
+  display: flex;
+  align-items: center;  
+  justify-content: center;
+  height: 20px;          /* shrink height */
+}
+
+
+table td .mat-mdc-checkbox .mdc-checkbox__background {
+  transform: scale(0.9); /* shrink checkbox size slightly */
+}
+
+
+//  ^ mat-card-css
+.mat-mdc-card-header {
+   padding: 0.5em 0 0 0.5em !important;
+}
+
+.mat-mdc-card-header-text{
+    padding: 0 !important;
+    .table-title{
+        color:black !important ;
+        font-size: 1.3em;
+    }
+}
+
 
 
 // ^ hover effect
@@ -145,9 +178,12 @@ table.table.custom-striped > thead > tr > th {
         padding: 12px !important;
     }
 
-
     .card-header-custom {
         margin-bottom: 12px;
         padding-bottom: 8px;
     }
+    .table > tbody > tr > td, .table > thead > tr > th, tr.mat-footer-row, tr.mat-header-row, tr.mat-row {
+    padding: 0px 5px;
+    font-size: 1em !important;
+}
 }

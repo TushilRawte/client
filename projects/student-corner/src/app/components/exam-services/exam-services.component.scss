@@ -1,4 +1,9 @@
 /* put in styles.scss (global), or use ::ng-deep if inside component */
 .row-selected td {
-  background-color: #fbb9d8  !important; /* light green */
+  background-color: #72d6ad   !important; /* light green */
+}
+
+::ng-deep .mat-mdc-checkbox.success-checkbox.mat-mdc-checkbox-checked .mdc-checkbox__background {
+  background-color: #4caf50 !important; /* Material green */
+  border-color: #4caf50 !important;
 }

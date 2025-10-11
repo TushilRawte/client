@@ -32,7 +32,7 @@
 // * button
 .btn-remove {
   border: none;
-  padding: 3px 6px;
+  padding: 0;
   border-radius: 4px;
   cursor: pointer;
   font-size: 8px;
@@ -77,7 +77,7 @@
 
 // * showing color information
 .course-legend {
-  padding: 12px;
+  padding: 5px;
   background-color: #dde9f1;
   border-radius: 6px;
   border: 1px solid #17191a;
@@ -115,8 +115,8 @@
   }
 
   .legend-color.failed-course {
-    background-color: #d53951;
-    border-color: #ffcdd2;
+    background-color: rgb(255, 225, 225);
+    border-color: #f88590;
   }
 
 
