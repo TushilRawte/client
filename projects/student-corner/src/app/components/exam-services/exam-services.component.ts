@@ -130,7 +130,7 @@ export class ExamServicesComponent {
         'Close',
         { duration: 3000 }
       );
-    }
+    } 
   }
 
   onRowCheck(course: any, event: any) {
@@ -254,7 +254,8 @@ export class ExamServicesComponent {
       appliedCourseYear: this.selectedCourses[0]?.course_year_id,
       appliedSemester: this.selectedCourses[0]?.semester_id,
       appliedAcademic: this.selectedCourses[0]?.academic_session_id,
-      no_of_subject:this.selectedCourses.length
+      no_of_subject:this.selectedCourses.length,
+      reval_id : 1
     };
     this.sharedExamService.setExamData(examData);
     this.router.navigate(['payment'], { relativeTo: this.route });

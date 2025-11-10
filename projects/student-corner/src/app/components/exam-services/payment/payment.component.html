@@ -70,7 +70,6 @@
               </div>
             </div>
           </div>
-
           <!-- Fee Detail Card -->
           <div class="card modern-card mb-4">
             <div class="card-body">
@@ -81,44 +80,54 @@
                     <tr>
                       <th>Fee Type</th>
                       <th>Fee Amount</th>
-                      <th>Fee Status</th>
-                      <th>Compulsory</th>
+                      <th *ngIf=" exam_data_r?.no_of_subject> 0">Selected Courses</th>
                       <th *ngIf="lateFee > 0">Remark</th>
+                      <th>Compulsory</th>
+                      <th>Fee Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <td>{{ paymentData?.fee_type_name }}</td>
-                    <td>₹{{ paymentData?.fee_amount }}</td>
+                    <td>{{ paymentData?.payData?.fee_type_name }}</td>
+                    <td>₹{{ paymentData?.payData?.fee_amount }}</td>
+                    <td *ngIf=" exam_data_r?.no_of_subject> 0">{{exam_data_r?.no_of_subject }}</td>
+                    <td *ngIf="lateFee > 0">₹{{lateFee}}/- late fee added</td>
+                    <td>{{ paymentData?.payData?.is_required_yn === 'Y' ? 'Yes' : 'No'}}</td>
                     <td>
-                      <span class="badge rounded-pill px-3 py-2" [ngClass]="{
-      'bg-warning text-dark': paymentData?.feeStatus === 'Pending' || paymentData?.feeStatus == null,
-      'bg-success': paymentData?.feeStatus === 'Success',
-      'bg-danger text-white': paymentData?.feeStatus === 'Failed'
-    }">
+                      <span class="badge rounded-pill px-3 py-2" [ngClass]="
+                        paymentData?.transaction_id
+                          ? 'bg-success text-white'
+                          : 'bg-warning text-dark'
+                      ">
                         {{
-                        paymentData?.feeStatus == null
-                        ? 'Pending'
-                        : paymentData?.feeStatus
+                        paymentData?.transaction_id
+                        ? 'Success'
+                        : 'Pending'
                         }}
                       </span>
                     </td>
-                    <td>{{ paymentData?.is_required_yn === 'Y' ? 'Yes' : 'No'}}</td>
-                    <td *ngIf="lateFee > 0">₹{{lateFee}}/- late fee added</td>
                   </tbody>
                 </table>
               </div>
             </div>
-            <div class="card-footer text-end bg-light">
-              <h5 class="mb-0">Total Amount :
-                <span class="text-info fw-bold">₹{{ totalAmount }}</span>
+            <div class="card-footer text-center bg-light">
+              <h5 class="mb-0 fw-bolder">Total Amount :
+                <span class="text-info fw-bold"> <strong>₹{{ totalAmount }}/-</strong></span>
               </h5>
             </div>
           </div>
+
+
+         <div class="d-flex justify-content-center">
+          @if (!paymentData?.transaction_id) {
+          <button type="button" (click)="onPayClicked()" class="btn btn-primary btn-sm">Pay</button>
+          } @else {
+         <button type="button" (click)="onPayClicked()" class="btn btn-primary btn-sm">Print</button>
+          }
         </div>
 
-        <div class="d-flex justify-content-center">
-          <button type="button" (click)="onPayClicked()" class="btn btn-primary btn-sm">Pay</button>
         </div>
+
+
 
       </mat-card-content>
     </mat-card>

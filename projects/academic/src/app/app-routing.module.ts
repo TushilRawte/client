@@ -13,6 +13,8 @@ import { CourseAttendanceComponent } from './attendance/course-attendance/course
 import { CourseAttendanceReportComponent } from './attendance/course-attendance-report/course-attendance-report.component';
 import { MarksEntryFacultyComponent } from './marks entry/marks-entry-faculty/marks-entry-faculty.component';
 import { MarksEntryImportComponent } from './marks entry/marks-entry-import/marks-entry-import.component';
+import { AutomaticRegistrationComponent } from './registration/automatic-registration/automatic-registration.component';
+import { PaymentSettlementComponent } from './payment-settlement/payment-settlement.component';
 
 const routes: Routes = [
   {
@@ -87,8 +89,17 @@ const routes: Routes = [
         component: MarksEntryImportComponent,
         pathMatch: 'full',
       },
+      {
+        path: 'automatic-registration',
+        component: AutomaticRegistrationComponent,
+        pathMatch: 'full',
+      },
+       {
+        path: 'payment-settlement',
+        component: PaymentSettlementComponent,
+        pathMatch: 'full',
+      },
       // { path: 'student-corner', loadChildren: () => import('./student-corner/student-corner.module').then(m => m.StudentCornerModule) },
-
     ]
   },
   {

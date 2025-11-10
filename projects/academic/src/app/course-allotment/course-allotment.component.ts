@@ -129,7 +129,6 @@ export class CourseAllotmentComponent {
 
 addRowToTable() {
   const teachers = this.courseAllotFormGroup.get('emp_id')?.value;
-
   const courseId = this.courseAllotFormGroup.get('course_id')?.value;
   const courseTypeId = this.courseAllotFormGroup.get('course_type_id')?.value;
 

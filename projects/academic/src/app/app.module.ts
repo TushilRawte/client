@@ -23,6 +23,8 @@ import { ViewCourseallotmentComponent } from './view-courseallotment/view-course
 import { MarksEntryAdminComponent } from './marks entry/marks-entry-admin/marks-entry-admin.component';
 import { MarksEntryFacultyComponent } from './marks entry/marks-entry-faculty/marks-entry-faculty.component';
 import { MarksEntryImportComponent } from './marks entry/marks-entry-import/marks-entry-import.component';
+import { AutomaticRegistrationComponent } from './registration/automatic-registration/automatic-registration.component';
+import { PaymentSettlementComponent } from './payment-settlement/payment-settlement.component';
 
 
 @NgModule({
@@ -43,6 +45,8 @@ import { MarksEntryImportComponent } from './marks entry/marks-entry-import/mark
     MarksEntryAdminComponent,
     MarksEntryFacultyComponent,
     MarksEntryImportComponent,
+    AutomaticRegistrationComponent,
+    PaymentSettlementComponent,
 
   ],
   imports: [
