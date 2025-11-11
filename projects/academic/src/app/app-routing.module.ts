@@ -15,6 +15,7 @@ import { MarksEntryFacultyComponent } from './marks entry/marks-entry-faculty/ma
 import { MarksEntryImportComponent } from './marks entry/marks-entry-import/marks-entry-import.component';
 import { AutomaticRegistrationComponent } from './registration/automatic-registration/automatic-registration.component';
 import { PaymentSettlementComponent } from './payment-settlement/payment-settlement.component';
+import { FacultyListComponent } from './registration/faculty-list/faculty-list.component';
 
 const routes: Routes = [
   {
@@ -92,6 +93,11 @@ const routes: Routes = [
       {
         path: 'automatic-registration',
         component: AutomaticRegistrationComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'faculty-list',
+        component: FacultyListComponent,
         pathMatch: 'full',
       },
        {
