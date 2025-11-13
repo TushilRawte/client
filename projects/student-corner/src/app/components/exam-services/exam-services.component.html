@@ -1,0 +1,114 @@
+<section class="container-fluid">
+  <form>
+    <!-- ^ student details -->
+    <mat-card class="basic-details-card">
+      <mat-card-content>
+        <div class="card-header-custom">
+          <mat-card-title>Apply Form</mat-card-title>
+        </div>
+        <div *ngIf="studentData">
+          <div class="row std-details">
+            <div class="col-md-4 col-6">
+              <div class="detail-item">
+                <label class="detail-label">UE ID & Name:</label>
+                <div class="detail-value">{{ studentData?.ue_id}}, {{studentData?.student_name}}</div>
+              </div>
+            </div>
+            <div class="col-md-4 col-6">
+              <div class="detail-item">
+                <label class="detail-label">Dean Committee & Session:</label>
+                <div class="detail-value">{{ studentData?.dean_committee_name_e }} , {{
+                  studentData?.academic_session_name_e}}</div>
+              </div>
+            </div>
+            <div class="col-md-4 col-6">
+              <div class="detail-item">
+                <label class="detail-label">Year & Semester:</label>
+                <div class="detail-value">{{ studentData?.course_year_name_e}} , {{ studentData?.semester_name_e }}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-6">
+              <div class="detail-item">
+                <label class="detail-label">Academic Standing & Study Status:</label>
+                <div class="detail-value">{{studentData?.stu_acad_status_name_e}} ,
+                  {{studentData?.stu_study_status_name_e}}</div>
+              </div>
+
+            </div>
+            <div class="col-md-4 col-6">
+              <div class="detail-item">
+                <label class="detail-label">College:</label>
+                <div class="detail-value">{{ studentData?.college_name_e }}</div>
+              </div>
+
+            </div>
+            <div class="col-md-4 col-6">
+
+              <div class="detail-item">
+                <label class="detail-label">Degree Programme:</label>
+                <div class="detail-value">{{ studentData?.degree_programme_name_e }}</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </mat-card-content>
+    </mat-card>
+    
+    <!-- ^ course details -->
+    <div class="table-responsive mt-3 mb-1" *ngIf="coursesListAndMarks.length > 0">
+      <app-reporttable [options]="tableOptions" class="table table-bordered custom-striped">
+        <ng-template #headerTemplate>
+          <tr>
+            <th>S.No.</th>
+            <th>Course Title</th>
+            <th>Maximum Marks</th>
+            <th>Obtained Marks</th>
+            <th>Remark</th>
+            <th>Eligible</th>
+            <th>Select Course</th>
+          </tr>
+        </ng-template>
+        <ng-template #rowTemplate let-row let-i="index">
+          <tr [ngClass]="{ 'row-selected': isSelected(row) }">
+            <td>{{i+1}}</td>
+            <td>{{ row?.course_name }}</td>
+            <td>{{ row?.max_marks_external }}</td>
+            <td>{{ row?.obtained_mark }}</td>
+            <td>{{ row?.remark_name_e }}</td>
+            <td>{{ row?.eligible_yn }}</td>
+            <td>
+              <div (click)="onCheckboxClick(row, $event)">
+                <mat-checkbox class="success-checkbox"
+                  [disabled]="selectedCourses.length >= 2 && !isSelected(row) || row.eligible_yn == 'N'"
+                  [checked]="isApplied(row)" (change)="onRowCheck(row, $event)">
+                </mat-checkbox>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </app-reporttable>
+    </div>
+
+    <mat-card>
+      <mat-card-content class="pt-0">
+        <p class="text-muted fs-5 fw-semibold">ℹ️ You can apply for two subject only for reval</p>
+        <div class="d-flex justify-content-between">
+          <div class="col-sm-3">
+            @if (appliedCoursesListAndMarks.length > 0) { <button type="button"
+              [disabled]="selectedCourses.length === 0" (click)="onUpdate()" class="btn btn-primary btn-sm">Update
+              courses</button>
+            } @else {
+            <button type="button" (click)="onSubmit()" [disabled]="selectedCourses.length === 0"
+              class="btn btn-primary btn-sm">Apply courses</button>
+            }
+          </div>
+          <div class="col-sm-1">
+            <a (click)="goToPayment()"> <button type="button" class="btn btn-primary btn-sm">Payment</button></a>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </form>
+</section>

@@ -32,6 +32,9 @@ import { GenerateUidnComponent } from './student-profile/generate-uidn/generate-
 import { CheckDocumentForUidnComponent } from './student-profile/check-document-for-uidn/check-document-for-uidn.component';
 import { SrcGenerateComponent } from './semester-report-card/src-generate/src-generate.component';
 
+import { AutomaticRegistrationComponent } from './registration/automatic-registration/automatic-registration.component';
+import { PaymentSettlementComponent } from './payment-settlement/payment-settlement.component';
+import { FacultyListComponent } from './registration/faculty-list/faculty-list.component';
 
 
 @NgModule({
@@ -60,6 +63,9 @@ import { SrcGenerateComponent } from './semester-report-card/src-generate/src-ge
     GenerateUidnComponent,
     CheckDocumentForUidnComponent,
     SrcGenerateComponent,
+    AutomaticRegistrationComponent,
+    PaymentSettlementComponent,
+    FacultyListComponent,
 
   ],
   imports: [
@@ -74,7 +80,8 @@ import { SrcGenerateComponent } from './semester-report-card/src-generate/src-ge
         enabled: true,
         registrationStrategy: 'registerWhenStable:30000'
     }),
-    ReportComponent
+    ReportComponent,
+    ReporttableComponent
 ],
  providers: [
     provideAnimationsAsync()

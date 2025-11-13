@@ -10,6 +10,8 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { ExaminationResultComponent } from './components/examination-result/examination-result.component';
 import { CourseRegistrationComponent } from './components/course-registration/course-registration.component';
 import { NewLayoutComponent } from './components/new-layout/new-layout.component';
+import { ExamServicesComponent } from './components/exam-services/exam-services.component';
+import { PaymentComponent } from './components/exam-services/payment/payment.component';
 
 const routes: Routes = [
 {
@@ -25,6 +27,8 @@ const routes: Routes = [
             {path: 'profile', component: ProfileComponent},
             {path: 'result', component: ExaminationResultComponent},
             {path: 'course-registration', component: CourseRegistrationComponent},
+            {path: 'exam-services', component: ExamServicesComponent},
+            {path: 'exam-services/payment', component: PaymentComponent},
         ],
       },
       {

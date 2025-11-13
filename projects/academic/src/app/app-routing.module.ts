@@ -20,6 +20,9 @@ import { MarksEntryThesisUnfinalizeComponent } from './marks entry/marks-entry-t
 import { MarksEntryExportComponent } from './marks entry/marks-entry-export/marks-entry-export.component';
 import { GenerateUidnComponent } from './student-profile/generate-uidn/generate-uidn.component';
 import { SrcGenerateComponent } from './semester-report-card/src-generate/src-generate.component';
+import { AutomaticRegistrationComponent } from './registration/automatic-registration/automatic-registration.component';
+import { PaymentSettlementComponent } from './payment-settlement/payment-settlement.component';
+import { FacultyListComponent } from './registration/faculty-list/faculty-list.component';
 
 const routes: Routes = [
   {
@@ -127,10 +130,24 @@ const routes: Routes = [
       {
         path: 'src-generate',   
         component: SrcGenerateComponent,
+
+      },
+      {
+        path: 'automatic-registration',
+        component: AutomaticRegistrationComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'faculty-list',
+        component: FacultyListComponent,
+        pathMatch: 'full',
+      },
+       {
+        path: 'payment-settlement',
+        component: PaymentSettlementComponent,
         pathMatch: 'full',
       },
       // { path: 'student-corner', loadChildren: () => import('./student-corner/student-corner.module').then(m => m.StudentCornerModule) },
-
     ]
   },
   {

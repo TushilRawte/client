@@ -18,6 +18,9 @@ import { ExaminationResultComponent } from './components/examination-result/exam
 import { CourseRegistrationComponent } from './components/course-registration/course-registration.component';
 import { FormsModule } from '@angular/forms';
 import { NewLayoutComponent } from './components/new-layout/new-layout.component';
+import { ExamServicesComponent } from './components/exam-services/exam-services.component';
+import { PaymentComponent } from './components/exam-services/payment/payment.component';
+import { ReporttableComponent } from 'shared';
 
 @NgModule({
   declarations: [
@@ -32,7 +35,9 @@ import { NewLayoutComponent } from './components/new-layout/new-layout.component
     ProfileComponent,
     ExaminationResultComponent,
     CourseRegistrationComponent,
-    NewLayoutComponent
+    NewLayoutComponent,
+    ExamServicesComponent,
+    PaymentComponent
 
     
   ],
@@ -44,6 +49,7 @@ import { NewLayoutComponent } from './components/new-layout/new-layout.component
     NgbModule,
     BrowserAnimationsModule,
     FormsModule,
+    ReporttableComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

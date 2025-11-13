@@ -1,0 +1,135 @@
+<section class="container-fluid">
+  <form>
+    <!-- ^ student details -->
+    <mat-card class="basic-details-card">
+      <mat-card-content>
+        <div class="card-header-custom">
+          <mat-card-title>Fee</mat-card-title>
+        </div>
+        <p class="text-muted">Review your details before proceeding with payment</p>
+        <div *ngIf="studentData">
+
+          <!-- Basic Detail Card -->
+          <div class="card modern-card mb-4">
+            <div class="card-body">
+              <h5 class="section-title"><i class="bi bi-person-fill me-2"></i> Basic Detail</h5>
+              <div class="row g-4 mt-2">
+                <div class="col-md-4">
+                  <ul class="list-unstyled info-list">
+                    <li><strong>UE ID:</strong> <span>{{ studentData?.ue_id }}</span></li>
+                    <li><strong>Student Name:</strong> <span>{{ studentData?.student_name }}</span></li>
+                    <!-- <li><strong>Father Name:</strong> <span>{{ studentData?.fatherName }}</span></li>
+                <li><strong>Mother Name:</strong> <span>{{ studentData?.motherName }}</span></li> -->
+                    <li><strong>Date of Birth:</strong> <span>{{ studentData?.dob | date:'mediumDate' }}</span></li>
+                    <li><strong>Gender:</strong> <span>{{ studentData?.gender_id === 'M' ? 'Male' :
+                        studentData?.gender_id === 'F' ? 'Female' : 'Other' }}</span></li>
+                  </ul>
+                </div>
+                <div class="col-md-4">
+                  <ul class="list-unstyled info-list">
+                    <li><strong>Basic Category:</strong> {{ studentData?.category_name }}</li>
+                    <li><strong>Mobile No.:</strong> {{ studentData?.mobile_no }}</li>
+                    <li><strong>Email ID:</strong> {{ studentData?.email_id }}</li>
+                  </ul>
+                </div>
+                <div class="col-md-2 text-center">
+                  <div class="photo-placeholder shadow-sm mb-3"><img src="{{path+studentData?.student_photo_path}}"
+                      alt=""></div>
+                  <div class="signature-placeholder shadow-sm"><img src="{{path+studentData?.student_signature_path}}"
+                      alt=""></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Academic Detail Card -->
+          <div class="card modern-card mb-4">
+            <div class="card-body">
+              <h5 class="section-title"><i class="bi bi-mortarboard-fill me-2"></i> Academic Detail</h5>
+              <div class="row g-4 mt-2">
+                <div class="col-md-6">
+                  <ul class="list-unstyled info-list">
+                    <li><strong>Admission ID:</strong> {{ studentData?.admission_id }}</li>
+                    <li><strong>College ID:</strong> {{ studentData?.college_name_e }}</li>
+                    <li><strong>UEID:</strong> {{ studentData?.ue_id }}</li>
+                    <li><strong>Faculty:</strong> {{ studentData?.faculty_name_e }}</li>
+                    <li><strong>Admitted College:</strong> {{ studentData?.college_name_e }}</li>
+                    <li><strong>College Type:</strong> {{ studentData?.college_type_name_e }}</li>
+                  </ul>
+                </div>
+                <div class="col-md-6">
+                  <ul class="list-unstyled info-list">
+                    <li><strong>Degree Program Type:</strong> {{ studentData?.degree_programme_type_name_e }}</li>
+                    <li><strong>Degree Program:</strong> {{ studentData?.degree_programme_name_e }}</li>
+                    <li><strong>Subject:</strong> {{ studentData?.subject_name_e }}</li>
+                    <li><strong>Year:</strong> {{ studentData?.course_year_name_e }}</li>
+                    <li><strong>Semester:</strong> {{ studentData?.semester_name_e }}</li>
+                    <li><strong>Academic Status:</strong> {{ studentData?.stu_acad_status_name_e }}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Fee Detail Card -->
+          <div class="card modern-card mb-4">
+            <div class="card-body">
+              <h5 class="section-title"><i class="bi bi-currency-dollar me-2"></i> Fee Detail</h5>
+              <div class="table-responsive mt-3">
+                <table class="table modern-table align-middle">
+                  <thead>
+                    <tr>
+                      <th>Fee Type</th>
+                      <th>Fee Amount</th>
+                      <th *ngIf=" exam_data_r?.no_of_subject> 0">Selected Courses</th>
+                      <th *ngIf="lateFee > 0">Remark</th>
+                      <th>Compulsory</th>
+                      <th>Fee Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <td>{{ paymentData?.payData?.fee_type_name }}</td>
+                    <td>₹{{ paymentData?.payData?.fee_amount }}</td>
+                    <td *ngIf=" exam_data_r?.no_of_subject> 0">{{exam_data_r?.no_of_subject }}</td>
+                    <td *ngIf="lateFee > 0">₹{{lateFee}}/- late fee added</td>
+                    <td>{{ paymentData?.payData?.is_required_yn === 'Y' ? 'Yes' : 'No'}}</td>
+                    <td>
+                      <span class="badge rounded-pill px-3 py-2" [ngClass]="
+                        paymentData?.transaction_id
+                          ? 'bg-success text-white'
+                          : 'bg-warning text-dark'
+                      ">
+                        {{
+                        paymentData?.transaction_id
+                        ? 'Success'
+                        : 'Pending'
+                        }}
+                      </span>
+                    </td>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer text-center bg-light">
+              <h5 class="mb-0 fw-bolder">Total Amount :
+                <span class="text-info fw-bold"> <strong>₹{{ totalAmount }}/-</strong></span>
+              </h5>
+            </div>
+          </div>
+
+
+         <div class="d-flex justify-content-center">
+          @if (!paymentData?.transaction_id) {
+          <button type="button" (click)="onPayClicked()" class="btn btn-primary btn-sm">Pay</button>
+          } @else {
+         <button type="button" (click)="onPrintClicked()" class="btn btn-primary btn-sm">Print</button>
+          }
+        </div>
+
+        </div>
+
+
+
+      </mat-card-content>
+    </mat-card>
+  </form>
+</section>

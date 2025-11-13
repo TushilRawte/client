@@ -813,7 +813,7 @@
               "./node_modules/bootstrap/scss/bootstrap.scss",
               "projects/shared/assets/style.bundle.css",
               "projects/shared/assets/modified.scss",
-              "projects/academic/src/styles.scss"
+              "projects/student-corner/src/styles.scss"
             ],
             "scripts": [
               "./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"

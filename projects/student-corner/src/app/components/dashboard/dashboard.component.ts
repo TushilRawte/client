@@ -190,11 +190,16 @@ leaderboardData: LeaderboardData[] = [
     getStudentDetails() {
     // ^ this data will get from login session
     const academic_session_id = 24;
-    const course_year_id = 3;
     const semester_id = 1;
     const college_id = 5;
-    const degree_programme_id = 16;
-    const ue_id = 20220184;
+
+    const course_year_id = 3;
+    const degree_programme_id = 16;// all pass
+    const ue_id = 20220184; // all pass
+
+    // const ue_id = 20230129; // fail in theory
+    // const degree_programme_id = 16; // fail in theory
+    // const course_year_id = 2;
 
 
     const params = {

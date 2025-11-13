@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { HttpService, AlertService } from 'shared';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { Router } from '@angular/router';
@@ -18,21 +17,27 @@ export class CourseRegistrationComponent {
   failedCourseTemp: any[] = [];
   selectedCourses: any[] = []; // & for storing selected courses
   onSelectDropCourse: any; // & for storing dropdown selected course
-  courseRegistrationForm!: FormGroup;
   courseFromAllotment: any[] = [];
   otherCourseFromAllotment: any[] = [];
   registeredCourseList: any[] = [];
   failedCoursesList: any[] = [];
-  studentData: any;
+  studentData: any = null;
   sessionData: any = {};
 
   constructor(
     private snackBar: MatSnackBar,
-    private fb: FormBuilder,
     private HTTP: HttpService,
     private alert: AlertService,
     private router: Router
   ) {}
+
+  tableOptions: any = {
+    is_read: true,
+    listLength: 0,
+    dataSource: [],
+    button: [],
+    title: 'Courses List',
+  };
 
   ngOnInit() {
     const storedData = sessionStorage.getItem('studentData');
@@ -40,14 +45,9 @@ export class CourseRegistrationComponent {
       const studentData = JSON.parse(storedData);
       this.sessionData = studentData;
       this.getStudentDetails();
-      this.mainforfun();
     } else {
       this.router.navigateByUrl('/dashboard');
     }
-  }
-
-  mainforfun() {
-    this.courseRegistrationForm = this.fb.group({});
   }
 
   getStudentDetails() {
@@ -93,7 +93,7 @@ export class CourseRegistrationComponent {
         }
       } */
 
-      if (!this.studentData) return; 
+      if (!this.studentData) return;
 
       const {
         registration_status_id,
@@ -121,7 +121,7 @@ export class CourseRegistrationComponent {
             shouldLoadAllotment = true; // failed in final year
           }
         }
-        
+
         // Regular courses
         if (course_regular_type === 'Y') {
           shouldLoadAllotment = true;
@@ -141,7 +141,6 @@ export class CourseRegistrationComponent {
   getRegisteredCourses() {
     const params = {
       academic_session_id: this.studentData?.academic_session_id,
-      course_year_id: this.studentData?.course_year_id,
       semester_id: this.studentData?.semester_id,
       college_id: this.studentData?.college_id,
       degree_programme_id: this.studentData?.degree_programme_id,
@@ -158,7 +157,7 @@ export class CourseRegistrationComponent {
     });
   }
 
-  // course list for registration
+  // ^ course list for registration
   getCourseFromAllotment() {
     const params = {
       academic_session_id: this.studentData?.academic_session_id,
@@ -193,7 +192,7 @@ export class CourseRegistrationComponent {
       dean_committee_id: this.studentData?.dean_committee_id,
     };
 
-    // First, get the failed courses
+    // ^ First, get the failed courses
     this.HTTP.getParam(
       '/course/get/getFailedCoursesForReg/',
       paramsForFailed,
@@ -237,14 +236,40 @@ export class CourseRegistrationComponent {
       this.regularCourseTemp.length ||
       this.failedCourseTemp.length
     ) {
-      const sortedRegisteredCourses = [
-        ...this.registeredCourseTemp.filter(
-          (c) => c.cou_allot_type_name_e === 'Complusory'
-        ),
-        ...this.registeredCourseTemp.filter(
-          (c) => c.cou_allot_type_name_e === 'Optional'
-        ),
-      ];
+      const normalizedCourses = this.registeredCourseTemp.map((c) =>
+        c.course_registration_type_id === 2
+          ? { ...c, cou_allot_type_name_e: 'Complusory' }
+          : c
+      );
+      const sortedRegisteredCourses = normalizedCourses
+        .map((c) => this.adjustCreditsForRegisterd(c))
+        .sort((a, b) => {
+          // First priority: registration_type_id == 2 goes on top
+          if (
+            a.course_registration_type_id === 2 &&
+            b.course_registration_type_id !== 2
+          )
+            return -1;
+          if (
+            b.course_registration_type_id === 2 &&
+            a.course_registration_type_id !== 2
+          )
+            return 1;
+
+          // Second priority: Complusory before Optional
+          if (
+            a.cou_allot_type_name_e === 'Complusory' &&
+            b.cou_allot_type_name_e === 'Optional'
+          )
+            return -1;
+          if (
+            a.cou_allot_type_name_e === 'Optional' &&
+            b.cou_allot_type_name_e === 'Complusory'
+          )
+            return 1;
+
+          return 0; // keep original order otherwise
+        });
 
       const regularCoursesWithType = this.regularCourseTemp.map((c) =>
         this.mapRegularCourse(c)
@@ -252,13 +277,26 @@ export class CourseRegistrationComponent {
       const failedCoursesWithType = this.failedCourseTemp.map((c) =>
         this.mapFailedCourse(c)
       );
-
       this.selectedCourses = [
         ...sortedRegisteredCourses,
         ...regularCoursesWithType,
         ...failedCoursesWithType,
       ];
+      this.tableOptions.dataSource = this.selectedCourses;
+      this.tableOptions.listLength = this.selectedCourses.length;
     }
+  }
+
+  private adjustCreditsForRegisterd(c: any) {
+    let [theory, practical] = c.credit.split('+').map(Number);
+
+    if (c?.course_nature_id === 1) practical = 0;
+    else if (c?.course_nature_id === 2) theory = 0;
+
+    return {
+      ...c,
+      credit: `${theory}+${practical}`,
+    };
   }
 
   private mapRegularCourse(c: any) {
@@ -335,16 +373,12 @@ export class CourseRegistrationComponent {
       );
 
       snackRef.onAction().subscribe(() => {
-        console.log('Snackbar action button clicked');
         courseSelect.clearModel();
       });
     }
   }
 
   onCourseRemove(courseId: number, courseNatureId: number) {
-    console.log(courseId);
-    console.log(courseNatureId);
-
     this.selectedCourses = this.selectedCourses.filter(
       (course) =>
         !(
@@ -397,7 +431,6 @@ export class CourseRegistrationComponent {
   saveData() {
     if (this.studentData?.registration_id) {
       const payload = this.payloadForReg();
-      console.log('payload data', payload);
 
       this.HTTP.postData(
         '/course/post/saveStudentCourseRegistration',
@@ -474,10 +507,8 @@ export class CourseRegistrationComponent {
 
         if (practical > 0 && practical < 15) {
           result.push(this.buildCoursePayload(course, '2')); // Practical
-          console.log('practical called');
         } else if (practical >= 15) {
           result.push(this.buildCoursePayload(course, '3')); // thises
-          console.log('thesis called');
         }
         return result;
       }),

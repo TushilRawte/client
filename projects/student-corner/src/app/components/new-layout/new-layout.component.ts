@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { HttpService } from 'shared';
 import { Router } from '@angular/router';
+import { environment } from 'environment';
 
 
 export interface Student {
@@ -47,7 +48,7 @@ export class NewLayoutComponent {
 
   studentData: any;
   isSidebarOpen: boolean = false;
-  igkvUrl: string = 'https://igkv.ac.in/';
+  path: string = environment.igkvUrl;
   sessionData: any = {};
 
 

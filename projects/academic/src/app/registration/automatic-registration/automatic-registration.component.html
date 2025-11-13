@@ -1,0 +1,51 @@
+<mat-card>
+    <mat-card-content>
+  <div class="page-heading text-center py-2">
+    <h3 class="m-0 text-white fw-bold">Automatic Course Registration</h3>
+  </div>
+    <hr />
+        <form [formGroup]="automaticCourseRegFormGroup">
+            <div class="row" *ngIf="acadmcSession.length > 0">
+                <div class="col-md-4 col-6">
+                    <ng-select [items]="acadmcSession" bindLabel="academic_session_name_e"
+                        bindValue="academic_session_id" formControlName="academic_session" appearance="outline"
+                        placeholder="Select Session">
+                    </ng-select>
+                </div>
+                <div class="col-md-4 col-6">
+                    <ng-select [items]="degreeProgramme" bindLabel="degree_programme_name_e"
+                        bindValue="degree_programme_id" formControlName="degree_programme" appearance="outline"
+                        placeholder="Degree Programme">
+                    </ng-select>
+                </div>
+                <div class="col-md-4 col-6">
+                    <ng-select [items]="course_year" bindLabel="course_year_name_e" bindValue="course_year_id"
+                        formControlName="course_year" appearance="outline" placeholder="Course Year">
+                    </ng-select>
+                </div>
+                <div class="col-md-4 col-6">
+                    <ng-select [items]="semester" bindLabel="semester_name_e" bindValue="semester_id"
+                        formControlName="semester" appearance="outline" placeholder="Semester name">
+                    </ng-select>
+                </div>
+                <div class="col-md-4 col-6">
+                    <ng-select [items]="deanCommitte" bindLabel="dean_committee_name_e" bindValue="dean_committee_id"
+                        formControlName="dean_committee" appearance="outline" placeholder="Dean Commitee">
+                    </ng-select>
+                </div>
+                <div class="col-md-4 align-self-center d-flex justify-content-evenly">
+                      <button type="button" class="btn btn-primary">Get List</button>
+                      <button type="button " class="btn btn btn-dark">Refresh</button>
+                </div>
+            </div>
+        </form>
+        <div>
+        <div class="d-flex justify-content-between">
+          <button type="button" class="btn btn-success btn-sm text-dark fw-bolder fs-5">Show List of Paid Students</button>
+          <button type="button" class="btn btn-warning btn-sm text-dark fw-bolder fs-5">Show List of Not Paid Students</button>
+          <button type="button" class="btn btn-info btn-sm fw-bolder fs-5">Show List for Previous Registration</button>
+          <!-- <button type="button" class="btn btn-primary btn-sm fw-bolder fs-5">Registration</button> -->
+        </div>
+        </div>
+    </mat-card-content>
+</mat-card>
