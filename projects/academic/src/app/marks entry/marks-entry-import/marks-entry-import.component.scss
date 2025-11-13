@@ -1,0 +1,43 @@
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  text-align: center;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.dashboard-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+/* Badge styles */
+.matched-badge,
+.missing-badge,
+.extra-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  min-width: 50px;
+}
+
+/* Badge colors */
+.matched-badge { background-color: #d4edda; color: #155724; }
+.missing-badge { background-color: #f8d7da; color: #721c24; }
+.extra-badge { background-color: #fff3cd; color: #856404; }
+
+/* Clickable effect */
+.clickable-badge {
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.clickable-badge:hover {
+  transform: scale(1.05);
+}

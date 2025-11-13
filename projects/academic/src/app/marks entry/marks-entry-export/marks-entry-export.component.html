@@ -1,28 +1,4 @@
 <mat-card>
- <h5 class="mt-3">Import Data From Fire Eye For Validate and Import</h5>
-<mat-card-content>
-    <form [formGroup]="marksImportFormGroup" (ngSubmit)="onSubmit()">
-        <div class="row">
-              <input 
-    type="file" 
-    id="myFile" 
-    (change)="onFileSelected($event)"/>
- </div>
-  <br>
-  <div class="row">
-    <div class="col-md-2">
-         <button  type="submit" class="btn btn-primary" >Submit</button>
-    </div>
-    <div class="col-md-7">
-        <span class="text-danger"> Please Check all column name in execel must be same in table </span>
-    </div>
-  </div>
-</form>
- </mat-card-content>
-</mat-card>
-
-
-<mat-card class="mt-5">
     <mat-card-content>
         <form [formGroup]="marksEntryFacultyFormGroup">
             <div class="row">
@@ -87,7 +63,9 @@
             <th>Course Year</th>
             <th>Dean Committee</th>
             <th>Course Count</th>
-            <th>Get Imported Data</th>
+            <th>Prepare Data</th>
+            <th>Export</th>
+            <th>Get Student</th>
         </tr>
     </ng-template>
     <ng-template #rowTemplate let-row let-i="index">
@@ -96,121 +74,91 @@
             <td>{{ row.course_year_name_e}}</td>
             <td>{{row.dean_committee_name_e}}</td>
             <td>{{ row.course_count }}</td>
-            <td><button mat-mini-fab color="primary" (click)="getFireEyeDashboard(row)"><mat-icon>visibility</mat-icon></button></td>
-           
+            <td><button mat-mini-fab color="primary" (click)="onSubmit(row)"><mat-icon>login</mat-icon></button></td>
+            <td><button mat-mini-fab color="primary" (click)="getStudentDataForExportFromTemp(row)"><mat-icon>cloud_download</mat-icon></button></td>
+            <td><button mat-mini-fab color="primary" (click)="getStudentphoto(row)"><mat-icon>photo_auto_merge</mat-icon></button></td>
         </tr>
     </ng-template>
 </app-reporttable>
 
-<mat-card class="mt-5">
-  <mat-card-content>
-    <h5 class="mt-3 mb-3">Data Came From Fire Eye</h5>
-
-    <table class="table table-bordered table-striped table-hover" *ngIf="dashBoardList?.length">
-      <thead class="table-dark text-center">
-        <tr>
-          <th>Total Rows</th>
-          <th>Comparison Status</th>
-          <th>Update marks in Exported</th> 
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr *ngFor="let item of dashBoardList">
-          <td class="text-center">
-            {{ item.total_rows }}
-          </td>
-
-          <td class="text-center">
-            <span
-              class="clickable-badge"
-              [ngClass]="{
-                'matched-badge': item.comparison_status === 'Matched',
-                'missing-badge': item.comparison_status === 'Missing',
-                'extra-badge': item.comparison_status === 'Extra'
-              }"
-              (click)="onBadgeClick(item)"
-            >
-              {{ item.comparison_status }}
-            </span>
-          </td>
-
-          <td class="text-center">
-             <button *ngIf="item.comparison_status === 'Matched'" class="" type="button" (click)="onEditClick(item)"  mat-mini-fab color="primary" > <mat-icon>edit_square</mat-icon> </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </mat-card-content>
-</mat-card>
-
-<br>
- <button *ngIf="isShowFinalClubButton" (click)="onSave()" class="btn btn-primary">Final Club and Marks Entry </button>
-
-<div class="row mt-3" style="height: 600px; overflow-y: auto;">
-<app-reporttable [options]="dashBoardListoptions" style="height: 450px; overflow-y: auto;" >
-    <ng-container class="card-header">Validated Data from Fire Eye</ng-container>
+<app-reporttable [options]="studentListoptions" *ngIf="studentList && studentList.length > 0">
+    <ng-container class="card-header">Student List For Export</ng-container>
     <ng-template #headerTemplate>
         <tr>
             <th>#</th>
-            <th>ue_id</th>
-            <th>academic_session_id</th>
-            <th>college_id</th>
-            <th>degree_programme_id</th>
+            <th>export_batch_id</th>
+            <th>admission_session</th>
+            <th>registration_id</th>
+            <th>course_year_id</th>
             <th>dean_committee_id</th>
-            <th>student_course_year_id</th>
-            <th>student_semester_id</th>
+            <th>academic_session_id</th>
+            <th>course_id</th>
+            <th>ue_id</th>
+            <th>college_id</th>
+            <th>student_master_id</th>
+            <th>degree_programme_id</th>
+            <th>semester_id</th>
+            <th>section_id</th>
+            <th>exam_type_id</th>
             <th>registration_status_id</th>
             <th>course_registration_type_id</th>
-            <th>course_id</th>
-            <th>course_year_id</th>
-            <th>course_semester_id</th>
             <th>course_nature_id</th>
-            <th>exam_paper_type_id</th>
-            <th>obtained_mark</th>
             <th>remark_id</th>
+            <th>max_marks_internal</th>
+            <th>max_marks_external</th>
             <th>special_remark_id</th>
-            <th>registration_id</th>
-            <th>answerbook_no</th>
-            <th>export_batch_id</th>
-            <th>action_date</th>
+            <th>final_marks</th>
+            <th>exam_paper_type_id</th>
         </tr>
     </ng-template>
     <ng-template #rowTemplate let-row let-i="index">
         <tr >
             <td>{{ i + 1 }}</td>
-            <td>{{ row.ue_id}}</td>
+            <td>{{ row.export_batch_id }}</td>
+            <td>{{ row.admission_session }}</td>
+            <td>{{ row.registration_id }}</td>
+            <td>{{ row.course_year_id }}</td>
+            <td>{{ row.dean_committee_id }}</td>
             <td>{{ row.academic_session_id }}</td>
-            <td>{{row.college_id}}</td>
-            <td>{{row.degree_programme_id}}</td>
-            <td>{{row.dean_committee_id}}</td>
-            <td>{{row.student_course_year_id}}</td>
-            <td>{{row.student_semester_id}}</td>
-            <td>{{row.registration_status_id}}</td>
-            <td>{{row.course_registration_type_id}}</td>
-            <td>{{row.course_id}}</td>
-            <td>{{row.course_year_id}}</td>
-            <td>{{row.course_semester_id}}</td>
-            <td>{{row.course_nature_id}}</td>
-            <td>{{row.exam_paper_type_id}}</td>
-            <td>{{row.obtained_mark}}</td>
-            <td>{{row.remark_id}}</td>
-            <td>{{row.special_remark_id}}</td>
-            <td>{{row.registration_id}}</td>
-            <td>{{row.answerbook_no}}</td>
-            <td>{{row.export_batch_id}}</td>
-            <td>{{row.action_date}}</td>
-           
+            <td>{{ row.course_id }}</td>
+            <td>{{ row.ue_id }}</td>
+            <td>{{ row.college_id }}</td>
+            <td>{{ row.student_master_id }}</td>
+            <td>{{ row.degree_programme_id }}</td>
+            <td>{{ row.semester_id }}</td>
+            <td>{{ row.section_id }}</td>
+            <td>{{ row.exam_type_id }}</td>
+            <td>{{ row.registration_status_id }}</td>
+            <td>{{ row.course_registration_type_id }}</td>
+            <td>{{ row.course_nature_id }}</td>
+            <td>{{ row.remark_id }}</td>
+            <td>{{ row.max_marks_internal }}</td>
+            <td>{{ row.max_marks_external }}</td>
+            <td>{{ row.special_remark_id }}</td>
+            <td>{{ row.final_marks }}</td>
+            <td>{{ row.exam_paper_type_id }}</td>
         </tr>
     </ng-template>
 </app-reporttable>
-</div>
 
-
-
-
-
-
-
+<app-reporttable [options]="studentPhotoListoptions" *ngIf="studentPhotList && studentPhotList.length > 0">
+    <ng-container class="card-header">Student Image Export</ng-container>
+    <ng-template #headerTemplate>
+        <tr>
+            <th>#</th>
+            <th>UE ID</th>
+            <th>Photo</th>
+        </tr>
+    </ng-template>
+    <ng-template #rowTemplate let-row let-i="index">
+        <tr >
+            <td>{{ i + 1 }}</td>
+            <td>{{ row.ue_id }}</td>
+            <td>
+                <img src="https://igkv.ac.in/{{ row.student_photo_path }}" alt="" height="20px">
+            </td>
+        </tr>
+    </ng-template>
+</app-reporttable>
 
 

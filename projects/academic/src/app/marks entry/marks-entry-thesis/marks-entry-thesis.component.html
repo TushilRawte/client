@@ -1,0 +1,175 @@
+<mat-card>
+    <mat-card-content>
+        <form [formGroup]="marksEntryFacultyFormGroup">
+            <div class="row">
+                    <div class="col-md-3 col-6">
+                    <ng-select placeholder="Session" formControlName="academic_session_id" appearance="outline">
+                        <ng-container *ngFor="let server of acadmcSesnList">
+                            <ng-option [value]="server.academic_session_id">{{ server.academic_session_name_e
+                                }}</ng-option>
+                        </ng-container>
+                    </ng-select>
+                </div>
+                     <div class="col-md-3 col-6">
+                    <ng-select placeholder="College" formControlName="college_id" (change)="onCollegeChange($event)" appearance="outline" >
+                    <ng-container *ngFor="let server of collegeList">
+                        <ng-option [value]="server.college_id">{{ server.college_name_e }}</ng-option>
+                    </ng-container>
+                    </ng-select>
+                </div>
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Degree Programme</mat-label>
+                    <mat-select placeholder="Degree Programme" formControlName="degree_programme_id" (selectionChange)="onDegreeProgrammeChange($event.value)">
+                        <mat-option *ngFor="let server of degreeProgramme" [value]="server.degree_programme_id">
+                        {{ server.degree_programme_name_e }}
+                        </mat-option>
+                    </mat-select>
+                    </mat-form-field>
+                </div>
+                  <div class="col-md-3 col-6">
+                    <ng-select placeholder="Year" formControlName="course_year_id" appearance="outline">
+                        <ng-container *ngFor="let server of yearList">
+                            <ng-option [value]="server.course_year_id">{{ server.course_year_name_e 
+                                }}</ng-option>
+                        </ng-container>
+                    </ng-select>
+                </div>
+                <div class="col-md-2 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Semester</mat-label>
+                        <mat-select placeholder="Semester" formControlName="semester_id">
+                            <mat-option *ngFor="let semester of semesterList" [value]="semester.semester_id">
+                                {{ semester?.semester_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-2 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Valuation Type</mat-label>
+                        <mat-select placeholder="Valuation Type" formControlName="valuation_type_id">
+                            <mat-option *ngFor="let server of valuationTypeList" [value]="server.valuation_type_id">
+                                {{ server.valuation_type_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-2 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Exam Type</mat-label>
+                        <mat-select placeholder="Exam Type" formControlName="exam_type_id">
+                            <mat-option *ngFor="let server of examTypeList" [value]="server.exam_type_id">
+                                {{ server.exam_type_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-2 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Exam Paper Type</mat-label>
+                        <mat-select placeholder="Exam Paper Type"
+                            (selectionChange)="onExamPaperTypeChange($event.value)">
+                            <mat-option *ngFor="let server of getExamPaperTypeList" [value]="server">
+                                {{ server.exam_paper_type_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                </div>
+           
+                <div class="col-md-2 mt-4">
+                    <button class="btn btn-primary" type="button" (click)="getCourseList()">Get List</button>
+                </div>
+            </div>
+            <hr>
+           <div class="row mt-3">
+              <input 
+                    type="text" 
+                    [(ngModel)]="courseID" 
+                    [ngModelOptions]="{standalone: true}" 
+                    placeholder="Search Course Code" 
+                    class="form-control" 
+                    style="width:200px; margin-bottom:10px;">
+                <div class="table-responsive custom-table-wrapper">
+                    <table class="table table-bordered">
+                    <thead class="table-header">
+                        <tr>
+                        <th>#</th>
+                        <th>Course Name</th>
+                        <th>Course Code</th>
+                        <th>Dean Committee</th>
+                        <th>Course Year</th>
+                        <th>Student Count</th>
+                        <th>Marks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let item of courseList; let i = index">
+                        <tr *ngIf="!courseID || item.course_code?.toString().toLowerCase().includes(courseID.toLowerCase())">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ item.course_title_e }}</td>
+                        <td>{{ item.course_code }}</td>
+                        <td>{{ item.dean_committee_name_e }}</td>
+                        <td>{{ item.course_year_name_e }}</td>
+                        <td>{{ item.student_count }}</td>
+                        <td>
+                            <button class="btn btn-primary" (click)="getCourseListParticularData(item)">
+                            <mat-icon>login</mat-icon>
+                            </button>
+                        </td>
+                        </tr>
+                        </ng-container>
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <hr>
+
+                 <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <!-- <th>Finalize</th> -->
+                            <th>Student Name</th>
+                            <th>Student ID</th>
+                            <th>Remark</th>
+                            <th>Date of Viva</th>
+                            <th>Thesis Title</th>
+                        </tr>
+                    </thead>
+                    <tbody formArrayName="students">
+                        <ng-container *ngFor="let student of students.controls; let i = index" >
+                        <tr [formGroupName]="i"  
+                        *ngIf="!searchUeId || student.value.ue_id?.toString().includes(searchUeId)">
+                            <td>{{ i + 1 }}</td>
+                            <!-- <td> <mat-checkbox formControlName="marks_finalize"></mat-checkbox></td> -->
+                            <td>{{ student.value.student_name }}</td>
+                            <td>{{ student.value.ue_id }}</td>
+                            <td>
+                                <select class="form-select" formControlName="remark_id">
+                                    <option value="">Select Remark</option>
+                                    <option *ngFor="let s of remarkList" [value]="s.remark_id">
+                                        {{ s.remark_name_e }}
+                                    </option>
+                                </select>
+                            </td>
+                            <td><input type="date" class="form-control" formControlName="date_of_viva"> </td>
+                            <td><textarea class="form-control" formControlName="thesis_title" ></textarea></td>
+                        </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+                        <div class="row mt-4 g-2">
+                    <div class="col-12 col-sm-4 col-md-2">
+                        <button class="btn btn-primary w-100" type="button" (click)="onSubmit()">Submit</button>
+                    </div>
+                    <div class="col-12 col-sm-4 col-md-2">
+                        <button class="btn btn-danger w-100" type="button" (click)="onFinalize()">Finalize</button>
+                    </div>
+                </div>
+        </form>
+    </mat-card-content>
+</mat-card>

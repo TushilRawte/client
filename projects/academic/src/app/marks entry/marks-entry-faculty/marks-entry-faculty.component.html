@@ -81,6 +81,7 @@
           <thead>
             <tr>
               <th>#</th>
+              <th>College</th>
               <th>Course Name</th>
               <th>Course Code</th>
               <!-- <th>Degree Programme Type</th> -->
@@ -94,6 +95,7 @@
           <tbody>
             <tr *ngFor="let item of courseList; let i = index">
                 <td>{{i+1}}</td>
+                <td>{{item.college_name_e}}</td>
               <td>{{ item.course_title_e }}</td>
               <td>{{ item.course_code }}</td>
               <td>{{ item.dean_committee_name_e }}</td>
@@ -104,71 +106,96 @@
           </tbody>
         </table>
       </div>
-
-                <div class="row mt-3">
+            <div class="status-legend mt-5"> 
+            <div class="legend-grid">
+                <div><mat-icon class="text-success">cloud_download</mat-icon> Internal Imported</div>
+                <div><mat-icon class="text-danger">cloud_download</mat-icon> Internal Not Imported</div>
+                <div><mat-icon class="text-success">done</mat-icon> Internal Finalized</div>
+                <div><mat-icon class="text-danger">done</mat-icon> Internal Unfinalized</div>
+            </div>
+            </div>
+     
+      <div class="row mt-3">
+                 <input 
+                type="text" 
+                [(ngModel)]="searchUeId" 
+                [ngModelOptions]="{standalone: true}" 
+                placeholder="Search UE ID" 
+                class="form-control" 
+                style="width:200px; margin-bottom:10px;">
         <table class="table table-bordered">
           <thead>
             <tr>
               <th>#</th>
               <th>Student Name</th>
               <th>Student ID</th>
-              <th>Max Marks</th>
-              <th>Obtained Marks</th>
+              <th>{{examPaperTypenameSelected}} Max Marks</th>
+              <th>{{examPaperTypenameSelected}} Obtained Marks</th>
               <th>Remark</th>
+              <th>Finalize</th>
               <th>Status</th>
             </tr>
           </thead>
-          <!-- <tbody> -->
-            <!-- <tr *ngFor="let item of attandanceList; let i = index">
-                <td>{{i+1}}</td>
-                <td>{{item.student_name}}</td>
-                <td>{{item.ue_id}}</td>
-                <td>10</td>
-                <td>
-                  <input type="number" formControlName="obtained_marks" style="width: 50px;">
-                  <div *ngIf="marksEntryFacultyFormGroup.get('obtained_marks')?.hasError('min') && marksEntryFacultyFormGroup.get('obtained_marks')?.touched">
-                  Value cannot be negative
-                  </div>
-                </td>
-                <td>    
-                  <select class="form-select" >
-                    <option value="">Select Section</option>
-                    <option *ngFor="let s of remarkList" [value]="s.remark_id">
-                      {{ s.remark_name_e }}
-                    </option>
-                  </select></td>
-            </tr> -->
+                <tbody formArrayName="students" *ngIf="students">
+                  <ng-container *ngFor="let student of students.controls; let i = index">
+                   <tr  [formGroupName]="i" [ngClass]="{ 'disabled-row': student.disabled }" *ngIf="!searchUeId || student.value.ue_id?.toString().includes(searchUeId)">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ student.value.student_name }}</td>
+                  <td>{{ student.value.ue_id }}</td>
+                  <td>{{student.value.max_marks_internal}}</td>
+                  <td>
+                    <input type="number" formControlName="int_obtained_mark" style="width: 60px;">
+                    <div *ngIf="student.get('int_obtained_mark')?.hasError('min') && student.get('obtained_marks')?.touched">
+                      Value cannot be negative
+                    </div>
+                  </td>
+                  <td>
+                    <select class="form-select" formControlName="remark_id">
+                      <option value="">Select Remark</option>
+                      <option *ngFor="let s of remarkList" [value]="s.remark_id">
+                        {{ s.remark_name_e }}
+                      </option>
+                    </select>
+                  </td>
+                    <td>
+                      <mat-checkbox formControlName="marks_finalize"></mat-checkbox>
+                    </td>
+                  <td class="status-cell text-center">
+                               <div class="row">
+                                     <!-- Internal Imported -->
+                                    <mat-icon 
+                                        class="status-icon"
+                                        [ngClass]="student.get('intImported')?.value ? 'text-success' : 'text-danger'"
+                                        matTooltip="{{ student.get('intImported')?.value ? 'Internal Imported' : 'Internal Not Imported' }}">
+                                        cloud_download
+                                    </mat-icon>
+                                    <!-- Internal Finalized -->
+                                    <mat-icon 
+                                        class="status-icon"
+                                        [ngClass]="student.get('intFinalized')?.value ? 'text-success' : 'text-danger'"
+                                        matTooltip="{{ student.get('intFinalized')?.value ? 'Internal Finalized' : 'Internal Unfinalized' }}">
+                                        done
+                                    </mat-icon>
+                               </div>
+                        </td>
+                </tr>
+                  </ng-container>
 
-            
-          <!-- </tbody> -->
-           <tbody formArrayName="students">
-  <tr *ngFor="let student of students.controls; let i = index" [formGroupName]="i">
-    <td>{{ i + 1 }}</td>
-    <td>{{ student.value.student_name }}</td>
-    <td>{{ student.value.ue_id }}</td>
-    <td>10</td>
-    <td>
-      <input type="number" formControlName="obtained_marks" style="width: 60px;">
-      <div *ngIf="student.get('obtained_marks')?.hasError('min') && student.get('obtained_marks')?.touched">
-        Value cannot be negative
-      </div>
-    </td>
-    <td>
-      <select class="form-select" formControlName="remark_id">
-        <option value="">Select Remark</option>
-        <option *ngFor="let s of remarkList" [value]="s.remark_id">
-          {{ s.remark_name_e }}
-        </option>
-      </select>
-    </td>
-    <td></td>
-  </tr>
-</tbody>
+              </tbody>
 
         </table>
-           <div class="col-md-2 mt-4">
-              <button class="btn btn-primary" type="button" (click)="onSubmit()" >Submit</button>
-            </div>
+         <div class="row mt-4 g-2">
+          <div class="col-12 col-sm-4 col-md-2">
+            <button class="btn btn-primary w-100" type="button" (click)="onSubmit()">Submit</button>
+          </div>
+          <div class="col-12 col-sm-4 col-md-2">
+            <button class="btn btn-danger w-100" type="button" (click)="onFinalize()">Finalize</button>
+          </div>
+          <div class="col-12 col-sm-4 col-md-2">
+            <button class="btn btn-info w-100" type="button" (click)="onUnfinalize()">Unfinalize</button>
+          </div>
+        </div>
+
       </div>
         </form>
     </mat-card-content>

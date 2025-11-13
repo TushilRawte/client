@@ -23,6 +23,15 @@ import { ViewCourseallotmentComponent } from './view-courseallotment/view-course
 import { MarksEntryAdminComponent } from './marks entry/marks-entry-admin/marks-entry-admin.component';
 import { MarksEntryFacultyComponent } from './marks entry/marks-entry-faculty/marks-entry-faculty.component';
 import { MarksEntryImportComponent } from './marks entry/marks-entry-import/marks-entry-import.component';
+import { MarksEntryUnfinalizeComponent } from './marks entry/marks-entry-unfinalize/marks-entry-unfinalize.component';
+import { MarksEntryThesisComponent } from './marks entry/marks-entry-thesis/marks-entry-thesis.component';
+import { MarksEntryThesisUnfinalizeComponent } from './marks entry/marks-entry-thesis-unfinalize/marks-entry-thesis-unfinalize.component';
+import { MarksEntryExportComponent } from './marks entry/marks-entry-export/marks-entry-export.component';
+import { MarksEntryDropdownComponent } from './marks entry/marks-entry-dropdown/marks-entry-dropdown.component';
+import { GenerateUidnComponent } from './student-profile/generate-uidn/generate-uidn.component';
+import { CheckDocumentForUidnComponent } from './student-profile/check-document-for-uidn/check-document-for-uidn.component';
+import { SrcGenerateComponent } from './semester-report-card/src-generate/src-generate.component';
+
 
 
 @NgModule({
@@ -43,6 +52,14 @@ import { MarksEntryImportComponent } from './marks entry/marks-entry-import/mark
     MarksEntryAdminComponent,
     MarksEntryFacultyComponent,
     MarksEntryImportComponent,
+    MarksEntryUnfinalizeComponent,
+    MarksEntryThesisComponent,
+    MarksEntryThesisUnfinalizeComponent,
+    MarksEntryExportComponent,
+    MarksEntryDropdownComponent,
+    GenerateUidnComponent,
+    CheckDocumentForUidnComponent,
+    SrcGenerateComponent,
 
   ],
   imports: [
@@ -50,6 +67,7 @@ import { MarksEntryImportComponent } from './marks entry/marks-entry-import/mark
     BrowserModule,
     NgbModule,
     AppRoutingModule,
+    ReporttableComponent,
     CapslockDirective,
     FormsModule,
     ServiceWorkerModule.register('ngsw-worker.js', {

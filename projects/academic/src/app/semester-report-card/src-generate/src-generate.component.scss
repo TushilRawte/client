@@ -1,0 +1,42 @@
+.table-header {
+  background-color: #007bff;
+  color: white;
+}
+
+.count-badge {
+  display: inline-block;
+  min-width: 60px;
+  padding: 8px 16px;
+  border-radius: 25px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.count-badge:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* ✅ Green for Generated */
+.generated {
+  background-color: #28a745;
+}
+
+/* ⚠️ Red for Not Generated */
+.not-generated {
+  background-color: #dc3545;
+}
+
+/* Responsive table for mobile */
+@media (max-width: 768px) {
+  table {
+    font-size: 14px;
+  }
+
+  .count-badge {
+    padding: 6px 12px;
+    min-width: 50px;
+  }
+}

@@ -1,3 +1,4 @@
+
 .disabled-row {
   background-color: #737274; /* light gray */
   pointer-events: none;      /* optional: block clicks */
@@ -16,7 +17,8 @@
   background: #f8f9fa; /* light bg for header */
   z-index: 2;
 }
-/* Table cell look */
+
+//status
 .status-cell {
   border: 1px solid #ddd;
   padding: 6px;
@@ -60,4 +62,3 @@
   vertical-align: middle;
   margin-right: 2px;
 }
-

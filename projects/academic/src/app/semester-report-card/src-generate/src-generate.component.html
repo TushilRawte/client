@@ -1,0 +1,112 @@
+<mat-card>
+    <mat-card-content>
+        <form [formGroup]="srcGenerateFormGroup">
+            <app-marks-entry-dropdown
+                [formGroup]="srcGenerateFormGroup"
+                [showDegreeProgramme]="true"
+                [showExamPaper]="false"
+                [showvaluation]="false"
+                [showSemester]="true"
+                [showDeanCommitee]="true" 
+                (degreeProgrammeChange)="onDegreeProgrammeChange($event)"
+                >
+            </app-marks-entry-dropdown>
+            <div class="row">
+                <div class="col-md-2 mt-4">
+                    <button class="btn btn-primary" type="button" (click)="getDashboard()">Get List</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <table class="table table-bordered table-striped text-center mt-4" >
+                    <thead>
+                        <tr>
+                            <th>SRC Generated</th>
+                            <th>SRC Not Generated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of dashboardList">  
+                            <td>{{item.generated_yn}}</td>
+                            <td>
+                                <span 
+                                    class="count-badge" 
+                                    [ngClass]="{
+                                    'generated': item.generated_yn === 'Generated',
+                                    'not-generated': item.generated_yn === 'Not Generated'
+                                    }"
+                                    (click)="viewDetails(item.generated_yn)">
+                                    {{ item.total_count }}
+                                </span>
+                            </td>
+                        </tr>
+                </table>
+            </div>
+
+
+        <div class="table-responsive mt-4" *ngIf="students.controls.length > 0">
+                <table class="table table-bordered table-striped text-center" formArrayName="students">
+                <thead class="table-light">
+                    <tr>
+                    <th>#</th>
+                    <th>
+                        <input
+                        type="checkbox"
+                        [checked]="selectAll"
+                        (change)="toggleSelectAll($event)"
+                        />
+                    </th>
+                    <th>UE Id</th>
+                    <th>Student Name</th>
+                    <th>Registered Courses</th>
+                    <th>Registered Paper</th>
+                    <th>Marks Entered</th>
+                    <th>Marks Not Entered</th>
+                    <th>Marks Finalize</th>
+                    <th>SRC Generated</th>
+                    <th>Prevent Certificate Generated</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let ctrl of students.controls; let i = index" [formGroupName]="i">
+                    <td>{{ i + 1 }}</td>
+                    <td>
+                        <input
+                        type="checkbox"
+                        formControlName="selected"
+                        (change)="onRowCheckboxChange()"
+                        />
+                    </td>
+                    <td>{{ ctrl.value.ue_id }}</td>
+                    <td>{{ ctrl.value.student_name }}</td>
+                    <td>{{ ctrl.value.registered_courses }}</td>
+                    <td>{{ ctrl.value.registered_paper }}</td>
+                    <td>{{ ctrl.value.marks_entered }}</td>
+                    <td>{{ ctrl.value.marks_not_enterd }}</td>
+                    <td>{{ ctrl.value.marks_finalize }}</td>
+                    <td>{{ ctrl.value.generated_yn }}</td>
+                    <td>{{ ctrl.value.prevent_certificate_generation }}</td>
+                    </tr>
+                </tbody>
+                </table>
+        </div>
+       <!-- <div formArrayName="students"></div> -->
+        <div class="row mt-4">
+                <div class="col-md-3">
+                <button class="btn btn-success" type="button" (click)="generateSRC()">Generate SRC</button>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-md-3 mt-4">
+                    <button class="btn btn-primary" type="button" (click)="insertMan()">Print SRC</button>
+                </div>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>           
+
+
+
+            

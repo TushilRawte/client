@@ -1,0 +1,91 @@
+<div [formGroup]="formGroup" class="row">
+    <!-- Academic Session -->
+    <div class="col-md-3 col-6">
+        <ng-select placeholder="Session" formControlName="academic_session_id" appearance="outline">
+            <ng-container *ngFor="let session of acadmcSesnList">
+                <ng-option [value]="session.academic_session_id">{{ session.academic_session_name_e }}</ng-option>
+            </ng-container>
+        </ng-select>
+    </div>
+
+    <!-- College -->
+    <div class="col-md-3 col-6" *ngIf="showCollege">
+        <ng-select placeholder="College" formControlName="college_id" (change)="onCollegeChange($event)"
+            appearance="outline">
+            <ng-container *ngFor="let college of collegeList">
+                <ng-option [value]="college.college_id">{{ college.college_name_e }}</ng-option>
+            </ng-container>
+        </ng-select>
+    </div>
+
+    <div class="col-md-3 col-6" *ngIf="showDegreeProgramme">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Degree Programme</mat-label>
+            <mat-select formControlName="degree_programme_id" (selectionChange)="onDegreeProgrammeChange($event.value)">
+                <mat-option *ngFor="let prog of degreeProgrammeList" [value]="prog.degree_programme_id">
+                    {{ prog.degree_programme_name_e }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="col-md-3 col-6" *ngIf="showYear">
+        <ng-select placeholder="Year" formControlName="course_year_id" appearance="outline">
+            <ng-container *ngFor="let server of yearList">
+                <ng-option [value]="server.course_year_id">{{ server.course_year_name_e
+                    }}</ng-option>
+            </ng-container>
+        </ng-select>
+    </div>
+    <div class="col-md-3 col-6" *ngIf="showSemester">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Semester</mat-label>
+            <mat-select placeholder="Semester" formControlName="semester_id">
+                <mat-option *ngFor="let semester of semesterList" [value]="semester.semester_id">
+                    {{ semester?.semester_name_e }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="col-md-3 col-6" *ngIf="showvaluation">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Valuation Type</mat-label>
+            <mat-select placeholder="Valuation Type" formControlName="valuation_type_id" (selectionChange)="onValuationTypeChange($event.value)" >
+                <mat-option *ngFor="let server of valuationTypeList" [value]="server.valuation_type_id">
+                    {{ server.valuation_type_name_e }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="col-md-3 col-6" *ngIf="showExamType">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Exam Type</mat-label>
+            <mat-select placeholder="Exam Type" formControlName="exam_type_id">
+                <mat-option *ngFor="let server of examTypeList" [value]="server.exam_type_id">
+                    {{ server.exam_type_name_e }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="col-md-3 col-6" *ngIf="showExamPaper">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Exam Paper Type</mat-label>
+            <mat-select placeholder="Exam Paper Type" (selectionChange)="onExamPaperTypeChange($event.value)">
+                <mat-option *ngFor="let server of getExamPaperTypeList" [value]="server">
+                    {{ server.exam_paper_type_name_e }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+       <div class="col-md-3 col-6" *ngIf="showDeanCommitee">
+                <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Dean Committee</mat-label>
+                <mat-select placeholder="Dean Committee" formControlName="dean_committee_id" >
+                  <mat-option *ngFor="let item of getDeanCommiteeList" 
+                           [value]="item.dean_committee_id">
+                    {{ item.dean_committee_name_e }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </div>
+</div>
