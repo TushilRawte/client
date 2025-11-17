@@ -1,4 +1,5 @@
-@import "variable";
+// @import "variable";
+@use "variable" as *;
 
 // Mat Card Modification Code
 mat-card-header {
