@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup,Validators } from '@angular/forms';
 import { HttpService } from 'shared';
-import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-automatic-registration',
@@ -20,7 +20,6 @@ export class AutomaticRegistrationComponent {
   constructor(
     private HTTP: HttpService,
     private fb: FormBuilder,
-    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {

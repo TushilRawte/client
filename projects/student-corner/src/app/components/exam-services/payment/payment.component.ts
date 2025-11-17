@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component ,Input } from '@angular/core';
 import { environment } from 'environment';
 import { HttpService, AlertService } from 'shared';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { SharedExamService } from '../../../../../services/shared-exam.service';
+import { Subject, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-payment',
@@ -19,6 +20,7 @@ export class PaymentComponent {
   lateFee: number = 0;
   sessionData: any = {};
   path: string = environment.igkvUrl;
+  @Input() options: any; 
 
   constructor(
     private HTTP: HttpService,
@@ -125,6 +127,55 @@ export class PaymentComponent {
     });
   }
 
+  onPrintClicked() {
+    const sanitizedDegreeName = this.studentData?.degree_programme_name_e?.replace(/\s+/g, '_') || 'Receipt';
+    const fileName = `${sanitizedDegreeName}_${new Date().getFullYear()}_${this.formatDate(new Date())}.pdf`;
+    const params = {
+      academic_session_id: this.studentData?.academic_session_id,
+      course_year_id: this.studentData?.course_year_id,
+      semester_id: this.studentData?.semester_id,
+      college_id: this.studentData?.college_id,
+      degree_programme_id: this.studentData?.degree_programme_id,
+      ue_id: this.sessionData?.ue_id,
+      payee_id: this.studentData?.payment_id,
+      appliedsession: this.exam_data_r?.appliedAcademic,
+      appliedsemesterid: this.exam_data_r?.appliedSemester,
+      orientation: this.options?.orientation || 'portrait'
+    };
+    this.HTTP.postBlob(
+      `/file/post/feeReceiptPdf`,
+      {
+      ...params,
+      orientation: this.options?.orientation || 'portrait'
+      },
+      fileName,
+      "academic"
+    )
+      .pipe(take(1))
+      .subscribe({
+        next: (response) => {
+          const blob = response?.body;
+          if (blob) {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          } else {
+            this.alert.alertMessage("No Records Found!", "Failed to download report.", "error");
+            console.log(response);
+            
+          }
+        },
+        error: (error) => {
+          console.error('Error downloading PDF:', error);
+          this.alert.alertMessage("Something went wrong!", "Failed to download report. Please try again later.", "error");
+        }
+      });
+  }
+
+
   makePayment_old() {
     const payload = this.payloadForPay();
     this.HTTP.postData(
@@ -171,8 +222,15 @@ export class PaymentComponent {
         Swal.fire('Error', 'Server not reachable or failed.', 'error');
       },
     });
-
   }
+
+   private formatDate(date: Date): string {
+    const dd = String(date.getDate()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    return `${dd}-${mm}-${yyyy}`;
+  }
+
 
   private openRazorpayCheckout(data: any) {
     const options: any = {
