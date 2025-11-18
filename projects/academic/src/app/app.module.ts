@@ -26,6 +26,7 @@ import { MarksEntryImportComponent } from './marks entry/marks-entry-import/mark
 import { AutomaticRegistrationComponent } from './registration/automatic-registration/automatic-registration.component';
 import { PaymentSettlementComponent } from './payment-settlement/payment-settlement.component';
 import { FacultyListComponent } from './registration/faculty-list/faculty-list.component';
+import { ResultNotificationComponent } from './marks entry/result-notification/result-notification.component';
 
 
 @NgModule({
@@ -49,6 +50,7 @@ import { FacultyListComponent } from './registration/faculty-list/faculty-list.c
     AutomaticRegistrationComponent,
     PaymentSettlementComponent,
     FacultyListComponent,
+    ResultNotificationComponent,
 
   ],
   imports: [
