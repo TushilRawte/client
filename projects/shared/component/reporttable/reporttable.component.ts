@@ -34,7 +34,8 @@ interface Option {
   is_render: boolean,
   page: number,
   pageSize: number,
-  title?: string;
+  title?: string,
+  payload?: object
 }
 
 @Component({
@@ -341,6 +342,7 @@ export class ReporttableComponent implements OnInit, AfterViewInit, AfterContent
         html: html,
         orientation: this.options.orientation,
         title: this.options?.title,
+        ...this.options?.payload
       }, 'common').pipe(take(1)).subscribe(() => {
         // console.log("html to pdf");
       });
