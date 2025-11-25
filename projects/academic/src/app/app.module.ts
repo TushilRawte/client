@@ -27,6 +27,12 @@ import { AutomaticRegistrationComponent } from './registration/automatic-registr
 import { PaymentSettlementComponent } from './payment-settlement/payment-settlement.component';
 import { FacultyListComponent } from './registration/faculty-list/faculty-list.component';
 import { ResultNotificationComponent } from './marks entry/result-notification/result-notification.component';
+import { StudentCategoryChangeComponent } from './student/student-category-change/student-category-change.component';
+import { GetSrcListComponent } from './student/get-src-list/get-src-list.component';
+import { StudentMobileNumberUpdateComponent } from './student/student-mobile-number-update/student-mobile-number-update.component';
+import { StudentNameCorrectionComponent } from './student/student-name-correction/student-name-correction.component';
+import { StudentPasswordResetComponent } from './student/student-password-reset/student-password-reset.component';
+import { StudentAddressChangeRequestComponent } from './student/student-address-change-request/student-address-change-request.component';
 
 
 @NgModule({
@@ -51,7 +57,12 @@ import { ResultNotificationComponent } from './marks entry/result-notification/r
     PaymentSettlementComponent,
     FacultyListComponent,
     ResultNotificationComponent,
-
+    StudentCategoryChangeComponent,
+    GetSrcListComponent,
+    StudentMobileNumberUpdateComponent,
+    StudentNameCorrectionComponent,
+    StudentPasswordResetComponent,
+    StudentAddressChangeRequestComponent,
   ],
   imports: [
     SharedModule,

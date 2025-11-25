@@ -1,0 +1,276 @@
+<mat-card>
+    <mat-card-content>
+        <h3 class="fw-bold mb-6 page-title">Student Category Change</h3>
+
+        <form [formGroup]="categoryChangeForm">
+            <div class="row">
+                <div class="col-md-4 col-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>UE ID / Student ID</mat-label>
+                        <input matInput placeholder="Ex. 20220021" formControlName="student_id">
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-4 col-4">
+                    <div class="d-flex align-items-end gap-4 mt-3">
+                        <button mat-raised-button color="primary" (click)="getStudentDetails_Btn_click('show')">
+                            Show
+                        </button>
+
+                        <button mat-raised-button color="secondary" (click)="getStudentDetails_Btn_click('refresh')">
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="studentDetails">
+                <p style="width: 100%; font-size: 15px; border-radius: 5px;" class="header-title p-1 text-light text-center">Basic
+                    Details</p>
+                <div class="row">
+
+                    <section class="d-flex justify-content-around w-100 mb-4">
+                        <div class="row" style="width: 80%;">
+                            <div class="col-md-6 col-12">
+                                <div class="form-level">
+                                    <p class="heading">Student Name</p>
+                                    <p>{{studentDetails?.student_name || '-'}}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-level">
+                                    <p class="heading">Father's Name</p>
+                                    <p>{{studentDetails?.father_name || '-'}}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-level">
+                                    <p class="heading">Mother's Name</p>
+                                    <p>{{studentDetails?.mother_name || '-'}}</p>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-level">
+                                    <p class="heading">Date of Birth</p>
+                                    <p>{{ formatDOB(studentDetails?.dob) || '-'}}</p>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-level">
+                                    <p class="heading">Gender</p>
+                                    <p>{{studentDetails?.gender_id || '-'}}</p>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-level">
+                                    <label for="cars" style="width: 50%; font-weight: 600;">Basic Category</label>
+                                    <select name="category" formControlName="category_id" id="category"
+                                        class="form-control" style="width: 50%;">
+                                        <option value="" disabled selected>--Select Category--</option>
+                                        <option *ngFor="let server of categoryList" [value]="server.category_id">
+                                            {{ server.category_name }}
+                                        </option>
+                                    </select>
+
+                                </div>
+                                <div class="text-danger"
+                                    *ngIf="f['category_id'].touched && f['category_id'].hasError('required')">
+                                    Category is required
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Reson For Change</mat-label>
+                                    <textarea matInput formControlName="reson"></textarea>
+                                    <mat-error *ngIf="f['reson'].touched && f['reson'].hasError('required')">
+                                        Reason is required
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <!-- <mat-label>Upload Order Copy</mat-label> -->
+                                <app-fileupload formControlName="pdfFile">Upload Order Copy</app-fileupload>
+                                <div class="text-danger"
+                                    *ngIf="f['pdfFile'].touched && f['pdfFile'].hasError('required')">
+                                    Order copy PDF is required
+                                </div>
+                            </div>
+                        </div>
+                        <aside style="width: 20%;">
+                            <aside style="margin-left:10px; margin-top: 10px;">
+                                <!-- <p>*{{studentDetails.registration_id}}*</p> -->
+                                <div
+                                    style="width: 140px; height: 170px; border: 1px solid #969595; margin-bottom: 2px;">
+                                    <img [src]="image_prefix + studentDetails?.student_photo_path || 'dummy.jpg'"
+                                        alt="photo" style="width: 100%; height: 100%; object-fit: cover;" />
+                                    <!-- <img src="dummy.jpg" alt="photo"
+                                        style="width: 100%; height: 100%; object-fit: cover;" /> -->
+                                </div>
+                                <div style="width: 140px; height: 40px; border: 1px solid #969595">
+                                    <img [src]="image_prefix + studentDetails?.student_signature_path || 'dummy_sign.avif'"
+                                        alt="signature" style="width: 100%; height: 100%;" />
+                                    <!-- <img src="dummy_sign.avif" alt="signature" style="width: 100%; height: 100%;" /> -->
+                                </div>
+                            </aside>
+                        </aside>
+                    </section>
+                </div>
+
+
+                <p style="width: 100%; font-size: 15px; border-radius: 5px;" class="header-title p-1 text-light text-center">
+                    Admission Details</p>
+
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Admission Id</p>
+                            <p>{{studentDetails?.admission_id || studentDetails?.registration_id || '-'}}</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Entrance Type</p>
+                            <p>{{studentDetails?.entrance_type_id || '-'}}</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Admission Quota</p>
+                            <p>{{studentDetails?.admission_quata || '-'}}</p>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Verified Category</p>
+                            <p>{{studentDetails?.category_id || '-'}}</p>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Faculty</p>
+                            <p>{{studentDetails.faculty_name_e || '-'}}</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Admitted Category</p>
+                            <p>{{studentDetails?.admitted_category || '-'}}</p>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Degree Programme</p>
+                            <p>{{studentDetails.degree_programme_name_e || '-'}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Admitted Class</p>
+                            <p>{{studentDetails?.admitted_class || '-'}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Subject</p>
+                            <p>{{studentDetails?.subject_name_e || '-'}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Admitted College</p>
+                            <p>{{studentDetails?.college_name_e || '-'}}</p>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <p style="width: 100%; font-size: 15px; border-radius: 5px;" class="header-title p-1 text-light text-center">
+                    Academic Details</p>
+
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Student Id</p>
+                            <p>{{studentDetails?.student_id || '-'}}</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">University Id</p>
+                            <p>{{studentDetails?.ue_id || '-'}}</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Course Year</p>
+                            <p>{{studentDetails?.course_year_name_e || '-'}}</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Semester Number</p>
+                            <p>{{studentDetails?.semester_name_e || '-'}}</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Academic Status</p>
+                            <p>{{studentDetails?.stu_acad_status_name_e || '-'}}</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Student Status</p>
+                            <p>{{studentDetails?.student_status_id || '-'}}</p>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <p style="width: 100%; font-size: 15px; border-radius: 5px;" class="header-title p-1 text-light text-center">
+                    Contact Details</p>
+
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Email Id</p>
+                            <p>{{studentDetails?.email_id || '-'}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="form-level">
+                            <p class="heading">Mobile Number</p>
+                            <p>{{studentDetails?.mobile_no || '-'}}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button mat-raised-button color="primary" (click)="getStudentDetails_Btn_click('update')">
+                        Update
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </mat-card-content>
+</mat-card>

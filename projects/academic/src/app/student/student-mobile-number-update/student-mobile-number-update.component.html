@@ -1,0 +1,168 @@
+<mat-card>
+    <mat-card-content>
+        <h3 class="fw-bold mb-6 page-title">Student Mobile Number Update</h3>
+
+        <form [formGroup]="mobileNoChangeForm">
+            <p style="width: 100%; font-size: 15px; border-radius: 5px;"
+                class="header-title p-1 text-light text-center">Student
+                Details :--</p>
+
+            <div class="row">
+
+                <div class="col-md-4 col-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>UE ID / Student ID</mat-label>
+                        <input matInput placeholder="Ex. 20220021" formControlName="student_id">
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-4 col-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Student Name</mat-label>
+                        <input matInput placeholder="Ex. Sita" formControlName="student_name">
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-4 col-4">
+                    <div class="d-flex align-items-end gap-4 mt-3">
+                        <button mat-raised-button color="primary" (click)="getStudentDetails_Btn_click('show')">
+                            Show
+                        </button>
+
+                        <button mat-raised-button color="secondary" (click)="getStudentDetails_Btn_click('refresh')">
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div *ngIf="studentDetails">
+                <p style="width: 100%; font-size: 15px; border-radius: 5px;"
+                    class="header-title p-1 text-light text-center">Student
+                    Admission Details</p>
+                <div class="row">
+                    <section class="d-flex justify-content-around w-100 mb-4">
+                        <div class="row" style="width: 80%;">
+                            <div class="col-md-3 col-6">
+                                <div class="d-flex flex-column">
+                                    <mat-label>Is Transcript Generated?</mat-label>
+                                    <mat-radio-group aria-label="Is Transcript Generated?"
+                                        formControlName="transcript_generated">
+                                        <mat-radio-button value="Y">Yes</mat-radio-button>
+                                        <mat-radio-button value="N">NO</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="d-flex flex-column">
+                                    <mat-label>Is PDC Generated?</mat-label>
+                                    <mat-radio-group aria-label="Is PDC Generated?" formControlName="pdc_generated">
+                                        <mat-radio-button value="Y">Yes</mat-radio-button>
+                                        <mat-radio-button value="N">NO</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                            <div class="col-md-5 col-6">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Admission Id</mat-label>
+                                    <input matInput placeholder="Ex. 12345" formControlName="admission_id">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Adm. Session</mat-label>
+                                    <input matInput placeholder="Ex. 2024-25" formControlName="session">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Date of Birth</mat-label>
+                                    <input matInput placeholder="Ex. 20/06/1995" formControlName="dob">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-5 col-6">
+                                <div class="d-flex flex-column">
+                                    <mat-label>Gender</mat-label>
+                                    <mat-radio-group aria-label="Gender" formControlName="gender">
+                                        <mat-radio-button value="M">Male</mat-radio-button>
+                                        <mat-radio-button value="F">Female</mat-radio-button>
+                                        <mat-radio-button value="O">Other</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                        </div>
+                        <aside style="width: 20%;">
+                            <aside style="margin-left:10px; margin-top: 10px;">
+                                <!-- <p>*{{studentDetails.registration_id}}*</p> -->
+                                <div
+                                    style="width: 140px; height: 170px; border: 1px solid #969595; margin-bottom: 2px;">
+                                    <img [src]="image_prefix + studentDetails.student_photo_path" alt="photo"
+                                        style="width: 100%; height: 100%; object-fit: cover;" />
+                                </div>
+                                <div style="width: 140px; height: 40px; border: 1px solid #969595">
+                                    <img [src]="image_prefix + studentDetails.student_signature_path" alt="signature"
+                                        style="width: 100%; height: 100%;" />
+                                </div>
+                            </aside>
+                        </aside>
+                    </section>
+
+                    <div class="col-md-2 col-6">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Faculty</mat-label>
+                            <input matInput placeholder="Ex. UG" formControlName="faculty">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6 col-6">
+                        <mat-form-field appearance="outline">
+                            <mat-label>College</mat-label>
+                            <input matInput placeholder="Ex. SHRI-Tech Raipur" formControlName="college">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-8 col-6">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Degree Programme</mat-label>
+                            <input matInput placeholder="Ex. BSC Horticulture" formControlName="degree_programme">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col-md-4 col-6">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Year</mat-label>
+                            <input matInput placeholder="Ex. 2024" formControlName="year">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4 col-6">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Semester</mat-label>
+                            <input matInput placeholder="Ex. 1st Sem" formControlName="sem">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4 col-6">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Admission Type</mat-label>
+                            <input matInput placeholder="Ex. regular" formControlName="admission_type">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-4 col-6">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Mobile Number</mat-label>
+                            <input matInput placeholder="Ex. 9876543210" formControlName="mobile_no">
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button mat-raised-button color="primary" (click)="getStudentDetails_Btn_click('update')">
+                        Update
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+
+
+    </mat-card-content>
+</mat-card>

@@ -12,7 +12,8 @@ export const environmentProd = {
   adminModule: `${host}/admin`,
   homeModule: `${host}`,
   loginModule: `${host}/user/login`,
-  publicKey: "BLaV0kn22SFt30rA1H6lEX6dgTOzToFY3bVfCXzGwM0gg2CFEjILyLp4qoL8H_hNFaJhOYndp4vquNH6zYy5r2M"
+  publicKey: "BLaV0kn22SFt30rA1H6lEX6dgTOzToFY3bVfCXzGwM0gg2CFEjILyLp4qoL8H_hNFaJhOYndp4vquNH6zYy5r2M",
+  filePrefix: 'https://igkv.ac.in/'
 };
 
 export const reportConfig = {
