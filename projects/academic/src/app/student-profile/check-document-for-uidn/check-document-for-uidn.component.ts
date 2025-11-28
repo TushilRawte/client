@@ -14,8 +14,8 @@ export class CheckDocumentForUidnComponent {
   baseUrl:string = 'https://igkv.ac.in'
 
   constructor(private HTTP :HttpService, public dialogRef: MatDialogRef<CheckDocumentForUidnComponent>, @Inject(MAT_DIALOG_DATA) public data: any ) {
-    console.log('Received Data:', data);
-    this.getData = data
+    console.log('Received in Dialog:', data);
+    this.getData = data.value
   }
 
     ngOnInit(): void {
@@ -30,6 +30,8 @@ export class CheckDocumentForUidnComponent {
       academic_session_id: this.getData?.academic_session_id,
       admission_session: this.getData?.academic_session_id,
     };
+    console.log('Request Params:', params);
+    
     if (
       !params.entrance_exam_type_code ||
       !params.student_cid ||

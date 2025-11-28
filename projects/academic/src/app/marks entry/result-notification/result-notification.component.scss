@@ -1,0 +1,67 @@
+.page-title {
+    color: rgb(3, 101, 69);
+}
+
+.report-filter tr td .custom-button-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.report-filter tr td .custom-button-main .custom-button {
+    width: 2rem; // Equal width
+    height: 2rem; // Equal height
+    padding: 0; // Remove internal padding
+    border-radius: 50%; // Perfect circle
+    display: flex; // Center content
+    align-items: center;
+    justify-content: center;
+    // background-color: #0d6efd; // or use Bootstrap's .bg-primary if class is not applied
+    color: white; // Ensures text is white
+    // cursor: pointer;
+    // margin-left: auto;
+    // margin-right: auto;
+    // margin-right: 6px;
+}
+
+.report-filter tr td .custom-button-main:hover .custom-button {
+    text-decoration: underline;
+}
+
+.report-filter tr td .custom-button-main .indicator span {
+    font-size: 9px;
+    display: block;
+}
+
+.report-filter tr td .custom-button-main:hover .indicator span {
+    color: blue;
+}
+
+
+.report-filter tr td .custom-button-main .indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+/* Default emoji */
+.report-filter tr td .custom-button-main .indicator::before {
+    content: "👈";
+    font-size: 14px;
+    display: block;
+    transition: transform 0.2s ease, content 0.2s ease;
+}
+
+/* Hover emoji change */
+.report-filter tr td .custom-button-main:hover .indicator::before {
+    content: "👆";
+    /* change emoji when hover */
+    transform: scale(1.1);
+    /* optional: small animation effect */
+}
+
+
+.text-brown {
+    color: brown;
+}

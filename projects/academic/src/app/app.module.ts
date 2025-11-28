@@ -35,6 +35,8 @@ import { SrcGenerateComponent } from './semester-report-card/src-generate/src-ge
 import { AutomaticRegistrationComponent } from './registration/automatic-registration/automatic-registration.component';
 import { PaymentSettlementComponent } from './payment-settlement/payment-settlement.component';
 import { FacultyListComponent } from './registration/faculty-list/faculty-list.component';
+import { ResultNotificationComponent } from './marks entry/result-notification/result-notification.component';
+import { ApproveUidnComponent } from './student-profile/approve-uidn/approve-uidn.component';
 
 
 @NgModule({
@@ -66,6 +68,8 @@ import { FacultyListComponent } from './registration/faculty-list/faculty-list.c
     AutomaticRegistrationComponent,
     PaymentSettlementComponent,
     FacultyListComponent,
+    ResultNotificationComponent,
+    ApproveUidnComponent,
 
   ],
   imports: [

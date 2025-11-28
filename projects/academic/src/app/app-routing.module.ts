@@ -23,6 +23,8 @@ import { SrcGenerateComponent } from './semester-report-card/src-generate/src-ge
 import { AutomaticRegistrationComponent } from './registration/automatic-registration/automatic-registration.component';
 import { PaymentSettlementComponent } from './payment-settlement/payment-settlement.component';
 import { FacultyListComponent } from './registration/faculty-list/faculty-list.component';
+import { ResultNotificationComponent } from './marks entry/result-notification/result-notification.component';
+import { ApproveUidnComponent } from './student-profile/approve-uidn/approve-uidn.component';
 
 const routes: Routes = [
   {
@@ -67,16 +69,16 @@ const routes: Routes = [
         component: CourseRegistrationComponent,
         // pathMatch: 'full',
       },
-       {
+      {
         path: 'course-registration-unfinalize',
-          component:CourseRegistrationUnfinlizeComponent,
+        component: CourseRegistrationUnfinlizeComponent,
         // pathMatch: 'full',
       },
-       {
+      {
         path: 'student-section-allotment',
-          component:StudentSectionAllotmentComponent,
+        component: StudentSectionAllotmentComponent,
         // pathMatch: 'full',
-       },
+      },
       {
         path: 'course-attendance',
         component: CourseAttendanceComponent,
@@ -87,13 +89,13 @@ const routes: Routes = [
         component: CourseAttendanceReportComponent,
         pathMatch: 'full',
       },
-       {
-        path: 'marks-entry-faculty',   
+      {
+        path: 'marks-entry-faculty',  // getRegisteredCourses
         component: MarksEntryFacultyComponent,
         pathMatch: 'full',
       },
-             {
-        path: 'marks-entry-import',   
+      {
+        path: 'marks-entry-import',  // getRegisteredCourses
         component: MarksEntryImportComponent,
         pathMatch: 'full',
       },
@@ -128,9 +130,19 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       {
+        path: 'approve-uidn',   
+        component: ApproveUidnComponent,
+        pathMatch: 'full',
+      },
+      {
         path: 'src-generate',   
         component: SrcGenerateComponent,
 
+      },
+      {
+        path: 'result-notification',
+        component: ResultNotificationComponent,
+        pathMatch: 'full',
       },
       {
         path: 'automatic-registration',
@@ -142,7 +154,7 @@ const routes: Routes = [
         component: FacultyListComponent,
         pathMatch: 'full',
       },
-       {
+      {
         path: 'payment-settlement',
         component: PaymentSettlementComponent,
         pathMatch: 'full',

@@ -5,14 +5,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { CheckDocumentForUidnComponent } from '../check-document-for-uidn/check-document-for-uidn.component';
 
 @Component({
-  selector: 'app-generate-uidn',
+  selector: 'app-approve-uidn',
   standalone: false,
-  templateUrl: './generate-uidn.component.html',
-  styleUrl: './generate-uidn.component.scss'
+  templateUrl: './approve-uidn.component.html',
+  styleUrl: './approve-uidn.component.scss'
 })
-export class GenerateUidnComponent {
+export class ApproveUidnComponent {
 
-  generateUIDNFormGroup!:FormGroup
+generateUIDNFormGroup!:FormGroup
   acadmcSesnList: any;
   collegeList: any;
   degreeProgramme: any;
@@ -104,24 +104,21 @@ getDegreeProgramme(college_id: number) {
     const formData = this.generateUIDNFormGroup.value;
     console.log('Form Data to Submit:', formData);
     const payload = {
+      admission_session: formData.academic_session_id,
       college_id: formData.college_id,
-      degree_id: this.selectedDegree,
-      academic_session_id: formData.academic_session_id,
-      academic_session_id2: formData.academic_session_id,
-      academic_session_id3: formData.academic_session_id,
-      degree_id2: this.selectedDegree,
+      degree_programme_id: this.selectedDegree,
     };
     if (
-      !payload.academic_session_id ||
+      !payload.admission_session ||
       !payload.college_id ||
-      !payload.degree_id
+      !payload.degree_programme_id
     ) {
       alert('⚠️ All fields are required!');
       return; // Stop execution
     }
-    this.HTTP.getParam( '/studentProfile/get/getStudentListForGenrateUIDN/',  payload, 'academic' ).subscribe((result: any) => {
+    this.HTTP.getParam( '/studentProfile/get/getStudentListForApproveUIDN/',  payload, 'academic' ).subscribe((result: any) => {
       this.studentList = result?.body?.data;
-      console.log('Student List:', this.studentList);
+      console.log('Fetched Student List:', this.studentList);
       
       this.students.clear();
 
@@ -134,8 +131,6 @@ getDegreeProgramme(college_id: number) {
   }
 
   getUploadedDocument(row: any) {
-    console.log('selected row:', row);
-    
     const dialogRef = this.dialog.open(CheckDocumentForUidnComponent, {
       width: '800px',
       height:'600px',
@@ -155,18 +150,14 @@ createStudentRow(row: any, main: any): FormGroup {
   return this.fb.group({
     selected: [false],
 
-    Reg_No: [row.Reg_No],
+    uidn: [row.uidn],
     entrance_exam_type_code: [row.entrance_exam_type_code],
     student_name: [row.student_name],
-    overall_rank: [row.overall_rank],
-    Admsn_Quota_Id: [row.Admsn_Quota_Id],
-    Admitted_Category: [row.Admitted_Category],
-    Fee_Status: [row.Fee_Status],
-    Student_CID: [row.Student_CID],
-    entrance_exam_type_name: [row.entrance_exam_type_name],
+    Subject_Name_E: [row.Subject_Name_E],
     admission_id: [row.admission_id],
     academic_session_id: [main.academic_session_id],
     college_id: [main.college_id],
+    Counseling_Record_ID: [row.Counseling_Record_ID],
     degree_id: this.selectedDegree
   });
 }
@@ -209,12 +200,10 @@ submitSelected() {
     alert("⚠️ No student selected!");
     return;
   }
-
-  this.HTTP.postData('/studentProfile/post/saveGenerateUIDN', selectedRows, 'academic')
+  console.log("Submit Payload:", selectedRows);
+  this.HTTP.postData('/studentProfile/post/saveApproveUIDN', selectedRows, 'academic')
     .subscribe(res => {
-
       const api = res.body.error;  // this contains { error, message, result }
-
       if (api && api.error === false) {
         // SUCCESS
         this.alert.alertMessage(
@@ -232,7 +221,6 @@ submitSelected() {
       }
     });
 }
-
 
 
 

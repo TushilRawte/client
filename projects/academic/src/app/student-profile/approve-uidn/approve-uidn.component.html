@@ -46,10 +46,7 @@
               <th>Admission / Registration No.</th>
               <th>Student Name</th>
               <th>Overall Rank</th>
-              <th>Admitted Category</th>
-              <th>Fee Status</th>
-              <th>Entrance Exam</th>
-              <th>Document</th>
+              
             </tr>
           </thead>
           <tbody *ngIf="students && students.length > 0" formArrayName="students">
@@ -60,24 +57,17 @@
                 <input type="checkbox" formControlName="selected" (change)="onRowCheckboxChange()">
               </td>
 
-              <td>{{row.value.admission_id}} / {{row.value.Reg_No}}</td>
+              <td>{{row.value.admission_id}} / {{row.value.uidn}}</td>
               <td>{{row.value.student_name}}</td>
-              <td>{{row.value.overall_rank}}</td>
-              <td>{{row.value.Admitted_Category}}</td>
-              <td>{{row.value.Fee_Status}}</td>
-              <td>{{row.value.entrance_exam_type_name}}</td>
-              <td>
-                <button mat-mini-fab color="primary" (click)="getUploadedDocument(row)">
-                  <mat-icon>document_scanner</mat-icon>
-                </button>
-              </td>
+              <td>{{row.value.Subject_Name_E}}</td>
+
             </tr>
           </tbody>
         </table>
       </div>
       <div class="row">
         <div class="col-md-3 mt-4">
-          <button class="btn btn-success" type="button" (click)="submitSelected()">Generate UIDN</button>
+          <button class="btn btn-success" type="button" (click)="submitSelected()">Approve UIDN</button>
         </div>
       </div>
     </form>

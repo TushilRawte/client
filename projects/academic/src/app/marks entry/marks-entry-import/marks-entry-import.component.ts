@@ -319,11 +319,6 @@ onSubmit() {
   );
 }
 
-
-
-
-
-
  
   getFireEyeDashboard(item: any) {
     this.getExamWiseExamPaperType(item);
