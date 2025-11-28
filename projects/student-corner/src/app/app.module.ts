@@ -45,7 +45,6 @@ import { ReporttableComponent } from 'shared';
     BrowserModule,
     AppRoutingModule,
     SharedModule,
-    BrowserModule,
     NgbModule,
     BrowserAnimationsModule,
     FormsModule,
