@@ -4,7 +4,7 @@
     <mat-card class="basic-details-card">
       <mat-card-content>
         <div class="card-header-custom">
-          <mat-card-title>Fee</mat-card-title>
+          <mat-card-title>{{page_title}} Apply And Fee Payment </mat-card-title>
         </div>
         <p class="text-muted">Review your details before proceeding with payment</p>
         <div *ngIf="studentData">
@@ -69,6 +69,25 @@
                 </div>
               </div>
             </div>
+            <section
+              *ngIf="paymentData?.certificateData?.original_duplicate === 'O' && paymentData?.certificateData?.is_approved === '1' && paymentData?.certificateData?.is_generated === '1' ">
+              <mat-label class="ms-2 fs-5">
+                In case you have lost your origional transfer certificate then you can apply for duplicate.
+              </mat-label>
+            
+            </section>
+            <section>
+              <mat-checkbox *ngIf="paymentData?.certificateData == null ||
+                (
+                  paymentData?.certificateData?.is_approved === '1'
+                  && paymentData?.certificateData?.is_generated === '1'
+                )
+              " (change)="onCheckChange($event)">
+                I hereby declare that all the information submitted by me is true to
+                the best of my knowledge
+              </mat-checkbox>
+
+            </section>
           </div>
           <!-- Fee Detail Card -->
           <div class="card modern-card mb-4">
@@ -80,18 +99,22 @@
                     <tr>
                       <th>Fee Type</th>
                       <th>Fee Amount</th>
+                      <ng-container *ngIf="page_title ==='Reval'">
                       <th *ngIf=" exam_data_r?.no_of_subject> 0">Selected Courses</th>
                       <th *ngIf="lateFee > 0">Remark</th>
                       <th>Compulsory</th>
+                      </ng-container>
                       <th>Fee Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <td>{{ paymentData?.payData?.fee_type_name }}</td>
+                    <td>{{ paymentData?.payData?.fee_type_name | titlecase }}</td>
                     <td>₹{{ paymentData?.payData?.fee_amount }}</td>
-                    <td *ngIf=" exam_data_r?.no_of_subject> 0">{{exam_data_r?.no_of_subject }}</td>
-                    <td *ngIf="lateFee > 0">₹{{lateFee}}/- late fee added</td>
-                    <td>{{ paymentData?.payData?.is_required_yn === 'Y' ? 'Yes' : 'No'}}</td>
+                    <ng-container *ngIf="paymentType ==='reval'">
+                      <td *ngIf=" exam_data_r?.no_of_subject> 0">{{exam_data_r?.no_of_subject }}</td>
+                      <td *ngIf="lateFee > 0">₹{{lateFee}}/- late fee added</td>
+                      <td>{{ paymentData?.payData?.is_required_yn === 'Y' ? 'Yes' : 'No'}}</td>
+                    </ng-container>
                     <td>
                       <span class="badge rounded-pill px-3 py-2" [ngClass]="
                         paymentData?.transaction_id
@@ -113,22 +136,20 @@
               <h5 class="mb-0 fw-bolder">Total Amount :
                 <span class="text-info fw-bold"> <strong>₹{{ totalAmount }}/-</strong></span>
               </h5>
-            </div>
-          </div>
-
-
+              </div>
+              </div>
+              
          <div class="d-flex justify-content-center">
           @if (!paymentData?.transaction_id) {
-          <button type="button" (click)="onPayClicked()" class="btn btn-primary btn-sm">Pay</button>
-          } @else {
+          <button type="button" (click)="onPayClicked()" class="btn btn-primary btn-sm" [disabled]="paymentType!= 'reval' && is_checked == false " > <ng-container *ngIf="paymentType!='reval'">Apply & </ng-container>Pay</button>
+          } @else if (paymentType === 'reval') {
          <button type="button" (click)="onPrintClicked()" class="btn btn-primary btn-sm">Print</button>
+          } @else {
+             <span *ngIf="paymentData?.certificateData?.is_approved" class="cert-label">{{page_title}} is Approved</span>
+             <span *ngIf="paymentData?.certificateData?.is_generated" class="cert-label ms-3">{{page_title}} is Generated</span>
           }
         </div>
-
         </div>
-
-
-
       </mat-card-content>
     </mat-card>
   </form>

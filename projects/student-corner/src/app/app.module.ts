@@ -21,6 +21,7 @@ import { NewLayoutComponent } from './components/new-layout/new-layout.component
 import { ExamServicesComponent } from './components/exam-services/exam-services.component';
 import { PaymentComponent } from './components/exam-services/payment/payment.component';
 import { ReporttableComponent } from 'shared';
+import { CertificateApplyComponent } from './components/certificate-apply/certificate-apply.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { ReporttableComponent } from 'shared';
     CourseRegistrationComponent,
     NewLayoutComponent,
     ExamServicesComponent,
-    PaymentComponent
+    PaymentComponent,
+    CertificateApplyComponent
 
     
   ],

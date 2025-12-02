@@ -12,6 +12,7 @@ import { CourseRegistrationComponent } from './components/course-registration/co
 import { NewLayoutComponent } from './components/new-layout/new-layout.component';
 import { ExamServicesComponent } from './components/exam-services/exam-services.component';
 import { PaymentComponent } from './components/exam-services/payment/payment.component';
+import { CertificateApplyComponent } from './components/certificate-apply/certificate-apply.component';
 
 const routes: Routes = [
 {
@@ -28,7 +29,8 @@ const routes: Routes = [
             {path: 'result', component: ExaminationResultComponent},
             {path: 'course-registration', component: CourseRegistrationComponent},
             {path: 'exam-services', component: ExamServicesComponent},
-            {path: 'exam-services/payment', component: PaymentComponent},
+            {path: 'payment/:type', component: PaymentComponent},
+            {path: 'certificate-apply', component: CertificateApplyComponent},
         ],
       },
       {

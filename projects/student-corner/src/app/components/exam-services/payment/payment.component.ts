@@ -1,10 +1,11 @@
 import { Component ,Input } from '@angular/core';
 import { environment } from 'environment';
 import { HttpService, AlertService } from 'shared';
-import { Router } from '@angular/router';
+import { Router ,ActivatedRoute } from '@angular/router';
 import Swal from 'sweetalert2';
 import { SharedExamService } from '../../../../../services/shared-exam.service';
 import { Subject, take, takeUntil } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-payment',
@@ -19,30 +20,71 @@ export class PaymentComponent {
   totalAmount: number = 0;
   lateFee: number = 0;
   sessionData: any = {};
+  curr_acadmc_session: any = [];
+  page_title: string = '';
+  paymentType:  string = '';
+  is_checked: boolean = false;
   path: string = environment.igkvUrl;
   @Input() options: any; 
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private HTTP: HttpService,
     private router: Router,
+    private route: ActivatedRoute,
     private alert: AlertService,
     private sharedExamService: SharedExamService
   ) {}
 
   ngOnInit(): void {
     const storedData = sessionStorage.getItem('studentData');
+    this.paymentType =this.route.snapshot.paramMap.get('type') ?? ''
+    console.log('Payment Type:', this.paymentType);
+    switch (this.paymentType) {
+      case "reval":
+        this.page_title = 'Reval'
+        break;
+
+      case "migration":
+        this.page_title = 'Migration'
+        break;
+
+      case "transfer":
+        this.page_title = 'Transfer'
+        break;
+
+      default:
+        this.router.navigate(['/dashboard']);
+        break;
+    }
     if (storedData) {
       const studentData = JSON.parse(storedData);
       this.sessionData = studentData;
       this.getStudentDetails();
-      const examData = this.sharedExamService.getExamData();
-      if (examData) {
+      this.getAcademicSession();
+      if(this.paymentData === 'reval'){
+        const examData = this.sharedExamService.getExamData();
         this.exam_data_r = examData;
+        console.log('this is data ',this.exam_data_r);
       }
     } else {
       this.router.navigateByUrl('/dashboard');
     }
   }
+
+    getAcademicSession() {
+    const  params = {
+      currently_running:'Y'
+      }
+    this.HTTP.getParam(
+      '/master/get/getAcademicSession1',
+      params,
+      'academic'
+    ).subscribe((result: any) => {
+      this.curr_acadmc_session = !result.body.error ? result.body.data[0] : [];
+    });
+  }
+
 
   getStudentDetails() {
     // ^ this data will get from login session
@@ -68,24 +110,44 @@ export class PaymentComponent {
       'academic'
     ).subscribe((result: any) => {
       this.studentData = !result.body.error ? result.body.data[0] : [];
-      this.getPaymentDetails();
+      if(this.paymentType !== 'reval'){
+        this.getPaymentDetails('Y');
+      }else{
+        this.getPaymentDetails();
+      }
     });
   }
 
-  getPaymentDetails() {
+  getPaymentDetails(is_cert?: string) {
+    const isReval = this.paymentType === 'reval';
+    const isTransfer = this.paymentType === 'transfer';
+    const isMigration = this.paymentType === 'migration';
+
     const params = {
       college_type_code: this.studentData?.college_type_id,
-      link_master_id: 8,
       academic_session_id: this.studentData?.academic_session_id,
+      admission_session: this.studentData?.admission_session,
       college_id: this.studentData?.college_id,
       course_year_id: this.studentData?.course_year_id,
       semester_id: this.studentData?.semester_id,
       degree_id: this.studentData?.degree_id,
       subject_id: this.studentData?.subject_id,
       student_type: this.studentData?.student_fee_category,
+      registration_id: this.studentData?.registration_id,
+      student_id: this.studentData?.student_id,
+      is_cert,
+      ...(isReval && {
+        link_master_id: 8,
+        reval_id: this.exam_data_r?.reval_id,
+      }),
 
-      registration_id:this.studentData?.registration_id,
-      reval_id: this.exam_data_r?.reval_id,
+      ...(isTransfer && {
+        fee_purpose_id: 26,
+      }),
+
+      ...(isMigration && {
+        fee_purpose_id: 24,
+      }),
     };
 
     this.HTTP.getParam(
@@ -94,9 +156,11 @@ export class PaymentComponent {
       'academic'
     ).subscribe((result: any) => {
       this.paymentData = !result.body.error ? result.body.data : [];
+       this.cdr.detectChanges();
       this.calculateTotalAmount();
     });
   }
+
 
   calculateTotalAmount() {
     const fee_amount = this.paymentData?.payData?.fee_amount ?? 0;
@@ -107,24 +171,79 @@ export class PaymentComponent {
       this.totalAmount = fee_amount * no_of_subject + latefee;
     } else {
       this.totalAmount = fee_amount + latefee;
-    }
+    }    
   }
 
-  onPayClicked() {
-    Swal.fire({
+  onCheckChange(e: any) {
+    this.is_checked = e.checked;
+  }
+
+  applyForTransferMigrationCert(): Promise<void> {
+    
+    return new Promise((resolve, reject) => {
+
+      let original_duplicate = 'O';
+      if (
+        this.paymentData?.certificateData &&
+        this.paymentData?.certificateData?.original_duplicate === 'O'
+      ) {
+        original_duplicate = 'D';
+      }
+
+      const params = {
+        ue_id: this.sessionData?.ue_id,
+        student_id: this.studentData?.student_id,
+        apply_academic_session_id: this.curr_acadmc_session?.academic_session_id,
+        original_duplicate: original_duplicate,
+        admission_session: this.studentData?.admission_session,
+        degree_programme_id: this.studentData?.degree_programme_id,
+        course_year_id: this.studentData?.course_year_id,
+        semester_id: this.studentData?.semester_id,
+        last_session_id: this.sessionData?.academic_session_id,
+        paymentType:this.paymentType,     
+      };
+
+      console.log('data for tc', params);
+
+      this.HTTP.postData('/course/post/applyForTransferMigrationCert/',params,'academic').subscribe({next: (result: any) => {
+          console.log( 'tushil',result);
+          
+          if(result?.data?.error){
+            console.log('i am called',result?.data?.error);    
+          }
+          resolve();
+        },
+        error: (err) => {
+          // ✅ HTTP / NETWORK ERROR
+          reject({
+            message: 'Server error occurred while applying transfer'
+          });
+        }
+      }
+    );
+    });
+  }
+
+  async onPayClicked() {
+    const result = await Swal.fire({
       title: 'Proceed to Payment?',
-      text: 'Do you want to continue with the payment for selected courses?',
+      text: 'Do you want to continue with the payment?',
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Yes, Pay Now',
       cancelButtonText: 'No, Cancel',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.makePayment();
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire('Cancelled', 'Payment process was cancelled.', 'info');
-      }
     });
+
+    if (result.isConfirmed) {
+      try {
+        if (this.paymentType !== 'reval') {
+          await this.applyForTransferMigrationCert(); 
+        }
+        this.makePayment();
+      } catch (error) {
+        Swal.fire('Error', 'Transfer failed', 'error');
+      }
+    }
   }
 
   onPrintClicked() {
@@ -282,7 +401,6 @@ export class PaymentComponent {
         refNo: data?.receipt,
       };
 
-      console.log('failed payment is called');
 
       this.HTTP.postData(
         '/course/post/razorpayPaymentFailed',
@@ -321,6 +439,11 @@ export class PaymentComponent {
             data.message || 'Payment Verified Successfully!',
             'success'
           );
+          if (this.paymentType !== 'reval') {
+            this.getPaymentDetails('Y');
+          } else {
+            this.getPaymentDetails();
+          }
         } else {
           Swal.fire(
             '⚠️ Verification Failed',
@@ -343,12 +466,12 @@ export class PaymentComponent {
       registration_id:this.studentData?.registration_id,
       reval_id: this.exam_data_r?.reval_id,
       category: this.studentData?.basic_category_id,
-      purpose_id: this.paymentData?.fee_purpose_id,
-      fee_purpose_name: this.paymentData?.fee_purpose_name,
+      purpose_id: this.paymentData?.payData?.fee_purpose_id,
+      fee_purpose_name: this.paymentData?.payData?.fee_purpose_name,
       current_course_year_id: this.studentData?.course_year_id,
       current_semester_id: this.studentData?.semester_id,
       academic_session_code: this.studentData?.academic_session_id,
-      applied_session: this.exam_data_r?.appliedAcademic,
+      applied_session: this.exam_data_r?.appliedAcademic ?? this.curr_acadmc_session?.academic_session_id,
       applied_course_year_id: this.exam_data_r?.appliedCourseYear,
       applied_semester_id: this.exam_data_r?.appliedSemester,
       subject_id: this.studentData?.subject_id,
@@ -368,9 +491,9 @@ export class PaymentComponent {
     };
 
     const payee_sub_detail = {
-      fee_id: this.paymentData?.fee_id,
-      amount: this.paymentData?.fee_amount,
-      fee_status: this.paymentData?.fee_status,
+      fee_id: this.paymentData?.payData?.fee_id,
+      amount: this.paymentData?.payData?.fee_amount,
+      fee_status: this.paymentData?.payData?.fee_status,
       no_of_subject: this.exam_data_r?.no_of_subject,
       latefee: this.lateFee,
       total: this.totalAmount,

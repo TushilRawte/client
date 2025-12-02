@@ -1,15 +1,15 @@
 <mat-card>
     <mat-card-content>
-  <div class="page-heading text-center py-2">
-    <h3 class="m-0 text-white fw-bold">Automatic Course Registration</h3>
-  </div>
-    <hr />
+        <div class="page-heading text-center py-2">
+            <h3 class="m-0 text-white fw-bold">Automatic Course Registration</h3>
+        </div>
+        <hr />
         <form [formGroup]="automaticCourseRegFormGroup">
-            <div class="row" *ngIf="acadmcSession.length > 0">
+            <div class="row" *ngIf="deanCommitte.length > 0">
                 <div class="col-md-4 col-6">
                     <ng-select [items]="acadmcSession" bindLabel="academic_session_name_e"
                         bindValue="academic_session_id" formControlName="academic_session" appearance="outline"
-                        placeholder="Select Session">
+                        placeholder="Academic Session">
                     </ng-select>
                 </div>
                 <div class="col-md-4 col-6">
@@ -33,19 +33,70 @@
                         formControlName="dean_committee" appearance="outline" placeholder="Dean Commitee">
                     </ng-select>
                 </div>
-                <div class="col-md-4 align-self-center d-flex justify-content-evenly">
-                      <button type="button" class="btn btn-primary">Get List</button>
-                      <button type="button " class="btn btn btn-dark">Refresh</button>
+                <div class="col-md-4 col-6">
+                    <section>
+                        <mat-checkbox formControlName="is_new_std" >New Student(Without Student ID)</mat-checkbox>
+                    </section>
                 </div>
             </div>
         </form>
-        <div>
-        <div class="d-flex justify-content-between">
-          <button type="button" class="btn btn-success btn-sm text-dark fw-bolder fs-5">Show List of Paid Students</button>
-          <button type="button" class="btn btn-warning btn-sm text-dark fw-bolder fs-5">Show List of Not Paid Students</button>
-          <button type="button" class="btn btn-info btn-sm fw-bolder fs-5">Show List for Previous Registration</button>
-          <!-- <button type="button" class="btn btn-primary btn-sm fw-bolder fs-5">Registration</button> -->
+        <div *ngIf="automaticCourseRegFormGroup.valid">
+            <div class="d-flex justify-content-between" >
+                <button type="button" class="btn btn-success btn-sm text-dark fw-bolder fs-5" (click)="getPaidAndUnpaidStudents('paid')">Show List of Paid
+                    Students</button>
+                <button type="button" class="btn btn-warning btn-sm text-dark fw-bolder fs-5" (click)="getPaidAndUnpaidStudents('notpaid')" >Show List of Not Paid
+                    Students</button>
+                <button type="button" class="btn btn-info btn-sm fw-bolder fs-5">Show List for Previous
+                    Registration</button>
+                <!-- <button type="button" class="btn btn-primary btn-sm fw-bolder fs-5">Registration</button> -->
+            </div>
         </div>
+        <div class="row mt-5 justify-content-center" *ngIf="student_list.length > 0">
+            <div class="col-md-4 d-flex justify-content-evenly">
+                <button type="button" class="btn btn-primary">Registration</button>
+                <button type="button " class="btn btn btn-dark">Refresh</button>
+            </div>
         </div>
     </mat-card-content>
 </mat-card>
+
+<div class="table-responsive mt-3 mb-1" *ngIf="student_list.length > 0;">
+  <app-reporttable [options]="tableOptions" class="table table-bordered custom-striped">
+    <ng-template #headerTemplate>
+      <tr>
+        <th>S.No.</th>
+        <th>Student Name</th>
+        <th>UE ID</th>
+        <th>Student ID</th>
+        <th>Fee Status</th>
+        <th>Stu Acad Status_Id</th>
+        <th>Dean Committee ID</th>
+        <th>College Name E</th>
+        <th>Registration Status Id</th>
+        <th>Registration Id</th>
+        <th>Exam Fee Status</th>
+        <th>Payment_Id/Reg_No</th>
+      </tr>
+    </ng-template>
+    <ng-template #rowTemplate let-row let-i="index">
+      <tr>
+        <td>{{i+1}}</td>
+        <td>{{ row?.student_name }}</td>
+        <td>{{ row?.ue_id }}</td>
+        <td>{{ row?.student_id }}</td>
+        <td>{{ row?.fee_status }}</td>
+        <td>{{ row?.stu_acad_status_id}}</td>
+        <td>{{ row?.dean_committee_name_e }}</td>
+        <td>{{ row?.college_name_e }}</td>
+        <td>{{ row?.registration_status_id }}</td>
+        <td>{{ row?.registration_id }}</td>
+        <td>{{row?.exam_fee_status}}</td>
+        <td>{{ row?.payment_id }}</td>
+      </tr>
+    </ng-template>
+  </app-reporttable>
+</div>
+
+<div *ngIf="isListLoaded && student_list.length === 0" class="alert alert-warning text-center mt-3">
+  No faculty data found.
+</div>

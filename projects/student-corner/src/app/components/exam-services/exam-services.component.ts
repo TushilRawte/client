@@ -130,7 +130,7 @@ export class ExamServicesComponent {
         'Close',
         { duration: 3000 }
       );
-    } 
+    }   
   }
 
   onRowCheck(course: any, event: any) {
@@ -258,7 +258,9 @@ export class ExamServicesComponent {
       reval_id : 1
     };
     this.sharedExamService.setExamData(examData);
-    this.router.navigate(['payment'], { relativeTo: this.route });
+    console.log("exam serive is called");
+    
+    this.router.navigate(['/payment/reval'], { relativeTo: this.route });
   }
 
 }

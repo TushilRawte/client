@@ -18,6 +18,8 @@ export class FacultyListComponent {
   degree_programme: any[] = [];
   college: any[] = [];
   faculty_list: any[] = [];
+  isListLoaded = false;
+
 
   constructor(private HTTP: HttpService, private fb: FormBuilder) {}
 
@@ -25,8 +27,12 @@ export class FacultyListComponent {
     is_read: true,
     listLength: 0,
     dataSource: [],
-    button: [],
-    title: 'Courses List',
+    button: ['print', 'pdf', 'copy', 'excel'],
+    is_filter: true,
+    page: 0,
+    pageSize: 20,
+    is_pagination: true,
+    title: 'List of Faculty',
   };
 
   ngOnInit() {
@@ -38,7 +44,7 @@ export class FacultyListComponent {
       academic_session: [null, Validators.required],
       degree_programme: [null, Validators.required],
       course_year: [null, Validators.required],
-      course_nature: [null, Validators.required],
+      course_nature: [null],
       semester: [null, Validators.required],
       college: [null, Validators.required],
     });
@@ -108,27 +114,37 @@ export class FacultyListComponent {
     });
   }
 
-  onGetList(){
-  const parmas = {
-    academic_session_id: this.facultyListFormGroup.get('academic_session')?.value,
-    course_year_id: this.facultyListFormGroup.get('course_year')?.value,
-    semester_id: this.facultyListFormGroup.get('semester')?.value,
-    degree_programme_id: this.facultyListFormGroup.get('degree_programme')?.value,
-    college_id: this.facultyListFormGroup.get('college')?.value,
-    course_nature_id: this.facultyListFormGroup.get('course_nature')?.value,
-    }
-     this.HTTP.getParam(
-      '/master/get/getCourseForUpdate',
-      parmas,
-      'academic'
-    ).subscribe((result: any) => {
-      console.log("this is result",result);  
-      this.faculty_list = !result.body.error ? result.body.data : [];
-    });
+  onGetList() {
+    const formValue = this.facultyListFormGroup.value;
+
+    // Helper function to safely get label by ID
+    const findLabel = (list: any[], id: any, idKey: string, labelKey: string) =>
+      list.find(item => item[idKey] === id)?.[labelKey] || null;
+
+    const params = {
+      academic_session_id: formValue.academic_session,
+      course_year_id: formValue.course_year,
+      semester_id: formValue.semester,
+      degree_programme_id: formValue.degree_programme,
+      college_id: formValue.college,
+      course_nature_id: formValue.course_nature,
+      degree_programme_name_e: findLabel(this.degree_programme, formValue.degree_programme, 'degree_programme_id', 'degree_programme_name_e'),
+      college_name_e: findLabel(this.college, formValue.college, 'college_id', 'college_name_e')
+    };
+
+    this.HTTP.getParam('/course/get/getFacultyListRegisteredCourses', params, 'academic').subscribe((result: any) => {
+          this.faculty_list = result?.body?.data || [];
+          this.tableOptions.dataSource = this.faculty_list;
+          this.tableOptions.listLength = this.faculty_list.length;
+          this.isListLoaded = true;
+        });
   }
 
   onRefresh() {
-  this.facultyListFormGroup.reset();
-}
+    this.facultyListFormGroup.reset();
+    this.isListLoaded = false;
+    this.faculty_list.length = 0;
+  }
+
 }
 

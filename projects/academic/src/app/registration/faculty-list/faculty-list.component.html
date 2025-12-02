@@ -1,74 +1,79 @@
 <mat-card>
-    <mat-card-content>
-  <div class="page-heading text-center py-2">
-    <h3 class="m-0 text-white fw-bold">Faculty List For Registered Courses</h3>
-  </div>
+  <mat-card-content>
+    <div class="page-heading text-center py-2">
+      <h3 class="m-0 text-white fw-bold">Faculty List For Registered Courses</h3>
+    </div>
     <hr />
-        <form [formGroup]="facultyListFormGroup">
-            <div class="row">
-                <div class="col-md-4 col-6">
-                    <ng-select [items]="academic_session" bindLabel="academic_session_name_e"
-                        bindValue="academic_session_id" formControlName="academic_session" appearance="outline"
-                        placeholder="Select Session">
-                    </ng-select>
-                </div>
-                
-                <div class="col-md-4 col-6">
-                    <ng-select [items]="course_year" bindLabel="course_year_name_e" bindValue="course_year_id"
-                        formControlName="course_year" appearance="outline" placeholder="Course Year">
-                    </ng-select>
-                </div>
-                <div class="col-md-4 col-6">
-                    <ng-select [items]="semester" bindLabel="semester_name_e" bindValue="semester_id"
-                        formControlName="semester" appearance="outline" placeholder="Semester Name">
-                    </ng-select>
-                </div>
-                <div class="col-md-4 col-6">
-                    <ng-select [items]="degree_programme" bindLabel="degree_programme_name_e"
-                        bindValue="degree_programme_id" formControlName="degree_programme" appearance="outline"
-                        placeholder="Degree Programme">
-                    </ng-select>
-                </div>
-                <div class="col-md-4 col-6">
-                    <ng-select [items]="college" bindLabel="college_name_e" bindValue="college_id"
-                        formControlName="college" appearance="outline" placeholder="College">
-                    </ng-select>
-                </div>
-                <div class="col-md-4 col-6">
-                    <ng-select [items]="course_nature" bindLabel="course_nature_name_e" bindValue="course_nature_id"
-                        formControlName="course_nature" appearance="outline" placeholder="Course Nature">
-                    </ng-select>
-                </div>
-                <div class="col-md-4 align-self-center">
-                      <button type="button" [disabled]="!facultyListFormGroup.valid" class="btn btn-primary" (click)="onGetList()" >Get List</button>
-                      <button type="button" class="ms-3 btn btn btn-dark" (click)="onRefresh()" >Refresh</button>
-                </div>
-            </div>
-        </form>
-    </mat-card-content>
+    <form [formGroup]="facultyListFormGroup">
+      <div class="row">
+        <div class="col-md-4 col-6">
+          <ng-select [items]="academic_session" bindLabel="academic_session_name_e" bindValue="academic_session_id"
+            formControlName="academic_session" appearance="outline" placeholder="Academic Session">
+          </ng-select>
+        </div>
+
+        <div class="col-md-4 col-6">
+          <ng-select [items]="course_year" bindLabel="course_year_name_e" bindValue="course_year_id"
+            formControlName="course_year" appearance="outline" placeholder="Course Year">
+          </ng-select>
+        </div>
+        <div class="col-md-4 col-6">
+          <ng-select [items]="semester" bindLabel="semester_name_e" bindValue="semester_id" formControlName="semester"
+            appearance="outline" placeholder="Semester Name">
+          </ng-select>
+        </div>
+        <div class="col-md-4 col-6">
+          <ng-select [items]="degree_programme" bindLabel="degree_programme_name_e" bindValue="degree_programme_id"
+            formControlName="degree_programme" appearance="outline" placeholder="Degree Programme">
+          </ng-select>
+        </div>
+        <div class="col-md-4 col-6">
+          <ng-select [items]="college" bindLabel="college_name_e" bindValue="college_id" formControlName="college"
+            appearance="outline" placeholder="College">
+          </ng-select>
+        </div>
+        <div class="col-md-4 col-6">
+          <ng-select [items]="course_nature" bindLabel="course_nature_name_e" bindValue="course_nature_id"
+            formControlName="course_nature" appearance="outline" placeholder="Course Nature">
+          </ng-select>
+        </div>
+        <div class="col-md-4 align-self-center">
+          <button type="button" [disabled]="!facultyListFormGroup.valid" class="btn btn-primary"
+            (click)="onGetList()">Get List</button>
+          <button type="button" class="ms-3 btn btn btn-dark" (click)="onRefresh()">Refresh</button>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
 </mat-card>
 
-    <div class="table-responsive mt-3 mb-1" *ngIf="faculty_list.length > 0">
-      <app-reporttable [options]="tableOptions" class="table table-bordered custom-striped">
-        <ng-template #headerTemplate>
-          <tr>
-            <th>S.No.</th>
-            <th>College Name</th>
-            <th>Course Title</th>
-            <th>Credit</th>
-            <th>Subject</th>
-            <th>degree_programme</th>
-            <th>Faculty</th>
-          </tr>
-        </ng-template>
-        <ng-template #rowTemplate let-row let-i="index">
-          <tr>
-            <td>{{i+1}}</td>
-            <td>{{ row?.course_name }}</td>
-            <td>{{ row?.teacher_name }}</td>
-            <td>{{ row?.course_type_name_e }}</td>
-            <td>{{ row?.credit }}</td> 
-          </tr>
-        </ng-template>
-      </app-reporttable>
-    </div>
+<div class="table-responsive mt-3 mb-1" *ngIf="faculty_list.length > 0;">
+  <app-reporttable [options]="tableOptions" class="table table-bordered custom-striped">
+    <ng-template #headerTemplate>
+      <tr>
+        <th>S.No.</th>
+        <th>College Name</th>
+        <th>Course Title</th>
+        <th>Credit</th>
+        <th>degree_programme</th>
+        <th>Faculty</th>
+      </tr>
+    </ng-template>
+    <ng-template #rowTemplate let-row let-i="index">
+      <tr>
+        <!-- <td>{{ (tableOptions.currentPage * tableOptions.pageSize) + (i + 1) }}</td> -->
+        <!-- <td>{{  getSerialNumber(i)   }}</td> -->
+        <td>{{i+1}}</td>
+        <td>{{ row?.college_name }}</td>
+        <td>{{ row?.course_name }}</td>
+        <td>{{ row?.credit }}</td>
+        <td>{{ row?.degree_programm }}</td>
+        <td>{{ row?.emp_name }}</td>
+      </tr>
+    </ng-template>
+  </app-reporttable>
+</div>
+
+<div *ngIf="isListLoaded && faculty_list?.length === 0" class="alert alert-warning text-center mt-3">
+  No faculty data found.
+</div>
