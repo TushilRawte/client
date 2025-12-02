@@ -47,7 +47,6 @@ import { CertificateApplyComponent } from './components/certificate-apply/certif
     BrowserModule,
     AppRoutingModule,
     SharedModule,
-    BrowserModule,
     NgbModule,
     BrowserAnimationsModule,
     FormsModule,

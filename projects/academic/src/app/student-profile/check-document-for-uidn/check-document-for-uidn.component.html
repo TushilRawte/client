@@ -1,0 +1,77 @@
+<div class="container-fluid py-3">
+    <!-- Header -->
+    <h5 class="mb-3 text-center fw-bold text-primary">
+        Student Document Summary
+    </h5>
+
+    <div class="card shadow-lg border-0 mb-3">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-4 col-sm-12 mb-2">
+                    <label class="fw-semibold font-clr">Student Name:</label>
+                    <div class="text-dark fs-6">
+                        {{ getData.student_name || 'N/A' }}
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-12 mb-2">
+                    <label class="fw-semibold font-clr">Entrance Exam Type:</label>
+                    <div class="text-dark fs-6">
+                        {{ getData.entrance_exam_type_name || 'N/A' }}
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-12 mb-2">
+                    <label class="fw-semibold font-clr">DVC Letter:</label>
+                    <div *ngIf="documentList[0].DVC_Letter_Path; else noDvc">
+                        <a [href]="baseUrl+documentList[0].DVC_Letter_Path" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i> View Document
+                        </a>
+                    </div>
+                    <ng-template #noDvc>
+                        <span class="text-muted">Not Available</span>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+    </div>
+       <app-reporttable [options]="optionsDoc">
+    <!-- <ng-container class="card-header">Courses</ng-container> -->
+    <ng-template #headerTemplate>
+                         <tr>
+                            <th>#</th>
+                            <th>Document Name</th>
+                            <th>Uploaded</th>
+                            <th>View</th>
+                         </tr>
+    </ng-template>
+    <ng-template #rowTemplate let-row let-i="index">
+        <tr >
+              <tr>
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ row.document_name}}</td>
+                            <td>
+                                <span [ngClass]="{'text-success': row.IsSubmitted_YN === 'Y', 'text-danger': row.IsSubmitted_YN !== 'Y'}">
+                                    {{ row.IsSubmitted_YN === 'Y'? 'Yes' : 'No' }}
+                                </span>
+                            </td>
+                            <td>
+                                <a *ngIf="row.file_path" [href]="baseUrl+row?.file_path" target="_blank"
+                                    class="btn btn-sm btn-outline-primary">
+                                    View
+                                </a>
+                                <span *ngIf="!row.file_path" class="text-muted" style="font-size: 12px;">Not Uploaded</span>
+                            </td>
+                          </tr>
+    </ng-template>
+</app-reporttable>
+
+    <div class="text-end mt-3">
+        <button class="btn btn-secondary" (click)="closeDialog()">
+            Close
+        </button>
+    </div>
+</div>

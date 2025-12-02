@@ -12,8 +12,8 @@ export const environment = {
   CAPTCHA_SECRET_KEY: '03f26e402586fkisanf2395fsg9632faa8da4c98a35f1b20d6b033c50',
   sharedSecret: 'tg:D/|oP$:s2I[-8-Pc:|8/U7+?!r]g#',
   publicKey: "BLaV0kn22SFt30rA1H6lEX6dgTOzToFY3bVfCXzGwM0gg2CFEjILyLp4qoL8H_hNFaJhOYndp4vquNH6zYy5r2M",
-  igkvUrl:'https://igkv.ac.in/'
-
+  igkvUrl: 'https://igkv.ac.in/',
+  filePrefix: 'https://igkv.ac.in/'
 };
 
 export const reportConfig = {

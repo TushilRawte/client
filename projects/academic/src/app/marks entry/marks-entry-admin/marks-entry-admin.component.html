@@ -1,1 +1,221 @@
-<p>marks-entry-admin works!</p>
+<mat-card>
+    <mat-card-content>
+        <form [formGroup]="marksEntryFacultyFormGroup">
+            <!-- <app-marks-entry-dropdown [formGroup]="marksEntryFacultyFormGroup"
+                (degreeProgrammeChange)="onDegreeProgrammeChange($event)"
+                (examPaperTypeChange)="onExamPaperTypeChange($event)">
+            </app-marks-entry-dropdown> -->
+            <app-marks-entry-dropdown
+                [formGroup]="marksEntryFacultyFormGroup"
+                [showDegreeProgramme]="true" 
+                (examPaperTypeChange)="onExamPaperTypeChange($event)"
+                (degreeProgrammeChange)="onDegreeProgrammeChange($event)"
+                (examPaperTypeChange)="onValuationTypeChange($event)" >
+                
+            </app-marks-entry-dropdown>
+
+            <div class="row">
+                <div class="col-md-2 mt-4">
+                    <button class="btn btn-primary" type="button" (click)="getCourseList()">Get List</button>
+                </div>
+            </div>
+            <hr>
+            <div class="row mt-3">
+                <input type="text" [(ngModel)]="courseID" [ngModelOptions]="{standalone: true}"
+                    placeholder="Search Course Code" class="form-control" style="width:200px; margin-bottom:10px;">
+                <div class="table-responsive custom-table-wrapper">
+                    <table class="table table-bordered">
+                        <thead class="table-header">
+                            <tr>
+                                <th>#</th>
+                                <th>Course Name</th>
+                                <th>Course Code</th>
+                                <th>Dean Committee</th>
+                                <th>Course Year</th>
+                                <th>Student Count</th>
+                                <th>Marks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let item of courseList; let i = index">
+                                <tr
+                                    *ngIf="!courseID || item.course_code?.toString().toLowerCase().includes(courseID.toLowerCase())">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ item.course_title_e }}</td>
+                                    <td>{{ item.course_code }}</td>
+                                    <td>{{ item.dean_committee_name_e }}</td>
+                                    <td>{{ item.course_year_name_e }}</td>
+                                    <td>{{ item.student_count }}</td>
+                                    <td>
+                                        <button class="btn btn-primary" (click)="getCourseListParticularData(item)">
+                                            <mat-icon>login</mat-icon>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <hr>
+            <div class="status-legend mt-5">
+                <div class="legend-grid">
+                    <div><mat-icon class="text-success">cloud_download</mat-icon> Internal Imported</div>
+                    <div><mat-icon class="text-danger">cloud_download</mat-icon> Internal Not Imported</div>
+                    <div><mat-icon class="text-success">cloud_upload</mat-icon> External Imported</div>
+                    <div><mat-icon class="text-danger">cloud_upload</mat-icon> External Not Imported</div>
+                    <div><mat-icon class="text-success">done</mat-icon> Internal Finalized</div>
+                    <div><mat-icon class="text-danger">done</mat-icon> Internal Unfinalized</div>
+                    <div><mat-icon class="text-success">check_circle</mat-icon> External Finalized</div>
+                    <div><mat-icon class="text-danger">check_circle</mat-icon> External Unfinalized</div>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <input type="text" [(ngModel)]="searchUeId" [ngModelOptions]="{standalone: true}"
+                    placeholder="Search UE ID" class="form-control" style="width:200px; margin-bottom:10px;">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Student Name</th>
+                            <th>Student ID</th>
+                            <th>{{examPaperTypenameSelected}} Max Marks</th>
+                            <th>{{examPaperTypenameSelected}} Obtained Marks</th>
+                            <th *ngIf="notShowInternal">Internal Marks</th>
+                            <th>Total Max Marks</th>
+                            <th>Total Marks (Club)</th>
+                            <th>Final Marks</th>
+                            <th>Remark</th>
+                            <th>Final Remrk</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody formArrayName="students">
+                        <ng-container *ngFor="let student of students.controls; let i = index">
+                            <tr [formGroupName]="i" [ngClass]="{ 'disabled-row': student.disabled }"
+                                *ngIf="!searchUeId || student.value.ue_id?.toString().includes(searchUeId)">
+                                <td>{{ i + 1 }}</td>  
+                                <td>{{ student.value.student_name }}</td>
+                                <td>{{ student.value.ue_id }}</td>
+                                <td>{{student.value.max_marks_external}}</td>
+                                <td>
+                                    <ng-container [ngSwitch]="marksEntryFacultyFormGroup.get('valuation_type_id')?.value">
+                                        <input *ngSwitchCase="1"
+                                            type="number"
+                                            formControlName="ext_obtained_mark"
+                                            style="width: 60px;" [readonly]="student.get('ext_marks_finalize')?.value == 1" />
+                                        <input *ngSwitchCase="2"
+                                            type="number"
+                                            formControlName="reval_obtained_mark" [readonly]="student.get('reval_marks_finalize')?.value == 1"
+                                            style="width: 60px;" />
+                                        <input *ngSwitchCase="4"
+                                            type="number"
+                                            formControlName="reval_obtained_mark"
+                                            style="width: 60px;" />
+                                       <input *ngSwitchCase="7"
+                                            type="number"
+                                            formControlName="reval_obtained_mark"
+                                            style="width: 60px;" />
+                                            <input *ngSwitchCase="8"
+                                            type="number"
+                                            formControlName="reval_obtained_mark"
+                                            style="width: 60px;" />
+                                              <input *ngSwitchCase="9"
+                                            type="number"
+                                            formControlName="reval_obtained_mark"
+                                            style="width: 60px;" />
+                                              <div *ngSwitchCase="3" class="flex flex-col items-start">
+                                            <input
+                                                type="number"
+                                                formControlName="r_reval_obtained_mark" [readonly]="student.get('re_reval_intered_marks_finalize')?.value == 1"
+                                                style="width: 60px;"
+                                            /> <br>
+                                            <span
+                                                *ngIf="student?.value?.r_reval_avg_obtained_mark != null"
+                                                style="font-size: 11px; color: gray; margin-top: 2px;"
+                                            > 
+                                                Avg: {{ student.value.r_reval_avg_obtained_mark }} <br>
+                                                Reval: {{student.value.reval_obtained_mark}}
+                                            </span>
+                                            </div>
+                                        <input *ngSwitchDefault
+                                            type="number"
+                                            formControlName="ext_obtained_mark"
+                                            style="width: 60px;" />
+                                    </ng-container>
+                                </td>
+ 
+
+                                <td *ngIf="notShowInternal"> <input type="number" formControlName="int_obtained_mark"
+                                        style="width: 60px;" readonly></td>
+                                <td>{{student.value.total_marks}}</td>
+                                <td><input type="number" formControlName="total_obtained_marks" style="width: 60px;"
+                                        readonly></td>
+                                <td>{{student.value.final_marks}}</td>
+                                <td>
+                                    <select class="form-select" formControlName="remark_id"  >
+                                        <option value="">Select Remark</option>
+                                        <option *ngFor="let s of remarkList" [value]="s.remark_id">
+                                            {{ s.remark_name_e }}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-select" formControlName="final_remark_id">
+                                        <option value="">Select Remark</option>
+                                        <option *ngFor="let s of remarkList" [value]="s.remark_id">
+                                            {{ s.remark_name_e }}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td class="status-cell text-center">
+                                <div class="row justify-content-center">
+
+                                    <!-- Always show internal finalize separately -->
+                                    <mat-icon class="status-icon"
+                                    [ngClass]="student.get('intFinalized')?.value ? 'text-success' : 'text-danger'"
+                                    matTooltip="{{ student.get('intFinalized')?.value ? 'Internal Finalized' : 'Internal Unfinalized' }}">
+                                    done
+                                    </mat-icon>
+
+                                    <!-- Dynamic finalize icon -->
+                                    <mat-icon class="status-icon"
+                                    *ngIf="marksEntryFacultyFormGroup.get('valuation_type_id')?.value == 1"
+                                    [ngClass]="student.get('ext_marks_finalize')?.value == 1 ? 'text-success' : 'text-danger'"
+                                    matTooltip="{{ student.get('ext_marks_finalize')?.value == 1 ? 'External Finalized' : 'External Unfinalized' }}">
+                                    check_circle
+                                    </mat-icon>
+
+                                    <mat-icon class="status-icon"
+                                    *ngIf="marksEntryFacultyFormGroup.get('valuation_type_id')?.value == 2"
+                                    [ngClass]="student.get('reval_marks_finalize')?.value == 1 ? 'text-success' : 'text-danger'"
+                                    matTooltip="{{ student.get('reval_marks_finalize')?.value == 1 ? 'Revaluation Finalized' : 'Revaluation Unfinalized' }}">
+                                    check_circle
+                                    </mat-icon>
+
+                                    <mat-icon class="status-icon"
+                                    *ngIf="marksEntryFacultyFormGroup.get('valuation_type_id')?.value == 3"
+                                    [ngClass]="student.get('re_reval_intered_marks_finalize')?.value == 1 ? 'text-success' : 'text-danger'"
+                                    matTooltip="{{ student.get('re_reval_intered_marks_finalize')?.value == 1 ? 'Re-Revaluation Finalized' : 'Re-Revaluation Unfinalized' }}">
+                                    check_circle
+                                    </mat-icon>
+
+                                </div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+
+                </table>
+                <div class="row mt-4 g-2">
+                    <div class="col-12 col-sm-4 col-md-2">
+                        <button class="btn btn-primary w-100" type="button" (click)="onSubmit()">Submit</button>
+                    </div>
+                    <div class="col-12 col-sm-4 col-md-2">
+                        <button class="btn btn-danger w-100" type="button" (click)="onFinalize()">Finalize</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

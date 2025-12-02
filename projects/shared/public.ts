@@ -10,6 +10,7 @@ export * from './service/encryption.service'
 export * from './service/communication'
 export * from './service/state.service'
 export * from './service/printreport.service'
+export * from "./service/esign.service"
 
 export * from './component/fileupload/fileupload.component'
 export * from './directive/number.directive'

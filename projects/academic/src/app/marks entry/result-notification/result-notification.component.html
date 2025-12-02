@@ -1,0 +1,307 @@
+<mat-card>
+    <mat-card-content>
+        <h3 class="fw-bold page-title mb-4">Result Notification Report</h3>
+        <form [formGroup]="resultNotificationReportFormGroup">
+            <div formGroupName="selection" class="row">
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Session</mat-label>
+                        <mat-select placeholder="Session" formControlName="academic_session_id">
+                            <mat-option *ngFor="let server of state.acadmicSessionList"
+                                [value]="server.academic_session_id">
+                                {{ server.academic_session_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Semester</mat-label>
+                        <mat-select placeholder="Semester" formControlName="semester_id">
+                            <mat-option *ngFor="let semester of state.semesterList" [value]="semester.semester_id">
+                                {{ semester.semester_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6 col-12">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Degree Programme Type</mat-label>
+                        <mat-select placeholder="Degree Programme Type" formControlName="degree_programme_type_id">
+                            <mat-option *ngFor="let degreeProgrammeType of state.degreeProgrammeTypeList"
+                                [value]="degreeProgrammeType.degree_programme_type_id">
+                                {{ degreeProgrammeType.degree_programme_type_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6 col-12">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Degree Programme</mat-label>
+                        <mat-select placeholder="Degree Programme" formControlName="degree_programme_id">
+                            <mat-option *ngFor="let degreeProgramme of state.degreeProgrammeList"
+                                [value]="degreeProgramme.degree_programme_id">
+                                {{ degreeProgramme.degree_programme_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <!-- <div class="col-md-8 col-12">
+                    <ng-select placeholder="Exam Type" formControlName="exam_type_id" appearance="outline">
+                        <ng-container *ngFor="let examType of state.examTypeList">
+                            <ng-option [value]="examType.exam_type_id">
+                                {{ examType.exam_type_name_e}}
+                            </ng-option>
+                        </ng-container>
+                    </ng-select>
+                </div> -->
+
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Exam Type</mat-label>
+                        <mat-select placeholder="Exam Type" formControlName="exam_type_id">
+                            <mat-option *ngFor="let examType of state.examTypeList" [value]="examType.exam_type_id">
+                                {{ examType.exam_type_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Valuation Type</mat-label>
+                        <mat-select placeholder="Valuation Type" formControlName="valuation_type_id">
+                            <mat-option *ngFor="let valuationType of state.valuationTypeList"
+                                [value]="valuationType.valuation_type_id">
+                                {{ valuationType.valuation_type_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-12 mt-md-3 d-flex justify-content-center">
+                    <div>
+                        <button mat-raised-button color="primary" (click)="getDetails_click()">
+                            Get Details
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>
+
+<div *ngIf="state.matrixList && state.matrixList.length > 0" class="mt-3 mb-3 report-filter">
+    <app-reporttable [options]="matrixTableOptions">
+        <ng-template #headerTemplate>
+            <tr>
+                <th>S.No.</th>
+                <th>Course Year</th>
+                <th>Dean Committee</th>
+                <th>Total Notification</th>
+                <th>Not Generated</th>
+                <th>Generated</th>
+                <th>Not Signed</th>
+                <th>Signed</th>
+                <th>Not Published in Student Corner</th>
+                <th>Published in Student Corner</th>
+            </tr>
+        </ng-template>
+        <ng-template #rowTemplate let-row let-i="index">
+            <tr>
+                <td>{{i+1}}</td>
+                <td>{{ row.course_year_name_e }}</td>
+                <td>{{ row.dean_committee_name_e }}</td>
+                <td>
+                    <span style="font-weight: bold;">
+                        0
+                    </span>
+                </td>
+                <td>
+                    <div class="custom-button-main cursor-pointer" (click)="getDetail_btn(row, 'notGenerated')">
+                        <span class="custom-button bg-secondary">
+                            0
+                        </span>
+                        <span class="indicator">
+                            <span>Click</span>
+                        </span>
+                    </div>
+                </td>
+                <td>
+                    <div class="custom-button-main cursor-pointer" (click)="getDetail_btn(row, 'generated')">
+                        <span class="custom-button bg-info">
+                            0
+                        </span>
+                        <span class="indicator">
+                            <span>Click</span>
+                        </span>
+                    </div>
+                </td>
+                <td>
+                    <div class="custom-button-main cursor-pointer" (click)="getDetail_btn(row, 'notSigned')">
+                        <span class="custom-button bg-secondary">
+                            0
+                        </span>
+                        <span class="indicator">
+                            <span>Click</span>
+                        </span>
+                    </div>
+                </td>
+                <td>
+                    <div class="custom-button-main cursor-pointer" (click)="getDetail_btn(row, 'signed')">
+                        <span class="custom-button bg-primary">
+                            0
+                        </span>
+                        <span class="indicator">
+                            <span>Click</span>
+                        </span>
+                    </div>
+                </td>
+                <td>
+                    <div class="custom-button-main cursor-pointer" (click)="getDetail_btn(row, 'notPublished')">
+                        <span class="custom-button bg-secondary">
+                            0
+                        </span>
+                        <span class="indicator">
+                            <span>Click</span>
+                        </span>
+                    </div>
+                </td>
+                <td>
+                    <div class="custom-button-main cursor-pointer" (click)="getDetail_btn(row, 'published')">
+                        <span class="custom-button bg-success">
+                            0
+                        </span>
+                        <span class="indicator">
+                            <span>Click</span>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </app-reporttable>
+</div>
+
+<mat-card
+    *ngIf="generatedListOption.dataSource && generatedListOption.dataSource.length > 0 && state.collegeDetailList && state.collegeDetailList.length > 0">
+    <div class="mt-3 bg-white">
+        <form [formGroup]="resultNotificationReportFormGroup">
+            <div formArrayName="resultDetails">
+                <app-reporttable [options]="generatedListOption">
+                    <!-- Header -->
+                    <ng-template #headerTemplate>
+                        <tr>
+                            <th>S.No.</th>
+
+                            <!-- Select All only for non-final states -->
+                            <th *ngIf="['notGenerated', 'notSigned', 'notPublished'].includes(actionType)"
+                                class="d-print-none">
+                                <mat-checkbox [ngModel]="selectAll" (ngModelChange)="onToggleSelectAll($event)"
+                                    [ngModelOptions]="{ standalone: true }">
+                                    Select All
+                                </mat-checkbox>
+                            </th>
+
+                            <th class="text-start">College Name</th>
+                            <th>Notification Number</th>
+                            <th>Date</th>
+
+                            <!-- Preview for all except notGenerated -->
+                            <th *ngIf="actionType !== 'notGenerated'" class="d-print-none">Preview</th>
+
+                            <!-- Delete only for generated/signed -->
+                            <th *ngIf="['generated','signed'].includes(actionType)" class="d-print-none">
+                                Delete
+                            </th>
+
+                            <!-- Remark for notGenerated -->
+                            <th *ngIf="actionType !== 'published'">Remark</th>
+                        </tr>
+                    </ng-template>
+
+                    <!-- Row Template -->
+                    <ng-template #rowTemplate let-row let-i="index">
+                        <tr [formGroupName]="i">
+                            <td>{{ i + 1 }}</td>
+
+                            <!-- Checkbox (not final states) -->
+                            <td *ngIf="['notGenerated', 'notSigned', 'notPublished'].includes(actionType)"
+                                class="d-print-none">
+                                <input type="checkbox" formControlName="selected" />
+                            </td>
+
+                            <td class="text-start">{{ row.college_name_e }}</td>
+
+                            <!-- Notification number -->
+                            <td>
+                                <ng-container *ngIf="actionType === 'notGenerated'; else readonlyNum">
+                                    <input type="text" formControlName="notification_number" placeholder="eg. CLG123">
+                                </ng-container>
+                                <ng-template #readonlyNum>
+                                    {{ row.notification_number }}
+                                </ng-template>
+                            </td>
+
+                            <!-- Date -->
+                            <td>
+                                <ng-container *ngIf="actionType === 'notGenerated'; else readonlyDate">
+                                    <input type="date" formControlName="notification_date" />
+                                </ng-container>
+                                <ng-template #readonlyDate>
+                                    {{ row.notification_date | date:'dd-MM-yyyy' }}
+                                </ng-template>
+                            </td>
+
+                            <!-- Preview (notGenerated excluded) -->
+                            <td *ngIf="actionType !== 'notGenerated'" class="d-print-none">
+                                <a [href]="filePath + (resultNotificationReportFormGroup.get('resultDetails')?.value[i]?.file_path || '')"
+                                    target="_blank" rel="noopener">
+                                    <mat-icon class="text-brown">picture_as_pdf</mat-icon>
+                                </a>
+                            </td>
+
+                            <!-- Delete -->
+                            <td *ngIf="['generated','signed'].includes(actionType)" class="d-print-none">
+                                <span *ngIf="row.is_published === 'Y'">
+                                    Notification has been published, can't be deleted!!
+                                </span>
+                                <button *ngIf="row.is_published !== 'Y'" mat-icon-button color="warn" type="button"
+                                    (click)="onDeleteRow(row)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </td>
+
+                            <!-- Remark -->
+                            <td *ngIf="actionType !== 'published'">
+                                <span>{{row.remark}}</span>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </app-reporttable>
+            </div>
+        </form>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-center mt-3 mb-6">
+        <button *ngIf="actionType === 'notGenerated'" mat-raised-button color="primary"
+            (click)="onSubmitGenerateNotification()" [disabled]="!state.collegeDetailList.length">
+            Generate Notification
+        </button>
+
+        <button *ngIf="actionType === 'notSigned'" mat-raised-button color="primary"
+            (click)="onSubmitGenerateESign('notSigned')" [disabled]="!state.collegeDetailList.length">
+            Click for E-Sign
+        </button>
+
+        <button *ngIf="actionType === 'notPublished'" mat-raised-button color="primary"
+            (click)="onSubmitGenerateESign('notPublished')" [disabled]="!state.collegeDetailList.length">
+            Publish
+        </button>
+    </div>
+</mat-card>

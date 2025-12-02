@@ -23,9 +23,26 @@ import { ViewCourseallotmentComponent } from './view-courseallotment/view-course
 import { MarksEntryAdminComponent } from './marks entry/marks-entry-admin/marks-entry-admin.component';
 import { MarksEntryFacultyComponent } from './marks entry/marks-entry-faculty/marks-entry-faculty.component';
 import { MarksEntryImportComponent } from './marks entry/marks-entry-import/marks-entry-import.component';
+import { MarksEntryUnfinalizeComponent } from './marks entry/marks-entry-unfinalize/marks-entry-unfinalize.component';
+import { MarksEntryThesisComponent } from './marks entry/marks-entry-thesis/marks-entry-thesis.component';
+import { MarksEntryThesisUnfinalizeComponent } from './marks entry/marks-entry-thesis-unfinalize/marks-entry-thesis-unfinalize.component';
+import { MarksEntryExportComponent } from './marks entry/marks-entry-export/marks-entry-export.component';
+import { MarksEntryDropdownComponent } from './marks entry/marks-entry-dropdown/marks-entry-dropdown.component';
+import { GenerateUidnComponent } from './student-profile/generate-uidn/generate-uidn.component';
+import { CheckDocumentForUidnComponent } from './student-profile/check-document-for-uidn/check-document-for-uidn.component';
+import { SrcGenerateComponent } from './semester-report-card/src-generate/src-generate.component';
+
 import { AutomaticRegistrationComponent } from './registration/automatic-registration/automatic-registration.component';
 import { PaymentSettlementComponent } from './payment-settlement/payment-settlement.component';
 import { FacultyListComponent } from './registration/faculty-list/faculty-list.component';
+import { ResultNotificationComponent } from './marks entry/result-notification/result-notification.component';
+import { StudentCategoryChangeComponent } from './student/student-category-change/student-category-change.component';
+import { GetSrcListComponent } from './student/get-src-list/get-src-list.component';
+import { StudentMobileNumberUpdateComponent } from './student/student-mobile-number-update/student-mobile-number-update.component';
+import { StudentNameCorrectionComponent } from './student/student-name-correction/student-name-correction.component';
+import { StudentPasswordResetComponent } from './student/student-password-reset/student-password-reset.component';
+import { StudentAddressChangeRequestComponent } from './student/student-address-change-request/student-address-change-request.component';
+import { ApproveUidnComponent } from './student-profile/approve-uidn/approve-uidn.component';
 
 
 @NgModule({
@@ -46,9 +63,25 @@ import { FacultyListComponent } from './registration/faculty-list/faculty-list.c
     MarksEntryAdminComponent,
     MarksEntryFacultyComponent,
     MarksEntryImportComponent,
+    MarksEntryUnfinalizeComponent,
+    MarksEntryThesisComponent,
+    MarksEntryThesisUnfinalizeComponent,
+    MarksEntryExportComponent,
+    MarksEntryDropdownComponent,
+    GenerateUidnComponent,
+    CheckDocumentForUidnComponent,
+    SrcGenerateComponent,
     AutomaticRegistrationComponent,
     PaymentSettlementComponent,
     FacultyListComponent,
+    ResultNotificationComponent,
+    StudentCategoryChangeComponent,
+    GetSrcListComponent,
+    StudentMobileNumberUpdateComponent,
+    StudentNameCorrectionComponent,
+    StudentPasswordResetComponent,
+    StudentAddressChangeRequestComponent,
+    ApproveUidnComponent,
 
   ],
   imports: [
@@ -56,6 +89,7 @@ import { FacultyListComponent } from './registration/faculty-list/faculty-list.c
     BrowserModule,
     NgbModule,
     AppRoutingModule,
+    ReporttableComponent,
     CapslockDirective,
     FormsModule,
     ServiceWorkerModule.register('ngsw-worker.js', {

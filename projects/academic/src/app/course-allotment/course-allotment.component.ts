@@ -233,14 +233,14 @@ if (!courseId || !courseTypeId ) {
     }
     console.log('Final data to submit:', finalPayload);
   
-    // this.HTTP.postData(apiUrl, finalPayload, 'academic').subscribe(res => {
-    //   if (!res.body.error) {
-    //     this.alert.alertMessage("Record Inserted...!", "", "success");
-    //     this.clearCourseTable();
-    //   } else {
-    //     this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
-    //   }
-    // });
+    this.HTTP.postData(apiUrl, finalPayload, 'academic').subscribe(res => {
+      if (!res.body.error) {
+        this.alert.alertMessage("Record Inserted...!", "", "success");
+        this.clearCourseTable();
+      } else {
+        this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
+      }
+    });
   }
 
 

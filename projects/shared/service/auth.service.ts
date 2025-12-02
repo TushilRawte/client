@@ -77,6 +77,9 @@ export class AuthService {
     return this.es.decrypt(this.cookie.get('designation_id')) || undefined
   }
 
+    getEmpID() {
+    return this.es.decrypt(this.cookie.get('emp_id')) || undefined
+  }
 
   setModuleID(module_id: any) {
     this.cookie.set('module_id', this.es.encrypt(module_id), {path: '/'})
