@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { environment } from 'environment';
 import { take } from 'rxjs';
 import { AlertService, HttpService, PrintService } from 'shared';
-import { environment } from 'environment';
 
 
 @Component({
@@ -92,7 +92,7 @@ export class TranscriptReportComponent  implements OnInit {
       }
 
       // call API to get data
-      this.http.getParam('/studentProfile/get/getStudentListForTrascript',
+      this.http.getParam('/studentProfile/get/getStudentListForTranscript',
         { ...params, pdc_gen_yn: 'Y' },
         'academic')
         .subscribe(
@@ -110,7 +110,7 @@ export class TranscriptReportComponent  implements OnInit {
             }
           },
           (error) => {
-            console.error('Error in getStudentListForTrascript:', error);
+            console.error('Error in getStudentListForTranscript:', error);
             this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
           }
         );

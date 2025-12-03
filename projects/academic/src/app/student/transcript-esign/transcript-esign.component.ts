@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { apiPort } from 'environment';
 import { take } from 'rxjs';
 import { AlertService, EsignService, HttpService, LoaderService, PrintService } from 'shared';
-import { environment, apiPort } from 'environment';
 
 @Component({
   selector: 'app-transcript-esign',
@@ -106,12 +106,12 @@ export class TranscriptEsignComponent implements OnInit {
       }
 
       // call API to get data
-      this.http.getParam('/studentProfile/get/getStudentListForTrascript',
+      this.http.getParam('/studentProfile/get/getStudentListForTranscript',
         { ...params, transcript_gen_yn: 'N' },
         'academic')
         .subscribe(
           (result: any) => {
-            // console.log("getStudentListForTrascript result?.body==> ", result?.body);
+            // console.log("getStudentListForTranscript result?.body==> ", result?.body);
             if (result?.body?.data?.length === 0) {
               this.alert.alertMessage("Invalid User", "No Records Found in Databse", "error");
             } else if (result?.body?.error?.message) {
@@ -126,7 +126,7 @@ export class TranscriptEsignComponent implements OnInit {
             }
           },
           (error) => {
-            console.error('Error in getStudentListForTrascript:', error);
+            console.error('Error in getStudentListForTranscript:', error);
             this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
           }
         );
