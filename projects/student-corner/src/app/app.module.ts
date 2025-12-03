@@ -22,6 +22,9 @@ import { ExamServicesComponent } from './components/exam-services/exam-services.
 import { PaymentComponent } from './components/exam-services/payment/payment.component';
 import { ReporttableComponent } from 'shared';
 import { CertificateApplyComponent } from './components/certificate-apply/certificate-apply.component';
+import { AddressUpdatePopupComponent } from './components/profile-update-popup/address-update-popup/address-update-popup.component';
+import { MobileNumberUpdatePopupComponent } from './components/profile-update-popup/mobile-number-update-popup/mobile-number-update-popup.component';
+import { NameUpdatePopupComponent } from './components/profile-update-popup/name-update-popup/name-update-popup.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +42,10 @@ import { CertificateApplyComponent } from './components/certificate-apply/certif
     NewLayoutComponent,
     ExamServicesComponent,
     PaymentComponent,
-    CertificateApplyComponent
+    CertificateApplyComponent,
+    AddressUpdatePopupComponent,
+    MobileNumberUpdatePopupComponent,
+    NameUpdatePopupComponent
 
     
   ],

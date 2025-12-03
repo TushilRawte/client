@@ -44,6 +44,16 @@ import { StudentPasswordResetComponent } from './student/student-password-reset/
 import { StudentAddressChangeRequestComponent } from './student/student-address-change-request/student-address-change-request.component';
 import { ApproveUidnComponent } from './student-profile/approve-uidn/approve-uidn.component';
 import { PromoteEvenSemesterComponent } from './student-academic-status/promote-even-semester/promote-even-semester.component';
+import { PdcEsignComponent } from './student/pdc-esign/pdc-esign.component';
+import { PdcGenerateComponent } from './student/pdc-generate/pdc-generate.component';
+import { PdcReportComponent } from './student/pdc-report/pdc-report.component';
+import { SrcReportComponent } from './student/src-report/src-report.component';
+import { TranscriptEsignComponent } from './student/transcript-esign/transcript-esign.component';
+import { TranscriptReportComponent } from './student/transcript-report/transcript-report.component';
+import { TranscriptGenerateComponent } from './student/transcript-generate/transcript-generate.component';
+import { StudentAddressChangeRequestPopupComponent } from './student/student-address-change-request-popup/student-address-change-request-popup.component';
+import { StudentBasicDetailsUpdateComponent } from './student/student-basic-details-update/student-basic-details-update.component';
+import { StudentBasicDetailsUpdatePopupComponent } from './student/student-basic-details-update-popup/student-basic-details-update-popup.component';
 
 
 @NgModule({
@@ -84,6 +94,16 @@ import { PromoteEvenSemesterComponent } from './student-academic-status/promote-
     StudentAddressChangeRequestComponent,
     ApproveUidnComponent,
     PromoteEvenSemesterComponent,
+    PdcEsignComponent,
+    PdcGenerateComponent,
+    PdcReportComponent,
+    SrcReportComponent,
+    TranscriptEsignComponent,
+    TranscriptReportComponent,
+    TranscriptGenerateComponent,
+    StudentAddressChangeRequestPopupComponent,
+    StudentBasicDetailsUpdateComponent,
+    StudentBasicDetailsUpdatePopupComponent,
 
   ],
   imports: [

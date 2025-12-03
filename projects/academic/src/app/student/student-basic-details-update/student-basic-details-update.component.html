@@ -22,21 +22,21 @@
                         </td>
                         <td
                             [ngClass]="{'bg-green': 'pending' === actionType && selectedRowId === row.degree_programme_type_id}">
-                            <span class="click-row" (click)="getStudentListForAddressChangeData(row, 'pending')">
+                            <span class="click-row" (click)="getStudentListForBasicDetailsChangeData(row, 'pending')">
                                 <span class="click-row-btn bg-primary">{{ row.pending }}</span>
                                 click
                             </span>
                         </td>
                         <td
                             [ngClass]="{'bg-green': 'done' === actionType && selectedRowId === row.degree_programme_type_id}">
-                            <span class="click-row" (click)="getStudentListForAddressChangeData(row, 'done')">
+                            <span class="click-row" (click)="getStudentListForBasicDetailsChangeData(row, 'done')">
                                 <span class="click-row-btn bg-success">{{ row.done }}</span>
                                 click
                             </span>
                         </td>
                         <td
                             [ngClass]="{'bg-green': 'rejected' === actionType && selectedRowId === row.degree_programme_type_id}">
-                            <span class="click-row" (click)="getStudentListForAddressChangeData(row, 'rejected')">
+                            <span class="click-row" (click)="getStudentListForBasicDetailsChangeData(row, 'rejected')">
                                 <span class="click-row-btn bg-secondary">{{ row.rejected }}</span>
                                 click
                             </span>

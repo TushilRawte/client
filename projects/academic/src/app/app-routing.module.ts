@@ -32,6 +32,13 @@ import { GetSrcListComponent } from './student/get-src-list/get-src-list.compone
 import { StudentAddressChangeRequestComponent } from './student/student-address-change-request/student-address-change-request.component';
 import { ApproveUidnComponent } from './student-profile/approve-uidn/approve-uidn.component';
 import { PromoteEvenSemesterComponent } from './student-academic-status/promote-even-semester/promote-even-semester.component';
+import { PdcReportComponent } from './student/pdc-report/pdc-report.component';
+import { PdcGenerateComponent } from './student/pdc-generate/pdc-generate.component';
+import { PdcEsignComponent } from './student/pdc-esign/pdc-esign.component';
+import { TranscriptReportComponent } from './student/transcript-report/transcript-report.component';
+import { TranscriptGenerateComponent } from './student/transcript-generate/transcript-generate.component';
+import { TranscriptEsignComponent } from './student/transcript-esign/transcript-esign.component';
+import { StudentBasicDetailsUpdateComponent } from './student/student-basic-details-update/student-basic-details-update.component';
 
 const routes: Routes = [
   {
@@ -92,7 +99,7 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       {
-        path: 'course-attendance-report',   
+        path: 'course-attendance-report',
         component: CourseAttendanceReportComponent,
         pathMatch: 'full',
       },
@@ -106,43 +113,43 @@ const routes: Routes = [
         component: MarksEntryImportComponent,
         pathMatch: 'full',
       },
-                  {
-        path: 'marks-entry-admin',   
+      {
+        path: 'marks-entry-admin',
         component: MarksEntryAdminComponent,
         pathMatch: 'full',
       },
-       {
-        path: 'marks-entry-unfinalize',   
+      {
+        path: 'marks-entry-unfinalize',
         component: MarksEntryUnfinalizeComponent,
         pathMatch: 'full',
       },
-        {
-        path: 'marks-entry-thesis',   
+      {
+        path: 'marks-entry-thesis',
         component: MarksEntryThesisComponent,
         pathMatch: 'full',
       },
-          {
-        path: 'marks-entry-thesis-unfinalize',   
+      {
+        path: 'marks-entry-thesis-unfinalize',
         component: MarksEntryThesisUnfinalizeComponent,
         pathMatch: 'full',
       },
-         {
-        path: 'marks-entry-export',   
+      {
+        path: 'marks-entry-export',
         component: MarksEntryExportComponent,
         pathMatch: 'full',
       },
       {
-        path: 'genrate-uidn',   
+        path: 'genrate-uidn',
         component: GenerateUidnComponent,
         pathMatch: 'full',
       },
       {
-        path: 'approve-uidn',   
+        path: 'approve-uidn',
         component: ApproveUidnComponent,
         pathMatch: 'full',
       },
       {
-        path: 'src-generate',   
+        path: 'src-generate',
         component: SrcGenerateComponent,
 
       },
@@ -199,6 +206,46 @@ const routes: Routes = [
       {
         path: 'promote-even-sem',
         component: PromoteEvenSemesterComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'pdc-report',
+        component: PdcReportComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'pdc-generate',
+        component: PdcGenerateComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'pdc-esign',
+        component: PdcEsignComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'transcript-report',
+        component: TranscriptReportComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'transcript-generate',
+        component: TranscriptGenerateComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'transcript-esign',
+        component: TranscriptEsignComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'student-address-change-request',
+        component: StudentAddressChangeRequestComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'student-basic-details-update',
+        component: StudentBasicDetailsUpdateComponent,
         pathMatch: 'full',
       },
     ]

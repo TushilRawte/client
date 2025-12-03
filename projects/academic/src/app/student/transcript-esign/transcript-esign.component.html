@@ -1,0 +1,145 @@
+<mat-card>
+    <mat-card-content>
+        <h3 class="fw-bold mb-6 page-title">Transcript E-Sign</h3>
+
+        <form [formGroup]="getSRCDetailsForm">
+            <div class="row">
+
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Session</mat-label>
+                        <mat-select placeholder="Session" formControlName="academic_session_id">
+                            <mat-option *ngFor="let server of state.academicSessionList"
+                                [value]="server.academic_session_id">
+                                {{ server.academic_session_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-9 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Degree Programme</mat-label>
+                        <mat-select placeholder="Degree Programme" formControlName="degree_programme_id">
+                            <mat-option *ngFor="let server of state.degreeProgrammeList"
+                                [value]="server.degree_programme_id">
+                                {{ server.degree_programme_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-8 col-12">
+                    <ng-select placeholder="College Name" formControlName="college_id" appearance="outline">
+                        <ng-container *ngFor="let college of state.collegeList">
+                            <ng-option [value]="college.college_id">
+                                {{ college.college_name_e}}
+                            </ng-option>
+                        </ng-container>
+                    </ng-select>
+                </div>
+                <!-- <div class="col-md-4 col-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>University ID</mat-label>
+                        <input matInput placeholder="Ex. 20210021" formControlName="ue_id">
+                    </mat-form-field>
+                </div> -->
+
+
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex align-items-end gap-4 mt-3">
+                        <button mat-raised-button color="primary" (click)="getStudentList_Btn_click('show')">
+                            Show
+                        </button>
+
+                        <button mat-raised-button color="secondary" (click)="getStudentList_Btn_click('refresh')">
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div *ngIf="getStudentListOptions.listLength" class="mt-3">
+            <form [formGroup]="generateTrascriptFormGroup">
+                <div formArrayName="studentRows">
+                    <app-reporttable [options]="getStudentListOptions">
+                        <ng-template #headerTemplate>
+                            <tr>
+                                <th>SNO.</th>
+                                <th>
+                                    <mat-checkbox [ngModel]="selectAll" (ngModelChange)="onToggleSelectAll($event)"
+                                        [ngModelOptions]="{ standalone: true }">
+                                        Select All
+                                    </mat-checkbox>
+                                </th>
+                                <th>Student Name</th>
+                                <th>Student ID</th>
+                                <th>UE ID</th>
+                                <th>Photo</th>
+                                <th>View Single Transcript </th>
+                                <th>Require for Transcript</th>
+                                <th>E-sign</th>
+                                <th>Delete Transcript</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template #rowTemplate let-row let-i="index">
+                            <tr [formGroupName]="i">
+                                <td>{{i+1}}</td>
+                                <td>
+                                    <input type="checkbox" formControlName="selected" />
+                                </td>
+                                <td>{{ row?.student_name }}</td>
+                                <td>{{row?.student_id}}</td>
+                                <td>{{row?.ue_id}}</td>
+                                <td>
+                                    <div
+                                        style="width: 65px; height: 75px; border: 1px solid #969595; margin-bottom: 2px;">
+                                        <img [src]="file_prefix + row?.student_photo || 'dummy.jpg'" alt="photo"
+                                            style="width: 100%; height: 100%; object-fit: cover;" />
+                                    </div>
+                                </td>
+                                <!-- (click)="getTrascript(row)" -->
+                                <td class="d-print-none">
+                                    <a [href]="file_prefix+ row?.file_path" target="_blank">
+                                        <mat-icon class="text-danger cursor-pointer"
+                                            *ngIf="row.transcript_gen_yn === 'Y'">
+                                            picture_as_pdf
+                                        </mat-icon>
+                                    </a>
+                                    <!-- style="cursor: no-drop;" -->
+                                    <span [innerHTML]="row.transcript_gen_yn === 'Y' ? 'Generated' : 'Pending'"
+                                        [ngClass]="row.transcript_gen_yn === 'Y' ? 'transcript-generated' : 'transcript-pending'">
+                                    </span>
+                                </td>
+                                <td>{{row.trans_required !== '' || row.course_pending !== 0 ? 'Yes' : ''}}</td>
+                                <td>
+                                    {{(
+                                    (row.transcript_gen_yn === 'Y' && row.is_certificate_signed === 'Y')
+                                    ||
+                                    ((!row.transcript_gen_yn || row.transcript_gen_yn === 'N') &&
+                                    (!row.is_certificate_signed || row.is_certificate_signed === 'N'))
+                                    )
+                                    ? ''
+                                    : 'E-sign Pending'}}
+                                </td>
+                                <td>
+                                    <mat-icon class="text-danger cursor-pointer" (click)="deleteTranscript_btn(row)"
+                                        *ngIf="row.transcript_gen_yn === 'Y'">delete</mat-icon>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </app-reporttable>
+                </div>
+            </form>
+        </div>
+
+
+        <div *ngIf="getStudentListOptions.listLength" class="text-center mt-3">
+            <button mat-raised-button color="primary" (click)="esignTrascript_btn()">
+                <span class="m-2">E-Sign</span>
+            </button>
+        </div>
+
+    </mat-card-content>
+</mat-card>
