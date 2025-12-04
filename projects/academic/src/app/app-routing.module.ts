@@ -39,6 +39,7 @@ import { TranscriptReportComponent } from './student/transcript-report/transcrip
 import { TranscriptGenerateComponent } from './student/transcript-generate/transcript-generate.component';
 import { TranscriptEsignComponent } from './student/transcript-esign/transcript-esign.component';
 import { StudentBasicDetailsUpdateComponent } from './student/student-basic-details-update/student-basic-details-update.component';
+import { RegistrationReportComponent } from './registration/registration-report/registration-report.component';
 
 const routes: Routes = [
   {
@@ -246,6 +247,11 @@ const routes: Routes = [
       {
         path: 'student-basic-details-update',
         component: StudentBasicDetailsUpdateComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'registration-report',
+        component: RegistrationReportComponent,
         pathMatch: 'full',
       },
     ]

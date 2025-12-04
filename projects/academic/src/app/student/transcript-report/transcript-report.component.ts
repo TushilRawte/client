@@ -85,7 +85,7 @@ export class TranscriptReportComponent  implements OnInit {
         }
         // Search by session + program + college
         params = {
-          academic_session_id,
+         admission_session: academic_session_id,
           degree_programme_id,
           college_id,
         };

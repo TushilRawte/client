@@ -54,6 +54,7 @@ import { TranscriptGenerateComponent } from './student/transcript-generate/trans
 import { StudentAddressChangeRequestPopupComponent } from './student/student-address-change-request-popup/student-address-change-request-popup.component';
 import { StudentBasicDetailsUpdateComponent } from './student/student-basic-details-update/student-basic-details-update.component';
 import { StudentBasicDetailsUpdatePopupComponent } from './student/student-basic-details-update-popup/student-basic-details-update-popup.component';
+import { RegistrationReportComponent } from './registration/registration-report/registration-report.component';
 
 
 @NgModule({
@@ -104,6 +105,7 @@ import { StudentBasicDetailsUpdatePopupComponent } from './student/student-basic
     StudentAddressChangeRequestPopupComponent,
     StudentBasicDetailsUpdateComponent,
     StudentBasicDetailsUpdatePopupComponent,
+    RegistrationReportComponent,
 
   ],
   imports: [
