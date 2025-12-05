@@ -43,6 +43,7 @@ import { StudentNameCorrectionComponent } from './student/student-name-correctio
 import { StudentPasswordResetComponent } from './student/student-password-reset/student-password-reset.component';
 import { StudentAddressChangeRequestComponent } from './student/student-address-change-request/student-address-change-request.component';
 import { ApproveUidnComponent } from './student-profile/approve-uidn/approve-uidn.component';
+import { AppliedListComponent } from './student/transfer-certificate/applied-list/applied-list.component';
 
 
 @NgModule({
@@ -82,6 +83,7 @@ import { ApproveUidnComponent } from './student-profile/approve-uidn/approve-uid
     StudentPasswordResetComponent,
     StudentAddressChangeRequestComponent,
     ApproveUidnComponent,
+    AppliedListComponent,
 
   ],
   imports: [

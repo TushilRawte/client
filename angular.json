@@ -810,6 +810,7 @@
             ],
         "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
+              "node_modules/@ng-select/ng-select/themes/default.theme.css",
               "./node_modules/bootstrap/scss/bootstrap.scss",
               "projects/shared/assets/style.bundle.css",
               "projects/shared/assets/modified.scss",

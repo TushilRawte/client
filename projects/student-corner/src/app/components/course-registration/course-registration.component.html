@@ -74,14 +74,14 @@
             [class.failed-course-row]="isFailedCourse(row) || row?.course_registration_type_id == 2">
             <td>{{i+1}}</td>
             <td>{{ row?.course_name }}</td>
-            <td>{{ row?.teacher_name }}</td>
+            <td>{{ row?.emp_names }}</td>
             <td>{{ row?.course_type_name_e }}</td>
             <td>{{ row?.credit }}</td>
             <td> {{ row?.cou_allot_type_name_e === 'Complusory' ? 'C' : (row?.cou_allot_type_name_e ===
               'Optional' ? 'O' : '') }}</td>
             <td>
               <button type="button" color="danger" class="btn-remove" [class.failed-course-remove]="isFailedCourse(row)"
-                [disabled]="isFailedCourse(row)  || row.cou_allot_type_name_e === 'Complusory'"
+                [disabled]="isFailedCourse(row)  || (row.cou_allot_type_name_e === 'Complusory' && row?.other_department !== true) "
                 (click)="onCourseRemove(row.course_id,row.course_nature_id)"
                 [title]="isFailedCourse(row) ? 'Failed courses are mandatory and cannot be removed' : 'Remove Course'">
                 <mat-icon>{{ isFailedCourse(row) ? 'lock' : 'close' }}</mat-icon>

@@ -41,9 +41,21 @@ export const moduleMapping: any = {
   studentModule: `${host}:4350`,
 };
 
+
 export const apiPort: any = {
   adminApi: `${host}:3001/adminApi`,
   commonApi: `${host}:3000/commonApi`,
   demoApi: `${host}:3002/demoApi`,
   academicApi: `${host}:3003/academicApi`,
 };
+
+/* for menu updates */
+
+// let host_n = '192.168.1.47';
+
+// export const apiPort: any = {
+//   adminApi: `http://${host_n}:3001/adminApi`,
+//   commonApi: `http://${host_n}:3000/commonApi`,
+//   demoApi: `http://${host_n}:3002/demoApi`,
+//   academicApi: `http://${host_n}:3003/academicApi`,
+// };

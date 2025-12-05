@@ -358,12 +358,28 @@ export class CourseRegistrationComponent {
 
     const alreadyExists = this.selectedCourses.some(
       (sc) =>
-        sc.course_id === selectedCourse.course_id &&
-        sc.course_nature_id === selectedCourse.course_nature_id
+        sc.course_id === selectedCourse.course_id
+
+        /* sc.course_id === selectedCourse.course_id &&
+        sc.course_nature_id === selectedCourse.course_nature_id */
     );
 
+
     if (!alreadyExists) {
-      this.selectedCourses.push(selectedCourse);
+      const updatedCourse = {
+        ...selectedCourse,
+        other_department: true,
+        course_registration_type_id: 1,
+        cou_allot_type_id: 2
+      };
+      this.selectedCourses.push(updatedCourse);
+      console.log(this.selectedCourses);
+      this.tableOptions = {
+        ...this.tableOptions,
+        dataSource: [...this.selectedCourses],
+        listLength: this.selectedCourses.length
+      };
+      
       courseSelect.clearModel();
     } else {
       const snackRef = this.snackBar.open(
@@ -379,13 +395,27 @@ export class CourseRegistrationComponent {
   }
 
   onCourseRemove(courseId: number, courseNatureId: number) {
+    console.log("i am called");
+    
     this.selectedCourses = this.selectedCourses.filter(
       (course) =>
         !(
-          course.course_id === courseId &&
-          course.course_nature_id === courseNatureId
+          course.course_id === courseId
         )
+
+      /* !(
+        course.course_id === courseId &&
+        course.course_nature_id === courseNatureId
+      ) */
     );
+
+    this.tableOptions = {
+      ...this.tableOptions,
+      dataSource: [...this.selectedCourses],
+      listLength: this.selectedCourses.length
+    };
+    console.log("after", this.selectedCourses);
+
   }
 
   isFailedCourse(course: any): boolean {
@@ -479,6 +509,8 @@ export class CourseRegistrationComponent {
         );
       }
     });
+    console.log(payload);
+    
   }
 
   private buildCoursePayload(course: any, course_nature_id: string) {

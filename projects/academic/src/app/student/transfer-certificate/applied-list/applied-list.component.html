@@ -1,0 +1,124 @@
+<mat-card>
+  <mat-card-content>
+
+    <div class="page-heading text-center py-2">
+      <h3 class="m-0 text-white fw-bold">Transfer Applied List</h3>
+    </div>
+
+    <hr />
+
+    <!-- ✅ FILTER FORM (Reactive) -->
+    <form [formGroup]="transappliedFormGroup">
+      <div class="row">
+
+        <div class="col-md-4 col-6">
+          <ng-select
+            [items]="acadmcSession"
+            bindLabel="academic_session_name_e"
+            bindValue="academic_session_id"
+            formControlName="academic_session"
+            appearance="outline"
+            placeholder="Applied Academic Session">
+          </ng-select>
+        </div>
+
+        <div class="col-md-4 col-6">
+          <ng-select
+            [items]="degreeProgramme"
+            bindLabel="degree_programme_name_e"
+            bindValue="degree_programme_id"
+            formControlName="degree_programme"
+            appearance="outline"
+            placeholder="Degree Programme">
+          </ng-select>
+        </div>
+
+        <div class="col-md-4 col-6">
+          <ng-select
+            [items]="college"
+            bindLabel="college_name_e"
+            bindValue="college_id"
+            formControlName="college"
+            appearance="outline"
+            placeholder="College">
+          </ng-select>
+        </div>
+
+      </div>
+    </form>
+
+    <div *ngIf="transappliedFormGroup.valid" class="mt-2 text-end">
+      <button
+        type="button"
+        class="btn btn-success btn-sm text-dark fw-bolder fs-5"
+        (click)="getAppliedListTransferCertificate()">
+        Show List of Students
+      </button>
+    </div>
+
+  </mat-card-content>
+</mat-card>
+
+<!-- ✅ TABLE (NO formGroup HERE ✅) -->
+<div class="table-responsive mt-3" *ngIf="student_list.length > 0">
+
+  <app-reporttable [options]="tableOptions" class="table table-bordered custom-striped">
+
+    <ng-template #headerTemplate>
+      <tr>
+        <th>S.No.</th>
+        <th>Student ID</th>
+        <th>Student Name</th>
+        <th>Father Name</th>
+        <th>Degree Completed Status</th>
+        <th>Behavior</th>
+        <th>Remarks</th>
+        <th></th>
+      </tr>
+    </ng-template>
+
+    <ng-template #rowTemplate let-row let-i="index">
+      <tr>
+
+        <td>{{ i + 1 }}</td>
+        <td>{{ row.student_id }}</td>
+        <td>{{ row.student_name }}</td>
+        <td>{{ row.father_name }}</td>
+
+        <td [ngClass]="{ 'text-danger': row.stu_acad_status_id !== 5 }">
+          {{ row.stu_acad_status_id === 5 ? 'Completed' : 'Not Completed' }}
+        </td>
+
+        <td>
+          <!-- ✅ Row-wise Behavior -->
+          <select
+            [(ngModel)]="row.behavior_id"
+            class="custom-select-style">
+
+            <option *ngFor="let item of behavior" [value]="item.behavior_id">
+                {{ item.behavior_name }}
+            </option>
+            </select>
+            </td>
+            <td>
+                <!-- ✅ Row-wise Remarks -->
+                <input type="text" placeholder="Enter remarks" [(ngModel)]="row.remarks" class="custom-input-style mt-1" />
+            </td>
+            <td>
+                 <button
+    class="btn btn-primary btn-sm"
+    (click)="submitRowWiseData()">
+    Submit
+  </button>
+            </td>
+            </tr>
+            </ng-template>
+
+  </app-reporttable>
+
+</div>
+
+<div *ngIf="isListLoaded && student_list.length === 0"
+     class="alert alert-warning text-center mt-3">
+  No data found.
+</div>

@@ -31,6 +31,7 @@ import { StudentNameCorrectionComponent } from './student/student-name-correctio
 import { GetSrcListComponent } from './student/get-src-list/get-src-list.component';
 import { StudentAddressChangeRequestComponent } from './student/student-address-change-request/student-address-change-request.component';
 import { ApproveUidnComponent } from './student-profile/approve-uidn/approve-uidn.component';
+import { AppliedListComponent } from './student/transfer-certificate/applied-list/applied-list.component';
 
 const routes: Routes = [
   {
@@ -193,6 +194,11 @@ const routes: Routes = [
       {
         path: 'get-src-list',
         component: GetSrcListComponent,
+        pathMatch: 'full',
+      },
+       {
+        path: 'transfer-applied',
+        component: AppliedListComponent,
         pathMatch: 'full',
       },
       // { path: 'student-corner', loadChildren: () => import('./student-corner/student-corner.module').then(m => m.StudentCornerModule) },
