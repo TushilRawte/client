@@ -56,6 +56,8 @@ import { StudentBasicDetailsUpdateComponent } from './student/student-basic-deta
 import { StudentBasicDetailsUpdatePopupComponent } from './student/student-basic-details-update-popup/student-basic-details-update-popup.component';
 import { RegistrationReportComponent } from './registration/registration-report/registration-report.component';
 import { CourseAttendanceFinalizeComponent } from './attendance/course-attendance-finalize/course-attendance-finalize.component';
+import { ExamTimeTableComponent } from './time-table/exam-time-table/exam-time-table.component';
+import { ExamTimeTableReportComponent } from './time-table/exam-time-table-report/exam-time-table-report.component';
 
 
 @NgModule({
@@ -108,6 +110,8 @@ import { CourseAttendanceFinalizeComponent } from './attendance/course-attendanc
     StudentBasicDetailsUpdatePopupComponent,
     RegistrationReportComponent,
     CourseAttendanceFinalizeComponent,
+    ExamTimeTableComponent,
+    ExamTimeTableReportComponent,
 
   ],
   imports: [

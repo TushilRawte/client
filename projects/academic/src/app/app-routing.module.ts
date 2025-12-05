@@ -41,6 +41,8 @@ import { TranscriptGenerateComponent } from './student/transcript-generate/trans
 import { TranscriptReportComponent } from './student/transcript-report/transcript-report.component';
 import { TeacherAllotmentComponent } from './teacher-allotment/teacher-allotment.component';
 import { CourseAttendanceFinalizeComponent } from './attendance/course-attendance-finalize/course-attendance-finalize.component';
+import { ExamTimeTableComponent } from './time-table/exam-time-table/exam-time-table.component';
+import { ExamTimeTableReportComponent } from './time-table/exam-time-table-report/exam-time-table-report.component';
 
 const routes: Routes = [
   {
@@ -105,7 +107,7 @@ const routes: Routes = [
         component: CourseAttendanceReportComponent,
         pathMatch: 'full',
       },
-            {
+      {
         path: 'course-attendance-finalize',
         component: CourseAttendanceFinalizeComponent,
         pathMatch: 'full',
@@ -258,6 +260,16 @@ const routes: Routes = [
       {
         path: 'registration-report',
         component: RegistrationReportComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'exam-time-table',
+        component: ExamTimeTableComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'exam-time-table-report',
+        component: ExamTimeTableReportComponent,
         pathMatch: 'full',
       },
     ]
