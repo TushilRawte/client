@@ -55,6 +55,7 @@ import { StudentAddressChangeRequestPopupComponent } from './student/student-add
 import { StudentBasicDetailsUpdateComponent } from './student/student-basic-details-update/student-basic-details-update.component';
 import { StudentBasicDetailsUpdatePopupComponent } from './student/student-basic-details-update-popup/student-basic-details-update-popup.component';
 import { RegistrationReportComponent } from './registration/registration-report/registration-report.component';
+import { CourseAttendanceFinalizeComponent } from './attendance/course-attendance-finalize/course-attendance-finalize.component';
 
 
 @NgModule({
@@ -106,6 +107,7 @@ import { RegistrationReportComponent } from './registration/registration-report/
     StudentBasicDetailsUpdateComponent,
     StudentBasicDetailsUpdatePopupComponent,
     RegistrationReportComponent,
+    CourseAttendanceFinalizeComponent,
 
   ],
   imports: [
