@@ -1,0 +1,160 @@
+<mat-card>
+    <mat-card-content>
+        <h3 class="fw-bold mb-6 page-title">Exam Time Table</h3>
+
+        <!-- First Form - Top Fields -->
+        <form [formGroup]="TimeTableFiledFormGroup" (ngSubmit)="onSubmitFields()">
+            <div class="row">
+                <div [ngClass]="field.class" *ngFor="let field of fildList">
+                    <!-- <ng-select [placeholder]="field.name" [formControlName]="field.id" appearance="outline"
+                        (change)="onDropdownChange($event, field.name)" class="mt-0 mb-0 p-0 m-0">
+                        <ng-option *ngFor="let opt of getOptions(field.name)" [value]="opt.id">
+                            {{ opt.name }}
+                        </ng-option>
+                    </ng-select> -->
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>{{ field.name }}</mat-label>
+                        <mat-select [placeholder]="field.name" [formControlName]="field.id"
+                            (selectionChange)="onDropdownChange($event, field.name)">
+                            <mat-option *ngFor="let opt of getOptions(field.name)" [value]="opt.id">
+                                {{ opt.name }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <!-- Validation error only if field.required -->
+                    <div *ngIf="field.required &&  
+            TimeTableFiledFormGroup.get(field.id.toString())?.touched &&  
+            TimeTableFiledFormGroup.get(field.id.toString())?.invalid" class="text-danger mt-0 mb-0 p-0 m-0">
+                        {{ field.name }} is required
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button type="submit" mat-raised-button color="primary" class="mt-3"
+                    [disabled]="TimeTableFiledFormGroup.invalid">
+                    Get Details
+                </button>
+            </div>
+        </form>
+
+
+
+        <div class="mt-3" *ngIf="showcourse">
+            <div class="d-flex justify-content-end py-2">
+                <button class="btn btn-secondary" (click)="allEditable ? disableEditForAll() : enableEditForAll()">
+                    {{ allEditable ? 'Disable Edit for All' : 'Enable Edit for All' }}
+                </button>
+
+                <!-- Select All -->
+                <mat-checkbox class="m-2" [(ngModel)]="selectAll" (change)="toggleSelectAll()">Select All</mat-checkbox>
+
+                <!-- Set Time for All -->
+                <div class="d-flex btn align-items-center">
+                    <label class="me-2">Set Time for All:</label>
+                    <select class="form-control" [(ngModel)]="allExamTime" (change)="setTimeForAll()">
+                        <option value="">--Select Time--</option>
+                        <option *ngFor="let val of examShiftTimeList" [ngValue]="val">
+                            {{ val.name }}
+                        </option>
+                    </select>
+                </div>
+                <!-- Set Date for All -->
+                <div class="d-flex btn align-items-center ms-2">
+                    <label class="me-2">Set Date for All:</label>
+                    <input type="date" class="form-control" [(ngModel)]="allExamDate" (change)="setDateForAll()">
+                </div>
+
+            </div>
+
+            <!-- Second Form - Rows Table -->
+            <form [formGroup]="TimeTablerowsFormGroup" (ngSubmit)="onSubmitRows()">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Select</th>
+                            <th>Course Code</th>
+                            <th>Exam Time and Exam Date</th>
+                            <th>Edit / Update</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody formArrayName="rows">
+                        <tr *ngFor="let row of rows.controls; let i = index" [formGroupName]="i">
+                            <td>{{ i + 1 }}</td>
+                            <td>
+                                <mat-checkbox formControlName="select"
+                                    *ngIf="!row.get('timetable_detail_id')?.value"></mat-checkbox>
+                            </td>
+                            <td class="course_name">
+                                {{ row.get('course_name')?.value }}
+                            </td>
+                            <!-- <td>
+                                <select class="form-control" formControlName="exam_shift_time_id">
+                                    <option [ngValue]="null">--Select Time--</option>
+                                    <option *ngFor="let val of examShiftTimeList" [ngValue]="val">
+                                        {{ val.name }}
+                                    </option>
+                                </select>
+                                <input type="date" class="form-control mt-2" formControlName="exam_date" />
+                            </td> -->
+
+                            <td>
+                                <!-- Exam Time Dropdown -->
+                                <select class="form-control" formControlName="exam_shift_time_id">
+                                    <option [ngValue]="null">--Select Time--</option>
+                                    <option *ngFor="let val of examShiftTimeList" [ngValue]="val">
+                                        {{ val.name }}
+                                    </option>
+                                </select>
+                                <div *ngIf="row.get('select')?.value && row.get('exam_shift_time_id')?.touched && row.get('exam_shift_time_id')?.invalid"
+                                    class="text-danger">
+                                    Time is required
+                                </div>
+
+                                <!-- Exam Date Input -->
+                                <input type="date" class="form-control mt-2" formControlName="exam_date" />
+                                <div *ngIf="row.get('select')?.value && row.get('exam_date')?.touched && row.get('exam_date')?.invalid"
+                                    class="text-danger">
+                                    Date is required
+                                </div>
+                            </td>
+
+                            <td>
+                                <ng-container *ngIf="row.get('timetable_detail_id')?.value; else emptyCell">
+                                    <button *ngIf="editIndex !== i" mat-icon-button color="primary" type="button"
+                                        (click)="editRow(row, i)">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+
+                                    <button *ngIf="editIndex === i" class="btn btn-info btn-sm" type="button"
+                                        (click)="updateRow(row, i)">
+                                        <!-- <mat-icon>save</mat-icon> -->
+                                        Update
+                                    </button>
+                                </ng-container>
+                                <ng-template #emptyCell></ng-template>
+                            </td>
+
+                            <td>
+                                <ng-container *ngIf="row.get('timetable_detail_id')?.value; else emptyDelete">
+                                    <button mat-icon-button color="warn" type="button" (click)="removeRow(row, i)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </ng-container>
+                                <ng-template #emptyDelete></ng-template>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-center">
+                    <button type="submit" mat-raised-button color="primary">Save</button>
+                </div>
+            </form>
+
+        </div>
+    </mat-card-content>
+</mat-card>

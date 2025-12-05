@@ -1,0 +1,40 @@
+.attendance-main mat-card-content form div table tbody tr td .button-custom {
+    width: 2.5rem;            // Equal width
+    height: 2.5rem;           // Equal height
+    padding: 0;               // Remove internal padding
+    border-radius: 50%;       // Perfect circle
+    display: flex;            // Center content
+    align-items: center;
+    justify-content: center;
+    // background-color: #0d6efd; // or use Bootstrap's .bg-primary if class is not applied
+    color: white;             // Ensures text is white
+    // cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+// .attendance-main mat-card-content form div table tbody tr td .button-custom mat-icon {
+//     padding-top: 0.9rem;
+// }
+
+.attendance-detail-main {
+    mat-card-content {
+        .finalizeCourse {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            background-color: #e7ebef;
+            padding: 0.2rem;
+
+            span {
+                margin-bottom: 0.2rem;
+            }
+        }
+    }
+}
+
+
+.page-title {
+    color: rgb(3, 101, 69);
+}
+

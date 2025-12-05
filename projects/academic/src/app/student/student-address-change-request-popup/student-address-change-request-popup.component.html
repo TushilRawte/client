@@ -1,0 +1,65 @@
+<div class="card shadow-lg border-0 mb-3">
+    <mat-card class="mt-3">
+        <mat-card-content>
+
+            <div #addressDetailsBlock *ngIf="studentAddressDetailOptions?.dataSource?.length > 0" class="mt-3 mb-3" style="height: fit-content;">
+                <form [formGroup]="addressChangeDetailsForm">
+                    <div formArrayName="addressCorrections">
+                        <app-reporttable [options]="studentAddressDetailOptions">
+                            <ng-template #headerTemplate>
+                                <tr>
+                                    <th>Feild Name</th>
+                                    <th>As per Admission Record</th>
+                                    <th>Correction Suggested by Student</th>
+                                    <th>Correction Required</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template #rowTemplate let-row let-i="index">
+                                <tr [formGroupName]="i">
+                                    <td>{{ toCapitalEachWord(row.title) }}</td>
+                                    <td style="text-align: start !important;">
+                                        <p style="padding: 0; margin: 0">{{ row.actual_address?.toUpperCase() }}
+                                        </p>
+                                        <p style="padding: 0; margin: 0">
+                                            {{row.actual_state_dis_pin?.toUpperCase()}}</p>
+                                        <p style="padding: 0; margin: 0">{{row.actual_country?.toUpperCase()}}
+                                        </p>
+                                    </td>
+                                    <td style="text-align: start !important;">
+                                        <p style="padding: 0; margin: 0">
+                                            {{row.correctionrequired_address?.toUpperCase()}}
+                                        </p>
+                                        <p style="padding: 0; margin: 0">{{row.state_dis_pin?.toUpperCase()}}
+                                        </p>
+                                        <p style="padding: 0; margin: 0">{{row.country?.toUpperCase()}}</p>
+                                    </td>
+                                    <td>
+                                        <select class="form-select" formControlName="correction_status">
+                                            <option value="1">Correction Required</option>
+                                            <option value="2">Correction Not Required</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </app-reporttable>
+                    </div>
+                </form>
+            </div>
+            <div class="text-end mt-3">
+                <button class="btn btn-secondary m-1" (click)="closeDialog()">
+                    Close
+                </button>
+
+                <button class="btn btn-danger m-1"
+                    (click)="onUpdateStudentProfileAddressDetails(studentAddressDetailOptions.dataSource, 'reject')">
+                    Reject
+                </button>
+
+                <button class="btn btn-success m-1"
+                    (click)="onUpdateStudentProfileAddressDetails(studentAddressDetailOptions.dataSource, 'approve')">
+                    Approve & Update
+                </button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

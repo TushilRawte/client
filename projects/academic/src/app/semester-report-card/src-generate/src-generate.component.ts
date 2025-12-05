@@ -77,11 +77,19 @@ getDashboard(){
     if (!res.body.error) {
       if (res.body.data && res.body.data.length > 0) {
         this.dashboardList = res.body.data;
+          this.students.clear();
+         this.studentList = [];
       } else {
         this.alert.alertMessage("No Data Found...!", "", "warning");
+         this.dashboardList = [];
+           this.students.clear();
+          this.studentList = [];
       }
     } else {
       this.alert.alertMessage("Something Went Wrong...!", "", "warning");
+       this.dashboardList = [];
+         this.students.clear();
+         this.studentList = [];
     }
   });
 }
@@ -113,9 +121,13 @@ viewDetails(status: string){
         this.studentList = res.body.data;
          this.loadStudentData(this.studentList);
       } else {
+         this.students.clear();
+         this.studentList = [];
         this.alert.alertMessage("No Data Found...!", "", "warning");
       }
     } else {
+         this.students.clear();
+         this.studentList = [];
       this.alert.alertMessage("Something Went Wrong...!", "", "warning");
     }
   });
@@ -192,6 +204,8 @@ viewDetails(status: string){
   }
 
 insertMan(){
+   const confirmed = confirm("Are you confirm to prepared data for src generation");
+  if (!confirmed) return;
     const formValue = this.srcGenerateFormGroup.value;
   console.log(formValue);
   const params = {

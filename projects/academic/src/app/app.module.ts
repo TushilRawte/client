@@ -37,13 +37,29 @@ import { PaymentSettlementComponent } from './payment-settlement/payment-settlem
 import { FacultyListComponent } from './registration/faculty-list/faculty-list.component';
 import { ResultNotificationComponent } from './marks entry/result-notification/result-notification.component';
 import { StudentCategoryChangeComponent } from './student/student-category-change/student-category-change.component';
-import { GetSrcListComponent } from './student/get-src-list/get-src-list.component';
 import { StudentMobileNumberUpdateComponent } from './student/student-mobile-number-update/student-mobile-number-update.component';
 import { StudentNameCorrectionComponent } from './student/student-name-correction/student-name-correction.component';
 import { StudentPasswordResetComponent } from './student/student-password-reset/student-password-reset.component';
 import { StudentAddressChangeRequestComponent } from './student/student-address-change-request/student-address-change-request.component';
 import { ApproveUidnComponent } from './student-profile/approve-uidn/approve-uidn.component';
 import { AppliedListComponent } from './student/transfer-certificate/applied-list/applied-list.component';
+import { PromoteEvenSemesterComponent } from './student-academic-status/promote-even-semester/promote-even-semester.component';
+import { PdcEsignComponent } from './student/pdc-esign/pdc-esign.component';
+import { PdcGenerateComponent } from './student/pdc-generate/pdc-generate.component';
+import { PdcReportComponent } from './student/pdc-report/pdc-report.component';
+import { SrcReportComponent } from './student/src-report/src-report.component';
+import { TranscriptEsignComponent } from './student/transcript-esign/transcript-esign.component';
+import { TranscriptReportComponent } from './student/transcript-report/transcript-report.component';
+import { TranscriptGenerateComponent } from './student/transcript-generate/transcript-generate.component';
+import { StudentAddressChangeRequestPopupComponent } from './student/student-address-change-request-popup/student-address-change-request-popup.component';
+import { StudentBasicDetailsUpdateComponent } from './student/student-basic-details-update/student-basic-details-update.component';
+import { StudentBasicDetailsUpdatePopupComponent } from './student/student-basic-details-update-popup/student-basic-details-update-popup.component';
+import { RegistrationReportComponent } from './registration/registration-report/registration-report.component';
+import { CourseAttendanceFinalizeComponent } from './attendance/course-attendance-finalize/course-attendance-finalize.component';
+import { ExamTimeTableComponent } from './time-table/exam-time-table/exam-time-table.component';
+import { ExamTimeTableReportComponent } from './time-table/exam-time-table-report/exam-time-table-report.component';
+import { SrcReportByStudentComponent } from './student/src-report-by-student/src-report-by-student.component';
+import { SrcEsignComponent } from './student/src-esign/src-esign.component';
 
 
 @NgModule({
@@ -77,13 +93,29 @@ import { AppliedListComponent } from './student/transfer-certificate/applied-lis
     FacultyListComponent,
     ResultNotificationComponent,
     StudentCategoryChangeComponent,
-    GetSrcListComponent,
     StudentMobileNumberUpdateComponent,
     StudentNameCorrectionComponent,
     StudentPasswordResetComponent,
     StudentAddressChangeRequestComponent,
     ApproveUidnComponent,
     AppliedListComponent,
+    PromoteEvenSemesterComponent,
+    PdcEsignComponent,
+    PdcGenerateComponent,
+    PdcReportComponent,
+    SrcReportComponent,
+    TranscriptEsignComponent,
+    TranscriptReportComponent,
+    TranscriptGenerateComponent,
+    StudentAddressChangeRequestPopupComponent,
+    StudentBasicDetailsUpdateComponent,
+    StudentBasicDetailsUpdatePopupComponent,
+    RegistrationReportComponent,
+    CourseAttendanceFinalizeComponent,
+    ExamTimeTableComponent,
+    ExamTimeTableReportComponent,
+    SrcReportByStudentComponent,
+    SrcEsignComponent,
 
   ],
   imports: [
