@@ -26,7 +26,6 @@ import { PromoteEvenSemesterComponent } from './student-academic-status/promote-
 import { ApproveUidnComponent } from './student-profile/approve-uidn/approve-uidn.component';
 import { GenerateUidnComponent } from './student-profile/generate-uidn/generate-uidn.component';
 import { StudentSectionAllotmentComponent } from './student-section-allotment/student-section-allotment.component';
-import { GetSrcListComponent } from './student/get-src-list/get-src-list.component';
 import { PdcEsignComponent } from './student/pdc-esign/pdc-esign.component';
 import { PdcGenerateComponent } from './student/pdc-generate/pdc-generate.component';
 import { PdcReportComponent } from './student/pdc-report/pdc-report.component';
@@ -43,6 +42,9 @@ import { TeacherAllotmentComponent } from './teacher-allotment/teacher-allotment
 import { CourseAttendanceFinalizeComponent } from './attendance/course-attendance-finalize/course-attendance-finalize.component';
 import { ExamTimeTableComponent } from './time-table/exam-time-table/exam-time-table.component';
 import { ExamTimeTableReportComponent } from './time-table/exam-time-table-report/exam-time-table-report.component';
+import { SrcReportComponent } from './student/src-report/src-report.component';
+import { SrcReportByStudentComponent } from './student/src-report-by-student/src-report-by-student.component';
+import { SrcEsignComponent } from './student/src-esign/src-esign.component';
 
 const routes: Routes = [
   {
@@ -208,8 +210,18 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       {
-        path: 'get-src-list',
-        component: GetSrcListComponent,
+        path: 'src-report',
+        component: SrcReportComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'src-report-by-student',
+        component: SrcReportByStudentComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'src-esign',
+        component: SrcEsignComponent,
         pathMatch: 'full',
       },
       {

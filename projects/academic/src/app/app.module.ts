@@ -37,7 +37,6 @@ import { PaymentSettlementComponent } from './payment-settlement/payment-settlem
 import { FacultyListComponent } from './registration/faculty-list/faculty-list.component';
 import { ResultNotificationComponent } from './marks entry/result-notification/result-notification.component';
 import { StudentCategoryChangeComponent } from './student/student-category-change/student-category-change.component';
-import { GetSrcListComponent } from './student/get-src-list/get-src-list.component';
 import { StudentMobileNumberUpdateComponent } from './student/student-mobile-number-update/student-mobile-number-update.component';
 import { StudentNameCorrectionComponent } from './student/student-name-correction/student-name-correction.component';
 import { StudentPasswordResetComponent } from './student/student-password-reset/student-password-reset.component';
@@ -58,6 +57,8 @@ import { RegistrationReportComponent } from './registration/registration-report/
 import { CourseAttendanceFinalizeComponent } from './attendance/course-attendance-finalize/course-attendance-finalize.component';
 import { ExamTimeTableComponent } from './time-table/exam-time-table/exam-time-table.component';
 import { ExamTimeTableReportComponent } from './time-table/exam-time-table-report/exam-time-table-report.component';
+import { SrcReportByStudentComponent } from './student/src-report-by-student/src-report-by-student.component';
+import { SrcEsignComponent } from './student/src-esign/src-esign.component';
 
 
 @NgModule({
@@ -91,7 +92,6 @@ import { ExamTimeTableReportComponent } from './time-table/exam-time-table-repor
     FacultyListComponent,
     ResultNotificationComponent,
     StudentCategoryChangeComponent,
-    GetSrcListComponent,
     StudentMobileNumberUpdateComponent,
     StudentNameCorrectionComponent,
     StudentPasswordResetComponent,
@@ -112,6 +112,8 @@ import { ExamTimeTableReportComponent } from './time-table/exam-time-table-repor
     CourseAttendanceFinalizeComponent,
     ExamTimeTableComponent,
     ExamTimeTableReportComponent,
+    SrcReportByStudentComponent,
+    SrcEsignComponent,
 
   ],
   imports: [

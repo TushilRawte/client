@@ -1,86 +1,159 @@
 <mat-card>
     <mat-card-content>
-        <h3 class="fw-bold mb-6 page-title">Academic Report - SRC</h3>
+        <h3 class="fw-bold mb-6 page-title">Generate - Semester Report Card</h3>
 
         <form [formGroup]="getSRCDetailsForm">
             <div class="row">
-                <div class="col-md-4 col-6">
-                    <mat-form-field appearance="outline">
-                        <mat-label>UE ID / Student ID</mat-label>
-                        <input matInput placeholder="Ex. 20220021" formControlName="student_id">
+
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Degree Completed Session</mat-label>
+                        <mat-select placeholder="Session" formControlName="academic_session_id">
+                            <mat-option *ngFor="let server of state.academicSessionList"
+                                [value]="server.academic_session_id">
+                                {{ server.academic_session_name_e }}
+                            </mat-option>
+                        </mat-select>
                     </mat-form-field>
                 </div>
-                <div class="col-md-4 col-4">
+
+                <div class="col-md-6 col-6">
+                    <ng-select placeholder="Degree Programme" formControlName="degree_programme_id"
+                        appearance="outline">
+                        <ng-container *ngFor="let dp of state.degreeProgrammeList">
+                            <ng-option [value]="dp.degree_programme_id">
+                                {{ dp.degree_programme_name_e}}
+                            </ng-option>
+                        </ng-container>
+                    </ng-select>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Year</mat-label>
+                        <mat-select placeholder="Year" formControlName="course_year_id">
+                            <mat-option *ngFor="let courseYear of state.getCourseYear"
+                                [value]="courseYear.course_year_id">
+                                {{ courseYear.course_year_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Semester</mat-label>
+                        <mat-select placeholder="Semester" formControlName="semester_id">
+                            <mat-option *ngFor="let semester of state.semesterList" [value]="semester.semester_id">
+                                {{ semester.semester_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6 col-12">
+                    <ng-select placeholder="College Name" formControlName="college_id" appearance="outline">
+                        <ng-container *ngFor="let college of state.collegeList">
+                            <ng-option [value]="college.college_id">
+                                {{ college.college_name_e}}
+                            </ng-option>
+                        </ng-container>
+                    </ng-select>
+                </div>
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Exam Type</mat-label>
+                        <mat-select placeholder="Exam Type" formControlName="exam_type_id">
+                            <mat-option *ngFor="let examType of state.examTypeList" [value]="examType.exam_type_id">
+                                {{ examType.exam_type_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>University ID</mat-label>
+                        <input matInput placeholder="Ex. 20210021" formControlName="ue_id">
+                    </mat-form-field>
+                </div>
+
+                <div class="d-flex justify-content-center">
                     <div class="d-flex align-items-end gap-4 mt-3">
-                        <button mat-raised-button color="primary" (click)="getStudentDetails_Btn_click('show')">
+                        <button mat-raised-button color="primary" (click)="getStudentListForSRC_Btn_click('show')">
                             Show
                         </button>
 
-                        <button mat-raised-button color="secondary" (click)="getStudentDetails_Btn_click('refresh')">
+                        <button mat-raised-button color="secondary" (click)="getStudentListForSRC_Btn_click('refresh')">
                             Refresh
                         </button>
                     </div>
                 </div>
             </div>
         </form>
-        <div *ngIf="getSRCDetailsOptions.listLength">
-            <app-reporttable [options]="getSRCDetailsOptions">
-                <ng-template #headerTemplate>
-                    <tr>
-                        <th>Addmission Session</th>
-                        <th>Degree Programme</th>
-                        <th>Name</th>
-                        <th>UE ID</th>
-                        <th></th>
-                    </tr>
-                </ng-template>
-                <ng-template #rowTemplate let-row let-i="index">
-                    <tr>
-                        <td>{{ row?.academic_session_name_e }}</td>
-                        <td>{{ row?.degree_name_e }}</td>
-                        <td>{{row?.name}}</td>
-                        <td>{{row?.ue_id}}</td>
-                        <td class="d-print-none cursor-pointer">
-                            <button mat-raised-button color="primary" (click)="getSRCList_btn(row)">
-                                Get Details
-                            </button>
-                        </td>
-                    </tr>
-                </ng-template>
-            </app-reporttable>
+
+        <div *ngIf="getStudentListOptions.listLength">
+            <form [formGroup]="generateSRCFormGroup">
+                <div formArrayName="studentRows">
+                    <app-reporttable [options]="getStudentListOptions">
+                        <ng-template #headerTemplate>
+                            <tr>
+                                <th>SNO.</th>
+                                <th>
+                                    <mat-checkbox [ngModel]="selectAll" (ngModelChange)="onToggleSelectAll($event)"
+                                        [ngModelOptions]="{ standalone: true }">
+                                        Select All
+                                    </mat-checkbox>
+                                </th>
+                                <th>Student Name</th>
+                                <th>Student ID</th>
+                                <th>UE ID</th>
+                                <th>Photo</th>
+                                <th>View Single SRC</th>
+                                <th>Delete SRC</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template #rowTemplate let-row let-i="index">
+                            <tr [formGroupName]="i">
+                                <td>{{i+1}}</td>
+                                <td>
+                                    <input type="checkbox" formControlName="selected" />
+                                </td>
+                                <td>{{ row?.student_name }}</td>
+                                <td>{{row?.student_id}}</td>
+                                <td>{{row?.ue_id}}</td>
+                                <td>
+                                    <div
+                                        style="width: 65px; height: 75px; border: 1px solid #969595; margin-bottom: 2px;">
+                                        <img [src]="file_prefix + row?.student_photo_path || 'dummy.jpg'" alt="photo"
+                                            style="width: 100%; height: 100%; object-fit: cover;" />
+                                    </div>
+                                </td>
+                                <td class="">
+                                    <!-- <a [href]="file_prefix+ row?.file_path" target="_blank">
+                                        <mat-icon class="text-danger cursor-pointer d-print-none">
+                                            picture_as_pdf
+                                        </mat-icon>
+                                    </a> -->
+                                    <mat-icon class="text-danger cursor-pointer d-print-none" (click)="getSRC(row)">
+                                        picture_as_pdf
+                                    </mat-icon>
+                                </td>
+                                <td>
+                                    <mat-icon class="text-danger cursor-pointer"
+                                        (click)="deleteSRC_btn(row)">delete</mat-icon>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </app-reporttable>
+                </div>
+            </form>
         </div>
 
 
-        <div class="mt-3" *ngIf="getSRCListOptions.listLength">
-            <app-reporttable [options]="getSRCListOptions">
-                <ng-template #headerTemplate>
-                    <tr>
-                        <th>Addmission Session</th>
-                        <th>Year /Semester</th>
-                        <th>Exam Type</th>
-                        <th>SRC's</th>
-                    </tr>
-                </ng-template>
-                <ng-template #rowTemplate let-row>
-                    <tr>
-                        <td>{{ row.academic_session_name_e }}</td>
-                        <td>{{ row.course_year_name_e }} {{row.semester_name_e}}</td>
-                        <td>{{row.exam_type_name_e}}</td>
-                        <td class="d-print-none cursor-pointer" (click)="getSRC(row)">
-                            <mat-icon class="text-danger">
-                                picture_as_pdf
-                            </mat-icon>
-                        </td>
-                    </tr>
-                </ng-template>
-            </app-reporttable>
-        </div>
-
-
-        <div *ngIf="getSRCListOptions.listLength" class="text-center mt-3">
-            <button mat-raised-button color="primary" (click)="downloadAllSRC_btn()">
-                <span class="m-2">Download All</span>
-                <mat-icon>arrow_downward</mat-icon>
+        <div *ngIf="getStudentListOptions.listLength" class="text-center mt-3">
+            <button mat-raised-button color="primary" (click)="generateSRC_btn()">
+                <span class="m-2">Generate SRC</span>
             </button>
         </div>
 
