@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AlertService, HttpService, PrintService } from 'shared';
+import { AlertService, HttpService, LoaderService, PrintService } from 'shared';
 
 @Component({
   selector: 'app-exam-time-table',
@@ -61,7 +61,8 @@ export class ExamTimeTableComponent {
     private alert: AlertService,
     private dialog: MatDialog,
     public print: PrintService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private loaderService: LoaderService
   ) { }
   ngOnInit() {
     this.getExamTypeData();
@@ -432,6 +433,7 @@ export class ExamTimeTableComponent {
   };
   // optimize..
   onSubmitFields() {
+    this.loaderService.show();
     this.examShiftTimeData();
 
     const rawData = this.TimeTableFiledFormGroup.value;
@@ -529,8 +531,8 @@ export class ExamTimeTableComponent {
           };
         });
         // console.timeEnd("⏱️ Build Rows Loop");
+        this.loaderService.hide();
       });
-
   }
 
   onDropdownChange(event: any, fieldName: string) {
