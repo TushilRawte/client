@@ -58,7 +58,7 @@ const routes: Routes = [
         title: 'Page Not Found',
       },
       {
-        path: 'new',
+        path: 'course-allotment-dashboard',
         component: CourseDashboardComponent,
         pathMatch: 'full',
       },
