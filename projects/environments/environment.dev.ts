@@ -47,6 +47,10 @@ export const apiPort: any = {
   commonApi: `${host}:3000/commonApi`,
   demoApi: `${host}:3002/demoApi`,
   academicApi: `${host}:3003/academicApi`,
+  recruitementApi: `${host}:3500/recruitementApi`,
+
+  fileUrl: `${host}:3003`,
+  esignApi: `${host}:8080/`
 };
 
 /* for menu updates */
