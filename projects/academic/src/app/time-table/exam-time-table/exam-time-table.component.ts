@@ -476,63 +476,68 @@ export class ExamTimeTableComponent {
         } else {
           this.showcourse = true;
         }
-        // ✅ Sort the data: move records with timetable_detail_id to the bottom
-        apidata = apidata.sort((a: any, b: any) => {
-          const hasA = !!a.timetable_detail_id;
-          const hasB = !!b.timetable_detail_id;
-          return Number(hasA) - Number(hasB); // false (0) comes before true (1)
-        });
 
-        // Use Map for O(1) lookup
-        const shiftMap = new Map(this.examShiftTimeList.map((s: any) => [s.id, s]));
-
-        // Clear rows once
-        const rowsArray = this.TimeTablerowsFormGroup.get('rows') as FormArray;
-        rowsArray.clear();
-
-        // console.time("⏱️ Build Rows Loop");
-        // Build normalized list + patch rows in a single loop
-        this.getcourseListForTimeTable = apidata.map((item: any) => {
-          const shiftObj = shiftMap.get(item.exam_shift_time_id) || null;
-
-          // console.log("shiftObj ===??==??: ", shiftObj);
-
-          const row = this.fb.group({
-            select: [!item.timetable_detail_id],
-            course_id: [item.course_id],
-            course_name: [item.course_name],
-            exam_date: [{ value: this.formatDate(item.exam_date), disabled: item.timetable_detail_id }, Validators.required],
-            exam_shift_time_id: [{ value: shiftObj, disabled: item.timetable_detail_id }, Validators.required],
-            course_nature_id: [item.course_nature_id || null],
-            // dean_committee_id: [item.dean_committee_id || null],
-            is_finalize_yn: ['N'],
-            editable: [item.timetable_detail_id],
-            timetable_main_id: item.timetable_main_id,
-            timetable_detail_id: item.timetable_detail_id
-          });
-          rowsArray.push(row);
-
-          return {
-            course_year_id: item.course_year_id,
-            course_name: item.course_name,
-            course_id: item.course_id,
-            select: !!item.timetable_detail_id,
-            course_code: item.course_code,
-            academic_session_id: item.academic_session_id,
-            degree_programme_id: item.degree_programme_id,
-            semester_id: item.semester_id,
-            exam_type_id: item.exam_type_id,
-            exam_date: item.exam_date || null,
-            exam_shift_time_id: item.exam_shift_time_id || null,
-            course_nature_id: item.course_nature_id || null,
-            // dean_committee_id: item.dean_committee_id || null,
-            timetable_main_id: item.timetable_main_id,
-            timetable_detail_id: item.timetable_detail_id || null
-          };
-        });
+        this.loadTableData(apidata);
         // console.timeEnd("⏱️ Build Rows Loop");
-        this.loaderService.hide();
       });
+    this.loaderService.hide();
+  }
+
+  loadTableData(apidata: any[]) {
+    // ✅ Sort the data: move records with timetable_detail_id to the bottom
+    // apidata = apidata.sort((a: any, b: any) => {
+    //   const hasA = !!a.timetable_detail_id;
+    //   const hasB = !!b.timetable_detail_id;
+    //   return Number(hasA) - Number(hasB); // false (0) comes before true (1)
+    // });
+
+    // Use Map for O(1) lookup
+    const shiftMap = new Map(this.examShiftTimeList.map((s: any) => [s.id, s]));
+
+    // Clear rows once
+    const rowsArray = this.TimeTablerowsFormGroup.get('rows') as FormArray;
+    rowsArray.clear();
+
+    // console.time("⏱️ Build Rows Loop");
+    // Build normalized list + patch rows in a single loop
+    this.getcourseListForTimeTable = apidata.map((item: any) => {
+      const shiftObj = shiftMap.get(item.exam_shift_time_id) || null;
+
+      // console.log("shiftObj ===??==??: ", shiftObj);
+
+      const row = this.fb.group({
+        select: [!item.timetable_detail_id],
+        course_id: [item.course_id],
+        course_name: [item.course_name],
+        exam_date: [{ value: this.formatDate(item.exam_date), disabled: item.timetable_detail_id }, Validators.required],
+        exam_shift_time_id: [{ value: shiftObj, disabled: item.timetable_detail_id }, Validators.required],
+        course_nature_id: [item.course_nature_id || null],
+        // dean_committee_id: [item.dean_committee_id || null],
+        is_finalize_yn: ['N'],
+        editable: [item.timetable_detail_id],
+        timetable_main_id: item.timetable_main_id,
+        timetable_detail_id: item.timetable_detail_id
+      });
+      rowsArray.push(row);
+
+      return {
+        course_year_id: item.course_year_id,
+        course_name: item.course_name,
+        course_id: item.course_id,
+        select: !!item.timetable_detail_id,
+        course_code: item.course_code,
+        academic_session_id: item.academic_session_id,
+        degree_programme_id: item.degree_programme_id,
+        semester_id: item.semester_id,
+        exam_type_id: item.exam_type_id,
+        exam_date: item.exam_date || null,
+        exam_shift_time_id: item.exam_shift_time_id || null,
+        course_nature_id: item.course_nature_id || null,
+        // dean_committee_id: item.dean_committee_id || null,
+        timetable_main_id: item.timetable_main_id,
+        timetable_detail_id: item.timetable_detail_id || null
+      };
+    });
   }
 
   onDropdownChange(event: any, fieldName: string) {
