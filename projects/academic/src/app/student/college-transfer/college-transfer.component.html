@@ -91,8 +91,8 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr *ngFor="let row of getStudentListOptions.dataSource; let i = index">
+                        <tbody formArrayName="rows">
+                            <tr *ngFor="let row of getStudentListOptions.dataSource; let i = index" [formGroupName]="i">
                                 <td>{{i+1}}</td>
                                 <td>{{ row?.student_name }}</td>
                                 <td>{{row?.student_id}}</td>
@@ -119,7 +119,7 @@
                                         formControlName="university_transfer_order_no" />
                                 </td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm px-2 py-1" (click)="transfer_btn(row)">
+                                    <button class="btn btn-primary btn-sm px-2 py-1" (click)="transfer_btn(row, i)">
                                         Transfer
                                     </button>
                                 </td>
@@ -129,5 +129,6 @@
                 </form>
             </div>
         </div>
+
     </mat-card-content>
 </mat-card>

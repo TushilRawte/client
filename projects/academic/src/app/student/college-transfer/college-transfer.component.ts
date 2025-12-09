@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { environment } from 'environment';
 import { AlertService, HttpService, PrintService } from 'shared';
 
@@ -22,6 +22,7 @@ export class CollegeTransferComponent implements OnInit {
     getCourseYear: [] as any,
   }
   generateColllegeTransferFormGroup!: FormGroup;
+  rowsFormArray!: FormArray;
 
   constructor(
     private http: HttpService,
@@ -66,9 +67,9 @@ export class CollegeTransferComponent implements OnInit {
       university_order_ref_no: ['']
     });
 
+    this.rowsFormArray = this.fb.array([]);
     this.generateColllegeTransferFormGroup = this.fb.group({
-      new_college_id: [''],
-      university_transfer_order_no: [''],
+      rows: this.rowsFormArray
     });
   }
 
@@ -110,7 +111,20 @@ export class CollegeTransferComponent implements OnInit {
               let data = result?.body?.data || [];
               this.getStudentListOptions.dataSource = data;
               this.getStudentListOptions.listLength = data.length;
+
+              // reset formArray
+              this.rowsFormArray.clear();
+
+              data.forEach((row: any) => {
+                this.rowsFormArray.push(
+                  this.fb.group({
+                    new_college_id: [''],
+                    university_transfer_order_no: ['']
+                  })
+                );
+              });
             }
+
           },
           (error) => {
             console.error('Error in getStudentListForCollegeTransfer:', error);
@@ -120,9 +134,10 @@ export class CollegeTransferComponent implements OnInit {
     }
   }
 
-  transfer_btn(row: any) {
+  transfer_btn(row: any, index: number) {
+    const rowForm = this.rowsFormArray.at(index) as FormGroup;
+    let { new_college_id, university_transfer_order_no } = rowForm.value;
     let { academic_session_id, degree_programme_id, college_id, course_year_id, semester_id } = this.getCollegeTransferDetailsForm.value
-    let { new_college_id, university_transfer_order_no } = this.generateColllegeTransferFormGroup.value;
     if (!new_college_id) {
       return this.alert.alertMessage("All Fields are Required", "Please Select Transfered College Name.", "warning");
     }
@@ -163,7 +178,7 @@ export class CollegeTransferComponent implements OnInit {
           }
           setTimeout(() => {
             this.getStudentListForSRC_Btn_click('show'); //^ reload page
-          }, 2000);
+          }, 5000);
         },
         (error) => {
           console.error('Error in studentCollegeTransfer:', error);
