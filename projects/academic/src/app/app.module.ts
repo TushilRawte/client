@@ -60,6 +60,7 @@ import { ExamTimeTableComponent } from './time-table/exam-time-table/exam-time-t
 import { ExamTimeTableReportComponent } from './time-table/exam-time-table-report/exam-time-table-report.component';
 import { SrcReportByStudentComponent } from './student/src-report-by-student/src-report-by-student.component';
 import { SrcEsignComponent } from './student/src-esign/src-esign.component';
+import { GeneratedListComponent } from './student/transfer-certificate/applied-list/generated-list/generated-list.component';
 
 
 @NgModule({
@@ -116,6 +117,7 @@ import { SrcEsignComponent } from './student/src-esign/src-esign.component';
     ExamTimeTableReportComponent,
     SrcReportByStudentComponent,
     SrcEsignComponent,
+    GeneratedListComponent,
 
   ],
   imports: [

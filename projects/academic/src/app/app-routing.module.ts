@@ -66,9 +66,6 @@ const routes: Routes = [
         path: 'course-allotment',
         component: CourseAllotmentComponent,
         pathMatch: 'full',
-        children: [
-
-        ]
       },
       {
         path: 'coursealt-dash',
@@ -261,11 +258,6 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       {
-        path: 'student-address-change-request',
-        component: StudentAddressChangeRequestComponent,
-        pathMatch: 'full',
-      },
-      {
         path: 'student-basic-details-update',
         component: StudentBasicDetailsUpdateComponent,
         pathMatch: 'full',
@@ -283,6 +275,11 @@ const routes: Routes = [
       {
         path: 'exam-time-table-report',
         component: ExamTimeTableReportComponent,
+        pathMatch: 'full',
+      },
+       {
+        path: 'transfer-applied-list',
+        component: AppliedListComponent,
         pathMatch: 'full',
       },
       // { path: 'student-corner', loadChildren: () => import('./student-corner/student-corner.module').then(m => m.StudentCornerModule) },
