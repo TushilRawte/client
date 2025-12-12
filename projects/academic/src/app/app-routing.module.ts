@@ -46,6 +46,8 @@ import { SrcReportComponent } from './student/src-report/src-report.component';
 import { SrcReportByStudentComponent } from './student/src-report-by-student/src-report-by-student.component';
 import { SrcEsignComponent } from './student/src-esign/src-esign.component';
 import { AppliedListComponent } from './student/transfer-certificate/applied-list/applied-list.component';
+import { CollegeTransferComponent } from './student/college-transfer/college-transfer.component';
+import { CollegeTransferReportComponent } from './student/college-transfer-report/college-transfer-report.component';
 
 const routes: Routes = [
   {
@@ -58,7 +60,7 @@ const routes: Routes = [
         title: 'Page Not Found',
       },
       {
-        path: 'new',
+        path: 'course-allotment-dashboard',
         component: CourseDashboardComponent,
         pathMatch: 'full',
       },
@@ -280,6 +282,16 @@ const routes: Routes = [
        {
         path: 'transfer-applied-list',
         component: AppliedListComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'college-transfer',
+        component: CollegeTransferComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'college-transfer-report',
+        component: CollegeTransferReportComponent,
         pathMatch: 'full',
       },
       // { path: 'student-corner', loadChildren: () => import('./student-corner/student-corner.module').then(m => m.StudentCornerModule) },

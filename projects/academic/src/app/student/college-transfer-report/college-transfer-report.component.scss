@@ -1,0 +1,43 @@
+.pdc-generated {
+  color: green;
+  font-weight: 600;
+}
+
+.pdc-pending {
+  color: red;
+  font-weight: 600;
+}
+
+
+.page-title {
+  // color: rgb(54, 3, 101);
+  color: rgb(3, 101, 69);
+}
+
+table tbody tr td{
+  padding: 3px !important;
+}
+
+table tbody tr td .button-custom {
+  padding: 0.1rem;
+  // padding-left: 0.2rem;
+  border-radius: 50px;
+}
+
+table tbody tr td .button-custom mat-icon {
+  padding-top: 0.1rem;
+}
+
+/* Limit select width */
+.college-select {
+  width: 180px;          /* adjust as needed */
+  max-width: 200px;
+  white-space: normal;   /* allow text wrap inside options */
+  overflow-wrap: break-word;
+}
+
+/* Style inside table cells */
+table tbody tr td select.college-select {
+  padding: 4px;
+  font-size: 14px;
+}
