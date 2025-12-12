@@ -119,6 +119,9 @@ import { CollegeTransferReportComponent } from './student/college-transfer-repor
     ExamTimeTableReportComponent,
     SrcReportByStudentComponent,
     SrcEsignComponent,
+    GeneratedListComponent,
+    CollegeTransferComponent,
+    CollegeTransferReportComponent,
 
   ],
   imports: [
