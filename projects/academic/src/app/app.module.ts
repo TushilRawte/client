@@ -60,6 +60,7 @@ import { ExamTimeTableComponent } from './time-table/exam-time-table/exam-time-t
 import { ExamTimeTableReportComponent } from './time-table/exam-time-table-report/exam-time-table-report.component';
 import { SrcReportByStudentComponent } from './student/src-report-by-student/src-report-by-student.component';
 import { SrcEsignComponent } from './student/src-esign/src-esign.component';
+import { GeneratedListComponent } from './student/transfer-certificate/applied-list/generated-list/generated-list.component';
 import { CollegeTransferComponent } from './student/college-transfer/college-transfer.component';
 import { CollegeTransferReportComponent } from './student/college-transfer-report/college-transfer-report.component';
 
@@ -118,6 +119,7 @@ import { CollegeTransferReportComponent } from './student/college-transfer-repor
     ExamTimeTableReportComponent,
     SrcReportByStudentComponent,
     SrcEsignComponent,
+    GeneratedListComponent,
     CollegeTransferComponent,
     CollegeTransferReportComponent,
 

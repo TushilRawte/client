@@ -1,16 +1,17 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup,Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpService } from 'shared';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-applied-list',
   standalone: false,
   templateUrl: './applied-list.component.html',
-  styleUrl: './applied-list.component.scss'
+  styleUrl: './applied-list.component.scss',
 })
 export class AppliedListComponent {
-
- transappliedFormGroup!: FormGroup;
+  transappliedFormGroup!: FormGroup;
 
   acadmcSession: any[] = [];
   college: any[] = [];
@@ -18,9 +19,15 @@ export class AppliedListComponent {
   behavior: any[] = [];
 
   student_list: any[] = [];
-  isListLoaded = false;
+  selected_student_list: any[] = [];
+  isListLoaded: boolean = false;
+  isListData: boolean = true;
+  isUe_idData: boolean = true;
+  showApplied!: boolean ;
+  showApprGenr!: boolean ;
 
   constructor(
+    private snackBar: MatSnackBar,
     private HTTP: HttpService,
     private fb: FormBuilder
   ) {}
@@ -34,7 +41,7 @@ export class AppliedListComponent {
     page: 0,
     pageSize: 20,
     is_pagination: false,
-    title: 'Transfer Applied List'
+    title: 'Transfer Applied List',
   };
 
   ngOnInit() {
@@ -49,29 +56,36 @@ export class AppliedListComponent {
     this.transappliedFormGroup = this.fb.group({
       academic_session: [null, Validators.required],
       degree_programme: [null, Validators.required],
-      college: [null, Validators.required]
+      college: [null, Validators.required],
     });
   }
 
   getAcademicSession() {
-    this.HTTP.getParam('/master/get/getAcademicSession1', {}, 'academic')
-      .subscribe((res: any) => {
-        this.acadmcSession = res?.body?.data || [];
-      });
+    this.HTTP.getParam(
+      '/master/get/getAcademicSession1',
+      {},
+      'academic'
+    ).subscribe((res: any) => {
+      this.acadmcSession = res?.body?.data || [];
+    });
   }
 
   getDegreeProgramme() {
-    this.HTTP.getParam('/master/get/getDegreePrograamList', {}, 'academic')
-      .subscribe((res: any) => {
-        this.degreeProgramme = res?.body?.data || [];
-      });
+    this.HTTP.getParam(
+      '/master/get/getDegreePrograamList',
+      {},
+      'academic'
+    ).subscribe((res: any) => {
+      this.degreeProgramme = res?.body?.data || [];
+    });
   }
 
   getCollege() {
-    this.HTTP.getParam('/master/get/getCollegeList1', {}, 'academic')
-      .subscribe((res: any) => {
+    this.HTTP.getParam('/master/get/getCollegeList1', {}, 'academic').subscribe(
+      (res: any) => {
         this.college = res?.body?.data || [];
-      });
+      }
+    );
   }
 
   getBehavior() {
@@ -80,33 +94,50 @@ export class AppliedListComponent {
       { behavior_id: 'Very Good', behavior_name: 'Very Good' },
       { behavior_id: 'Good', behavior_name: 'Good' },
       { behavior_id: 'Favorable', behavior_name: 'Favorable' },
-      { behavior_id: 'Bad', behavior_name: 'Bad' }
+      { behavior_id: 'Bad', behavior_name: 'Bad' },
     ];
   }
 
-  getAppliedListTransferCertificate() {
-    if (this.transappliedFormGroup.invalid) return;
-
+  getAppliedListTransferCertificate(appr_gen:string,ue_id?: number) {
     const formValue = this.transappliedFormGroup.value;
+    let is_approved ,is_generated;
+    if(appr_gen === 'Y'){
+      is_approved = 1;
+      is_generated = 1;
+      this.showApplied = true;
+      this.showApprGenr = false;
+    }else{
+      is_approved = 0;
+      is_generated = 0;
+      this.showApprGenr = true;
+      this.showApprGenr = true;
+    }
 
-    const params = {
-      academic_session_id: formValue.academic_session,
-      degree_programme_id: formValue.degree_programme,
-      college_id: formValue.college
+    const params: any = {
+      academic_session_id: formValue?.academic_session,
+      degree_programme_id: formValue?.degree_programme,
+      college_id: formValue?.college,
+      is_approved: is_approved,
+      is_generated: is_generated,
+       ...(ue_id != null && { ue_id: Number(ue_id) }),
     };
 
     this.HTTP.getParam(
       '/course/get/getAppliedListTransferCertificate',
       params,
       'academic'
-    ).subscribe((res: any) => {
+    ).subscribe((result: any) => {
+      console.log('result', result.body);
 
-      // ✅ ADD ROW-WISE FIELDS
-      this.student_list = (res?.body?.data || []).map((row: any) => ({
-        ...row,
-        behavior_id: null,
-        remarks: ''
-      }));
+      //  this.student_list = !result.body.error ? result.body.data : [];
+      this.student_list = !result.body.error
+        ? result.body.data.map((row: any) => ({
+            ...row,
+            isEditing: !(row.behavior && row.remark),
+            isUpdated: !!(row.behavior && row.remark),
+            isChecked: false
+          }))
+        : [];
 
       this.tableOptions.dataSource = this.student_list;
       this.tableOptions.listLength = this.student_list.length;
@@ -114,24 +145,80 @@ export class AppliedListComponent {
     });
   }
 
-  // ✅ Final payload (row-wise behavior + remarks)
- submitRowWiseData() {
-
-  // ✅ Create payload (row-wise)
-  const payload = this.student_list
-    .filter(row => row.behavior_id || row.remarks) // optional filter
-    .map(row => ({
-      student_id: row.student_id,
-      behavior_id: row.behavior_id,
-      remarks: row.remarks
-    }));
-
-  if (payload.length === 0) {
-    alert('Please select behavior or enter remarks for at least one student.');
-    return;
+  /* ^^ */
+  getStudentByUE_ID() {
+    this.isListData = false;
+    this.student_list = []
   }
-  console.log('Submitting payload:', payload);
+  enableEdit(row: any) {
+    row.isEditing = true;
+  }
+  getStudentByList() {
+    this.isListData = true;
+    this.student_list = []
+  }
+
+  onAcademicChange(selectedValue: any) {
+    this.isUe_idData = false;
+  }
+
+
+hasAtLeastOneChecked(): boolean {
+  return this.student_list?.some(row => row.isChecked === true);
 }
 
 
+onRowCheck(row: any, event: any) {
+  row.isChecked = event.checked;
+  this.selected_student_list.push(row);
+}
+
+
+  updateRemarkBehavior(row: any) {
+
+    if (!row.behavior || !row.remark) {
+      this.snackBar.open('Please fill Remark and Behavior', 'Close', { duration: 3000 });
+      return;
+    }
+
+    const payload = {
+      student_id: row.student_id,
+      behavior_id: row.behavior,
+      remark: row.remark,
+    };
+
+    this.HTTP.putData(
+      '/course/update/updateRemarkBehaviorTransferCertificate',
+      payload,
+      'academic'
+    ).subscribe((res: any) => {
+
+      if (!res.body?.error) {
+        row.isEditing = false;
+        row.isUpdated = true;   // ✅ ENABLE CHECKBOX
+        Swal.fire('Updated!', 'Successfully saved', 'success');
+      }
+
+    });
+  }
+
+
+  approved_generate() {
+    const payload = this.selected_student_list
+    console.log(this.selected_student_list);
+     this.HTTP.putData(
+      '/course/update/approveGenerateTransferCertificate',
+      payload,
+      'academic'
+    ).subscribe((res: any) => { 
+       
+    if (res.body?.error) {
+      Swal.fire('Error', res.body.error, 'error');
+    } else {
+      Swal.fire('Approve & Generate!', 'Successfully saved', 'success');
+      this.getAppliedListTransferCertificate('N');
+    }
+       
+    })
+  }
 }

@@ -38,7 +38,7 @@ export const moduleMapping: any = {
   recruitmentModule: `${host}:4330`,
   academicModule: `${host}:4310`,
   admissionModule: `${host}:4320`,
-  studentModule: `${host}:4350`,
+  studentCornerModule: `${host}:4380`,
 };
 
 
