@@ -1,0 +1,196 @@
+<div class="container-fluid p-4">
+
+  <!-- Header -->
+  <div class="card-header mb-3"
+       style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              color: white; padding: 20px;">
+    <h4 style="margin: 0; font-weight: 600;">
+      <i class="material-icons"
+         style="vertical-align: middle; margin-right: 8px;">
+      </i>
+      Applied Students Dashboard
+    </h4>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="dashboardForm" class="row">
+
+    <!-- Academic Session -->
+    <div class="col-md-4 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Academic Session</mat-label>
+        <mat-select formControlName="academicSession">
+          <mat-option *ngFor="let s of academicSessions"
+                      [value]="s.academic_session_id">
+            {{ s.academic_session_name_e }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Semester -->
+    <div class="col-md-4 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Semester</mat-label>
+        <mat-select formControlName="semester">
+          <mat-option *ngFor="let sem of semesterList"
+                      [value]="sem.semester_id">
+            {{ sem.semester_name_e }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Valuation Type -->
+    <div class="col-md-4 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Valuation Type</mat-label>
+        <mat-select formControlName="valuationType">
+          <mat-option *ngFor="let v of valuationTypes"
+                      [value]="v.valuation_type_id">
+            {{ v.valuation_type_name_e }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Action Button -->
+    <div class="col-12 text-end mt-2">
+      <button mat-raised-button
+              color="primary"
+              type="button"
+              (click)="getDetails()"
+              [disabled]="dashboardForm.invalid">
+        Get Details
+      </button>
+    </div>
+
+  </form>
+
+<!-- Date Filter Card -->
+<div class="card mt-4 shadow-sm"
+     *ngIf="valuationData.length > 0">
+
+<div class="card-header d-flex align-items-center"
+     style="
+       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+       color: white;
+       padding: 8px 14px;
+       min-height: 40px;
+     ">
+  <h6 class="mb-0 fw-semibold">
+    <i class="material-icons"
+       style="font-size: 18px; vertical-align: middle; margin-right: 6px;">
+    </i>
+    Filter By Applied Date
+  </h6>
+</div>
+
+
+  <!-- Card Body -->
+  <div class="card-body py-3">
+
+    <form [formGroup]="dateFilterForm"
+          class="row g-3 align-items-end">
+
+      <!-- From Date -->
+      <div class="col-lg-4 col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>From Date</mat-label>
+          <input matInput
+                 [matDatepicker]="fromPicker"
+                 formControlName="fromDate"
+                 placeholder="DD/MM/YYYY">
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="fromPicker">
+          </mat-datepicker-toggle>
+          <mat-datepicker #fromPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <!-- To Date -->
+      <div class="col-lg-4 col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>To Date</mat-label>
+          <input matInput
+                 [matDatepicker]="toPicker"
+                 formControlName="toDate"
+                 placeholder="DD/MM/YYYY">
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="toPicker">
+          </mat-datepicker-toggle>
+          <mat-datepicker #toPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <!-- Buttons -->
+      <div class="col-lg-4 col-md-12">
+        <div class="d-flex gap-2 justify-content-lg-end">
+
+          <button mat-flat-button
+                  color="primary"
+                  type="button"
+                  (click)="applyDateFilter()">
+            Apply Filter
+          </button>
+
+          <button mat-stroked-button
+                  color="warn"
+                  type="button"
+                  (click)="clearDateFilter()">
+            Clear
+          </button>
+
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+
+  <!-- ================= TABLE ================= -->
+  <div class="card mt-4" *ngIf="filteredValuationData.length > 0">
+    <div class="card-body p-0">
+
+      <app-reporttable [options]="studentListoptions">
+        <ng-container class="card-header"></ng-container>
+        
+        <ng-template #headerTemplate>
+          <tr>
+            <th style="width: 60px;">S.No</th>
+            <th>Degree Program</th>
+            <th>Subject</th>
+            <th>Year</th>
+            <th>Applied Date</th>
+            <th style="width: 140px;" class="text-center">
+              Total Students
+            </th>
+          </tr>
+        </ng-template>
+        
+        <ng-template #rowTemplate let-row let-i="index">
+          <tr>
+            <td>{{ i + 1 }}</td>
+            <td>{{ row.degree_programme }}</td>
+            <td>{{ row.subject }}</td>
+            <td>{{ row.applied_year }}</td>
+            <td>{{ row.DATE | date:'dd-MM-yyyy' }}</td>
+            <td class="text-center">{{ row.total_students }}</td>
+          </tr>
+        </ng-template>
+      </app-reporttable>
+
+    </div>
+  </div>
+
+  <!-- No Data Message -->
+  <div class="alert alert-info mt-4"
+       *ngIf="isSearchPerformed && filteredValuationData.length === 0">
+    No data found for the selected criteria.
+  </div>
+
+</div>
