@@ -1,0 +1,208 @@
+<!-- Course Type Update Component -->
+<div class="container-fluid" style="padding: 20px; background-color: #f5f7fa;">
+  <div class="card shadow-sm" style="border-radius: 8px; border: none;">
+
+    <!-- Header -->
+    <div class="card-header"
+      style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px;">
+      <h4 class="mb-0 fw-bold">
+        <mat-icon class="align-middle me-2">edit_note</mat-icon>
+        Course Type Update
+      </h4>
+    </div>
+
+    <div class="card-body" style="padding: 30px;">
+
+      <!-- FILTER SECTION -->
+      <div [formGroup]="courseTypeForm" class="row mb-4">
+
+        <!-- Academic Session -->
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-semibold">
+            Academic Session <span class="text-danger">*</span>
+          </label>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select placeholder="Select Academic Session" formControlName="academicSession">
+              <mat-option *ngFor="let session of academicSessions" [value]="session.academic_session_id">
+                {{ session.academic_session_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+
+
+        <!-- College Name -->
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-semibold">
+            College Name <span class="text-danger">*</span>
+          </label>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select placeholder="Select College" formControlName="collegeName">
+              <mat-option *ngFor="let college of colleges" [value]="college.college_id">
+                {{ college.college_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+
+
+        <!-- Degree Programme -->
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-semibold">
+            Degree Programme <span class="text-danger">*</span>
+          </label>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select placeholder="Select Degree Programme" formControlName="degreeProgramme">
+              <mat-option *ngFor="let degree of degreeProgrammes" [value]="degree.degree_id">
+                {{ degree.degree_programme_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+
+
+        <!-- Course Year -->
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-semibold">
+            Course Year <span class="text-danger">*</span>
+          </label>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select placeholder="Select Course Year" formControlName="courseYear">
+              <mat-option *ngFor="let year of courseYears" [value]="year.course_year_id">
+                {{ year.course_year_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Course Semester -->
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-semibold">
+            Course Semester <span class="text-danger">*</span>
+          </label>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select placeholder="Select Course Semester" formControlName="courseSemester">
+              <mat-option *ngFor="let sem of courseSemesters" [value]="sem.semester_id">
+                {{ sem.semester_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+      </div>
+
+      <!-- Show Allotment Button -->
+      <div class="row mb-4">
+        <div class="col-12 text-end">
+          <button mat-raised-button color="primary" (click)="showAllotment()" [disabled]="courseTypeForm.invalid"
+            class="px-4 py-2">
+            <mat-icon class="align-middle me-2">visibility</mat-icon>
+            Show Allotment
+          </button>
+        </div>
+      </div>
+
+      <!-- ALLOTMENT DATA TABLE -->
+      <div class="row mt-4" *ngIf="allotmentData && allotmentData.length > 0">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header bg-light">
+              <h5 class="mb-0 fw-semibold">Course Allotment Details</h5>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover mb-0">
+
+                <thead class="table-primary">
+                  <tr>
+                    <th class="p-3 text-center">
+                      <mat-checkbox (change)="toggleSelectAll($event.checked)">
+                      </mat-checkbox>
+                    </th>
+                    <th class="p-3">S.No</th>
+                    <th class="p-3">Course Code</th>
+                    <th class="p-3">Course Title</th>
+                    <th class="p-3">Total Credit</th>
+                    <th class="p-3">Course Type</th>
+                    <th class="p-3">Finalize</th>
+                    <th class="p-3">No. of Students Registered</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let record of allotmentData; let i = index">
+                    <td class="p-3 text-center">
+                      <mat-checkbox [(ngModel)]="record.selected" [ngModelOptions]="{ standalone: true }">
+                      </mat-checkbox>
+                    </td>
+                    <td class="p-3">{{ i + 1 }}</td>
+                    <td class="p-3 fw-semibold">{{ record.course_code || 'N/A' }}</td>
+                    <td class="p-3 fw-semibold">{{ record.course_title_e || 'N/A' }}</td>
+                    <td class="p-3">{{ record.total_credit || 'N/A' }}</td>
+                    <td class="p-3">{{ record.course_type_name_e || 'N/A' }}</td>
+                    <td class="p-3">{{record.finalize_yn}}</td>
+                    <td class="p-3">{{ record.student_count || 0 }}</td>
+                  </tr>
+                </tbody>
+
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMPTY STATE -->
+      <div class="row mt-4" *ngIf="!allotmentData || allotmentData.length === 0">
+        <div class="col-12">
+          <div class="card text-center p-5">
+            <mat-icon class="text-muted" style="font-size: 64px; height: 64px; width: 64px; margin: 0 auto;">
+              assignment
+            </mat-icon>
+            <h5 class="text-muted mt-3 mb-2">No Allotment Data Found</h5>
+            <p class="text-secondary mb-0">Please select filters and click "Show Allotment" to display data.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPDATE SECTION -->
+      <div class="row mt-4" *ngIf="allotmentData && allotmentData.length > 0">
+        <!-- Course Type -->
+        <div class="col-md-4 mb-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select placeholder="Select Course Type" [(ngModel)]="selectedCourseType"
+              [ngModelOptions]="{standalone: true}">
+              <mat-option *ngFor="let ct of courseTypes" [value]="ct.course_type_id">
+                {{ ct.course_type_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Update Type -->
+        <div class="col-md-4 mb-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select placeholder="Select Update Type" [(ngModel)]="updateType" [ngModelOptions]="{standalone: true}">
+              <mat-option [value]="3">Course Allotment & Registration</mat-option>
+              <mat-option [value]="2">Registration Only</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Reason -->
+        <div class="col-md-4 mb-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput placeholder="Reason" [(ngModel)]="updateReason" [ngModelOptions]="{standalone: true}">
+          </mat-form-field>
+        </div>
+
+        <div class="col-12 text-center">
+          <button mat-raised-button color="accent" (click)="updateCourseType()" [disabled]="isUpdateDisabled">
+            Update Course Type
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

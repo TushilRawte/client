@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { SharedModule, ReporttableComponent,ReportComponent } from 'shared';
+import { SharedModule, ReporttableComponent, ReportComponent } from 'shared';
 import { CapslockDirective } from '../../../shared/directive/capslock.directive';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -63,7 +63,9 @@ import { SrcEsignComponent } from './student/src-esign/src-esign.component';
 import { GeneratedListComponent } from './student/transfer-certificate/applied-list/generated-list/generated-list.component';
 import { CollegeTransferComponent } from './student/college-transfer/college-transfer.component';
 import { CollegeTransferReportComponent } from './student/college-transfer-report/college-transfer-report.component';
-
+import { AppliedStudentsDashboardComponent } from './marks entry/applied-students-dashboard/applied-students-dashboard.component';
+import { UpdateCourseTypeComponent } from './course/update-course-type/update-course-type.component';
+import { RevaluationCancelComponent } from './marks entry/revaluation-cancel/revaluation-cancel.component';
 
 @NgModule({
   declarations: [
@@ -122,7 +124,9 @@ import { CollegeTransferReportComponent } from './student/college-transfer-repor
     GeneratedListComponent,
     CollegeTransferComponent,
     CollegeTransferReportComponent,
-
+    AppliedStudentsDashboardComponent,
+    UpdateCourseTypeComponent,
+    RevaluationCancelComponent,
   ],
   imports: [
     SharedModule,
@@ -133,13 +137,13 @@ import { CollegeTransferReportComponent } from './student/college-transfer-repor
     CapslockDirective,
     FormsModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
-        enabled: true,
-        registrationStrategy: 'registerWhenStable:30000'
+      enabled: true,
+      registrationStrategy: 'registerWhenStable:30000'
     }),
     ReportComponent,
     ReporttableComponent
-],
- providers: [
+  ],
+  providers: [
     provideAnimationsAsync()
   ],
   bootstrap: [AppComponent]

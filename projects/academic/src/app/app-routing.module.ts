@@ -48,6 +48,9 @@ import { SrcEsignComponent } from './student/src-esign/src-esign.component';
 import { AppliedListComponent } from './student/transfer-certificate/applied-list/applied-list.component';
 import { CollegeTransferComponent } from './student/college-transfer/college-transfer.component';
 import { CollegeTransferReportComponent } from './student/college-transfer-report/college-transfer-report.component';
+import { AppliedStudentsDashboardComponent } from './marks entry/applied-students-dashboard/applied-students-dashboard.component';
+import { UpdateCourseTypeComponent } from './course/update-course-type/update-course-type.component';
+import { RevaluationCancelComponent } from './marks entry/revaluation-cancel/revaluation-cancel.component';
 
 const routes: Routes = [
   {
@@ -279,7 +282,7 @@ const routes: Routes = [
         component: ExamTimeTableReportComponent,
         pathMatch: 'full',
       },
-       {
+      {
         path: 'transfer-applied-list',
         component: AppliedListComponent,
         pathMatch: 'full',
@@ -292,6 +295,21 @@ const routes: Routes = [
       {
         path: 'college-transfer-report',
         component: CollegeTransferReportComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'applied-students-dashboard',
+        component: AppliedStudentsDashboardComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'update-course-type',
+        component: UpdateCourseTypeComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'revaluation-cancel',
+        component: RevaluationCancelComponent,
         pathMatch: 'full',
       },
       // { path: 'student-corner', loadChildren: () => import('./student-corner/student-corner.module').then(m => m.StudentCornerModule) },
