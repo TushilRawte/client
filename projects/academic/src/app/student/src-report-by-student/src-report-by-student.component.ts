@@ -5,12 +5,12 @@ import { AlertService, HttpService, PrintService } from 'shared';
 import { environment } from 'environment';
 
 @Component({
-  selector: 'app-get-src-list',
+  selector: 'app-src-report-by-student',
   standalone: false,
-  templateUrl: './get-src-list.component.html',
-  styleUrl: './get-src-list.component.scss'
+  templateUrl: './src-report-by-student.component.html',
+  styleUrl: './src-report-by-student.component.scss'
 })
-export class GetSrcListComponent {
+export class SrcReportByStudentComponent {
  getSRCDetailsForm!: FormGroup;
   studentDetails: any = null;
   image_prefix: string = environment.filePrefix;

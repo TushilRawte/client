@@ -1,0 +1,31 @@
+.page-title {
+    // color: rgb(54, 3, 101);
+    color: rgb(3, 101, 69);
+}
+
+.click-row:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+.click-row .click-row-btn {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 20px;
+    color: white;
+    width: 50px;
+    text-align: center;
+}
+
+.view-proof {
+    text-decoration: none;
+}
+
+.view-proof:hover {
+    text-decoration: underline;
+}
+
+.bg-green {
+    background-color: #d4edda !important;
+}

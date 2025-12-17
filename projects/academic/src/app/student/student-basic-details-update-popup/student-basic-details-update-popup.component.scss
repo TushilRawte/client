@@ -1,0 +1,36 @@
+.card {
+  border-radius: 12px;
+}
+
+.card-header {
+  font-size: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.table th,
+.table td {
+  vertical-align: middle;
+}
+
+.table th {
+  white-space: nowrap;
+}
+
+.font-clr{
+    color: gray;
+}
+
+
+.page-title-p {
+    // color: rgb(54, 3, 101);
+    color: rgb(3, 101, 69);
+}
+
+.page-title-c {
+    color: rgb(54, 3, 101);
+}

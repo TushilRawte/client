@@ -13,6 +13,7 @@ import { NewLayoutComponent } from './components/new-layout/new-layout.component
 import { ExamServicesComponent } from './components/exam-services/exam-services.component';
 import { PaymentComponent } from './components/exam-services/payment/payment.component';
 import { CertificateApplyComponent } from './components/certificate-apply/certificate-apply.component';
+import { UpdateRoutesComponent } from 'shared';
 
 const routes: Routes = [
 {
@@ -36,7 +37,11 @@ const routes: Routes = [
       {
         path:'old',
         component:LayoutComponent
-      }
+      },
+       {
+          path: 'update',
+          component: UpdateRoutesComponent
+        },
 
       
 ];

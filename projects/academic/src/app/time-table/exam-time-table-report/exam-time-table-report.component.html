@@ -1,0 +1,139 @@
+<mat-card>
+    <mat-card-content>
+        <h3 class="fw-bold mb-6 page-title">Exam Time Table</h3>
+
+        <form [formGroup]="TimeTableFiledFormGroup" (ngSubmit)="onSubmitFields()">
+            <div class="row">
+                <div class="col-md-4 col-lg-4 col-sm-6 mb-3" *ngFor="let field of fildList">
+                    <ng-select [placeholder]="field.name" [formControlName]="field.id" appearance="outline"
+                        (change)="onDropdownChange($event, field.name)" class="mt-0 mb-0 p-0 m-0">
+                        <ng-option *ngFor="let opt of getOptions(field.name)" [value]="opt.id">
+                            {{ opt.name }}
+                        </ng-option>
+                    </ng-select>
+                    <div *ngIf="
+              field.required &&
+              TimeTableFiledFormGroup.get(field.id.toString())?.touched &&
+              TimeTableFiledFormGroup.get(field.id.toString())?.invalid
+            " class="text-danger mt-0 mb-0 p-0 m-0">
+                        {{ field.name }} is required
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button type="submit" mat-raised-button color="primary" class="mt-3"
+                    [disabled]="TimeTableFiledFormGroup.invalid">
+                    Get Details
+                </button>
+            </div>
+        </form>
+
+        <section #print_content>
+            <!-- <div class="d-print-none text-end">
+                <button mat-raised-button color="primary" matTooltip="Print" class="m-1" (click)="printData()">
+                    <mat-icon>print</mat-icon> Print
+                </button>
+
+                <button mat-raised-button color="accent" matTooltip="PDF" class="m-1" (click)="getPdf()">
+                    <mat-icon>picture_as_pdf</mat-icon> PDF
+                </button>
+                <button mat-raised-button matTooltip="Excel" class="m-1" (click)="getPdf()">
+                    <mat-icon>cloud_download</mat-icon> Excel
+                </button>
+
+                <button mat-raised-button color="secondary" matTooltip="Copy" class="m-1" (click)="getPdf()"
+                    class="tools mx-auto ms-1">
+                    <mat-icon>content_copy</mat-icon>
+                </button>
+            </div> -->
+
+            <div class="d-print-none text-end" *ngIf="!apiData || apiData.length > 0">
+                <button mat-raised-button color="primary" matTooltip="Print" (click)="printData()"
+                    class="tools mx-auto ms-1"> <mat-icon>print</mat-icon> </button>
+                <button mat-raised-button color="primary" matTooltip="PDF" (click)="getPdf()"
+                    class="tools mx-auto ms-1"> <mat-icon>picture_as_pdf</mat-icon></button>
+            </div>
+
+            <table class="table table-bordered mt-3" *ngIf="!apiData || apiData.length > 0" #table>
+                <thead>
+                    <tr>
+                        <th>SNo.</th>
+                        <th>Year</th>
+                        <th>Semester</th>
+                        <th>Degree Programme</th>
+                        <th>Exam Paper Type</th>
+                        <th>Course Title</th>
+                        <th>Exam Date</th>
+                        <th>Exam Time</th>
+                        <th>Exam Shift</th>
+                        <th>Course Finalize</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Loop course_year_id groups -->
+                    <ng-container *ngFor="let courseYearId of objectKeys(groupedData)">
+                        <ng-container *ngFor="let semesterId of objectKeys(groupedData[courseYearId])">
+                            <ng-container
+                                *ngFor="let degreeProgrammeId of objectKeys(groupedData[courseYearId][semesterId])">
+                                <ng-container
+                                    *ngFor="let examTypeId of objectKeys(groupedData[courseYearId][semesterId][degreeProgrammeId])">
+
+                                    <!-- Get all rows for this deepest group -->
+                                    <ng-container
+                                        *ngIf="groupedData[courseYearId][semesterId][degreeProgrammeId][examTypeId] as rows">
+
+                                        <!-- Calculate rowspan counts for merged cells -->
+                                        <tr *ngFor="let row of rows; let i = index">
+                                            <td>
+                                                {{i+1}}
+                                            </td>
+
+                                            <!-- Render course_year_id cell with rowspan on first row -->
+                                            <td *ngIf="i === 0"
+                                                [attr.rowspan]="getGroupRowSpan(courseYearId, groupedData)"
+                                                style="vertical-align: top !important;">
+                                                {{ getNameFromId(courseYearId, 'Course Year') }}
+                                            </td>
+
+                                            <!-- Render semester_id cell with rowspan on first row of semester group -->
+                                            <td *ngIf="i === 0"
+                                                [attr.rowspan]="getSubGroupRowSpan(courseYearId, semesterId, groupedData)"
+                                                style="vertical-align: top !important;">
+                                                {{ getNameFromId(semesterId, 'Semester') }}
+                                            </td>
+
+                                            <!-- Render degree_programme_id cell with rowspan on first row of degree programme group -->
+                                            <td *ngIf="i === 0"
+                                                [attr.rowspan]="getSubSubGroupRowSpan(courseYearId, semesterId, degreeProgrammeId, groupedData)"
+                                                style="vertical-align: top !important;">
+                                                {{ getNameFromId(degreeProgrammeId, 'Degree Program') }}
+                                            </td>
+
+                                            <!-- Render exam_type_id cell with rowspan on first row of exam type group -->
+                                            <td *ngIf="i === 0" [attr.rowspan]="rows.length"
+                                                style="vertical-align: top !important;">
+                                                {{ getNameFromId(examTypeId, 'Exam Type') }}
+                                            </td>
+
+                                            <!-- Then render the row data -->
+                                            <td>{{ row.course_name }}</td>
+                                            <td>{{ row.exam_date | date:'mediumDate' }}</td>
+                                            <td>{{ row.exam_time }}</td>
+                                            <td>{{ row.exam_shift }}</td>
+                                            <td>{{ row.is_finalize_yn === 'Y' ? 'Yes' : 'No' }}</td>
+                                        </tr>
+                                    </ng-container>
+
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                </tbody>
+            </table>
+        </section>
+    </mat-card-content>
+
+
+
+
+</mat-card>

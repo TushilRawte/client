@@ -1,0 +1,179 @@
+<!-- Component HTML Template -->
+<div class="container-fluid" style="padding: 20px; background-color: #f5f7fa;">
+  <div class="card shadow-sm" style="border-radius: 8px; border: none;">
+    <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px;">
+      <h4 style="margin: 0; font-weight: 600;">
+        <i class="material-icons" style="vertical-align: middle; margin-right: 8px;">delete_sweep</i>
+        Delete Revaluation Applied Courses
+      </h4>
+    </div>
+
+    <div class="card-body" style="padding: 30px;">
+
+      <!-- FILTER SECTION -->
+      <div [formGroup]="allotForm" class="row mb-4">
+
+        <!-- Academic Session -->
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Academic Session <span style="color:red">*</span></label>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select placeholder="Select Academic Session" formControlName="academicSession">
+              <mat-option *ngFor="let session of academicSessions" [value]="session.academic_session_id">
+                {{ session.academic_session_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Semester -->
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Semester <span style="color:red">*</span></label>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select placeholder="Select Semester" formControlName="semester">
+              <mat-option *ngFor="let sem of semesterList" [value]="sem.semester_id">
+                {{ sem.semester_name_e }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Student ID -->
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Student ID <span style="color:red">*</span></label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput placeholder="Enter Student ID" formControlName="studentId">
+          </mat-form-field>
+        </div>
+
+      </div>
+
+      <!-- Get Records Button -->
+      <div class="row mb-4">
+        <div class="col-12 text-end">
+          <button mat-raised-button color="primary"
+                  (click)="getRevalCancelData()"
+                  [disabled]="allotForm.invalid"
+                  style="padding: 12px 32px;">
+            <i class="material-icons" style="margin-right: 8px;">search</i>
+            Get Student List
+          </button>
+        </div>
+      </div>
+
+      <!-- STUDENT DATA TABLE -->
+      <div class="row mt-4" *ngIf="revalCancelData.length > 0">
+        <div class="col-12">
+          <div class="table-responsive">
+            <table class="table table-hover">
+
+              <thead style="background:#667eea;color:white;">
+                <tr>
+                  <th>S.No</th>
+                  <th>Student Name</th>
+                  <th>Student ID</th>
+                  <th>College</th>
+                  <th>Degree</th>
+                  <th>Subject</th>
+                  <th>Course Code</th>
+                  <th>Select</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let record of revalCancelData; let i = index"
+                    (click)="selectRow(record)"
+                    style="cursor:pointer;">
+
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ record.Name || 'N/A' }}</td>
+                  <td>{{ record.student_master_id || 'N/A' }}</td>
+                  <td>{{ record.College_Name_E || 'N/A' }}</td>
+                  <td>{{ record.Degree_Programme_Name_E || 'N/A' }}</td>
+                  <td>{{ record.Subject_Name_E || 'N/A' }}</td>
+                  <td>{{ record.Course_Code || 'N/A' }}</td>
+
+                  <td>
+                    <mat-checkbox color="warn"
+                                  [(ngModel)]="record.selected"
+                                  [ngModelOptions]="{standalone:true}">
+                    </mat-checkbox>
+                  </td>
+
+                </tr>
+              </tbody>
+
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMPTY STATE -->
+      <div class="row mt-4" *ngIf="revalCancelData.length === 0">
+        <div class="col-12 text-center">
+          <p style="font-size:16px;color:#8898aa;">No records found. Please search using filters above.</p>
+        </div>
+      </div>
+
+      <!-- DELETE REMARK -->
+      <div class="row mt-4" *ngIf="revalCancelData.length > 0">
+        <div class="col-12">
+          <label class="form-label">Delete Remark <span style="color:red">*</span></label>
+          <mat-form-field appearance="outline" class="w-100">
+            <textarea matInput rows="3"
+                      placeholder="Enter reason for deletion..."
+                      [(ngModel)]="deleteRemark"
+                      [ngModelOptions]="{standalone:true}">
+            </textarea>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- DELETE BUTTONS -->
+      <div class="row mt-4 text-center" *ngIf="revalCancelData.length > 0">
+
+        <!-- Delete Selected -->
+        <div class="col-md-6 mb-2">
+          <button mat-raised-button color="warn"
+                  style="padding: 12px 30px; font-weight:600;"
+                  (click)="openDeleteSinglePopup()"
+                  [disabled]="!hasSelectedRecords()">
+            <i class="material-icons" style="margin-right: 8px;">delete</i>
+            Delete Selected Subjects
+          </button>
+        </div>
+
+        <!-- Delete All -->
+        <div class="col-md-6 mb-2">
+          <button mat-raised-button color="warn"
+                  style="padding: 12px 30px; font-weight:600;"
+                  (click)="openDeleteAllPopup()">
+            <i class="material-icons" style="margin-right: 8px;">delete_forever</i>
+            Delete ALL Subjects
+          </button>
+        </div>
+
+      </div>
+
+      <!-- POPUP WINDOW -->
+      <div *ngIf="showPopup"
+           style="position:fixed; top:0; left:0; width:100%; height:100%;
+                  background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:9999;">
+
+        <div style="background:white; padding:25px; border-radius:8px; width:400px;">
+
+          <h3 style="font-weight:600; margin-bottom:20px;">{{ popupTitle }}</h3>
+
+          <p style="font-size:14px; color:#444;">Are you sure you want to proceed?</p>
+
+          <div class="text-end mt-4">
+            <button mat-button (click)="closePopup()">Cancel</button>
+            <button mat-raised-button color="warn" (click)="confirmDelete()">Confirm</button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -38,12 +38,28 @@ export const moduleMapping: any = {
   recruitmentModule: `${host}:4330`,
   academicModule: `${host}:4310`,
   admissionModule: `${host}:4320`,
-  studentModule: `${host}:4350`,
+  studentCornerModule: `${host}:4380`,
 };
+
 
 export const apiPort: any = {
   adminApi: `${host}:3001/adminApi`,
   commonApi: `${host}:3000/commonApi`,
   demoApi: `${host}:3002/demoApi`,
   academicApi: `${host}:3003/academicApi`,
+  recruitementApi: `${host}:3500/recruitementApi`,
+
+  fileUrl: `${host}:3003`,
+  esignApi: `${host}:8080/`
 };
+
+/* for menu updates */
+
+// let host_n = '192.168.1.47';
+
+// export const apiPort: any = {
+//   adminApi: `http://${host_n}:3001/adminApi`,
+//   commonApi: `http://${host_n}:3000/commonApi`,
+//   demoApi: `http://${host_n}:3002/demoApi`,
+//   academicApi: `http://${host_n}:3003/academicApi`,
+// };

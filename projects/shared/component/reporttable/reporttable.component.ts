@@ -21,6 +21,8 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import * as XLSX from 'xlsx';
 import { ActivatedRoute, Router } from '@angular/router';
+import { OnChanges, SimpleChanges } from '@angular/core'; // ^ added by tushil
+
 
 interface Option {
   is_read: boolean,
@@ -57,6 +59,7 @@ interface Option {
 export class ReporttableComponent implements OnInit, AfterViewInit, AfterContentChecked {
   @ViewChild('print_content') print_content!: ElementRef;
   @ViewChild('table') table!: ElementRef;
+  
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @Input() options!: Option;
   @ContentChild('headerTemplate', { static: true }) headerTemplate!: TemplateRef<any>;
@@ -90,6 +93,24 @@ export class ReporttableComponent implements OnInit, AfterViewInit, AfterContent
       this.renderData()
     }
   }
+
+  // ^ added by tushil
+  ngOnChanges(changes: SimpleChanges) {
+  if (changes['options'] && this.options?.dataSource) {
+    this.filteredData = [...this.options.dataSource]; // ✅ FORCE NEW REF
+    this.totalItems = this.options.is_read
+      ? this.options.listLength
+      : this.filteredData.length;
+
+    this.currentPage = this.options.page;
+    this.pageSize = this.options.pageSize;
+
+    this.resetOrChange();
+  }
+}
+
+
+
 
   renderData() {
     this.filteredData = this.options.dataSource;

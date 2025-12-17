@@ -1,0 +1,183 @@
+<div class="container-fluid py-3">
+    <!-- Header -->
+    <h5 class="mb-3 text-center fw-bold text-primary">
+        Update Basic Details
+    </h5>
+
+    <form [formGroup]="basicDetailsUpdateForm">
+        <div class="card shadow-lg border-0 mb-3">
+            <mat-card class="mt-3">
+                <mat-card-content>
+
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label for="student_first_name_e" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="student_first_name_e"
+                                formControlName="student_first_name_e" placeholder="Enter student name" />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="student_middle_name_e" class="form-label">Middle Name</label>
+                            <input type="text" class="form-control" id="student_middle_name_e"
+                                formControlName="student_middle_name_e" placeholder="Enter student name" />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="student_last_name_e" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="student_last_name_e"
+                                formControlName="student_last_name_e" placeholder="Enter student name" />
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label fw-semibold d-block mb-2">
+                                Update Name?
+                            </label>
+
+                            <mat-radio-group aria-label="Update Name?" formControlName="name_update_yn"
+                                class="d-flex gap-4">
+                                <mat-radio-button value="Y">Yes</mat-radio-button>
+                                <mat-radio-button value="N">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+
+
+
+
+                        <div class="col-md-4 mb-3">
+                            <label for="fatherName" class="form-label">Father’s Name</label>
+                            <input type="text" class="form-control" id="fatherName" formControlName="father_name"
+                                placeholder="Enter father’s name" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold d-block mb-2">
+                                Update Father Name?
+                            </label>
+
+                            <mat-radio-group aria-label="Update Father Name?" formControlName="father_name_update_yn"
+                                class="d-flex gap-4">
+                                <mat-radio-button value="Y">Yes</mat-radio-button>
+                                <mat-radio-button value="N">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+
+
+
+
+                        <div class="col-md-4 mb-3">
+                            <label for="motherName" class="form-label">Mother’s Name</label>
+                            <input type="text" class="form-control" id="motherName" formControlName="mother_name"
+                                placeholder="Enter mother’s name" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold d-block mb-2">
+                                Update Mother Name?
+                            </label>
+
+                            <mat-radio-group aria-label="Update Mother Name?" formControlName="mother_name_update_yn"
+                                class="d-flex gap-4">
+                                <mat-radio-button value="Y">Yes</mat-radio-button>
+                                <mat-radio-button value="N">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+
+
+
+
+                        <!-- <div class="col-md-4 mb-3">
+                            <label for="dob" class="form-label">Date of Birth</label>
+                            <input type="date" class="form-control" id="dob" formControlName="dob" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold d-block mb-2">
+                                Update DOB?
+                            </label>
+
+                            <mat-radio-group aria-label="Update DOB?" formControlName="dob_update_yn"
+                                class="d-flex gap-4">
+                                <mat-radio-button value="Y">Yes</mat-radio-button>
+                                <mat-radio-button value="N">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div> -->
+
+
+
+
+                        <div class="col-md-4 mb-3">
+                            <label for="gender" class="form-label">Gender</label>
+                            <select class="form-select" id="gender" formControlName="sex">
+                                <option selected disabled>Choose...</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold d-block mb-2">
+                                Update Gender?
+                            </label>
+
+                            <mat-radio-group aria-label="Update Gender?" formControlName="sex_update_yn"
+                                class="d-flex gap-4">
+                                <mat-radio-button value="Y">Yes</mat-radio-button>
+                                <mat-radio-button value="N">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+
+
+
+
+                        <!-- <div class="col-md-4 mb-3">
+                            <label for="category" class="form-label">Basic Category</label>
+                            <select class="form-select" id="category" formControlName="category_name_e">
+                                <option selected disabled>Choose...</option>
+                                <option value="General">General</option>
+                                <option value="OBC">OBC</option>
+                                <option value="SC">SC</option>
+                                <option value="ST">ST</option>
+                                <option value="OC">OC</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold d-block mb-2">
+                                Update Category?
+                            </label>
+
+                            <mat-radio-group aria-label="Update Category?" formControlName="category_name_update_yn"
+                                class="d-flex gap-4">
+                                <mat-radio-button value="Y">Yes</mat-radio-button>
+                                <mat-radio-button value="N">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div> -->
+
+
+                        <hr>
+                        <!-- <div class="col-md-6 mb-3">
+                            <label for="proof_document" class="form-label">Document Upload</label>
+                            <input type="file" class="form-control" id="proof_document"
+                                formControlName="proof_document" />
+                        </div> -->
+                        <div class="col-md-6 col-12">
+                            <!-- <mat-label>Upload Order Copy</mat-label> -->
+                            <app-fileupload formControlName="pdfFile">Document Upload</app-fileupload>
+                            <div class="text-danger" *ngIf="f['pdfFile'].touched && f['pdfFile'].hasError('required')">
+                                Document for Proof is require for changes
+                            </div>
+                            eg. Upload 10th MarkSheet
+                        </div>
+                    </div>
+
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <div class="card shadow-sm border-0">
+        </div>
+
+        <div class="text-end mt-3">
+            <button class="btn btn-secondary m-3" (click)="closeDialog()">
+                Close
+            </button>
+
+            <button class="btn btn-info" (click)="onUpdateBasicDetails()">
+                Update
+            </button>
+        </div>
+    </form>
+</div>

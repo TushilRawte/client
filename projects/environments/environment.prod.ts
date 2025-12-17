@@ -13,7 +13,7 @@ export const environmentProd = {
   homeModule: `${host}`,
   loginModule: `${host}/user/login`,
   publicKey: "BLaV0kn22SFt30rA1H6lEX6dgTOzToFY3bVfCXzGwM0gg2CFEjILyLp4qoL8H_hNFaJhOYndp4vquNH6zYy5r2M",
-  filePrefix: 'https://igkv.ac.in/'
+  filePrefix: `${host}/`
 };
 
 export const reportConfig = {
@@ -43,5 +43,10 @@ export const apiPort: any = {
   adminApi: `${host}/adminApi`,
   commonApi: `${host}/commonApi`,
   demoApi: `${host}/demoApi`,
+  academicApi: `${host}:3003/academicApi`,
+  recruitementApi: `${host}:3500/recruitementApi`,
+
+  fileUrl: `${host}:3003`,
+  esignApi: `${host}:8080/`
 }
 

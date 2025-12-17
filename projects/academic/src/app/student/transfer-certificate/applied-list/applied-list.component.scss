@@ -1,0 +1,35 @@
+.custom-select-style {
+  width: 100%;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  background-color: #fff;
+  color: #212529;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+/* Hover */
+.custom-select-style:hover {
+  border-color: #198754; /* green */
+}
+
+/* Focus */
+.custom-select-style:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.15rem rgba(25, 135, 84, 0.25);
+}
+
+/* Disabled option (placeholder look) */
+.custom-select-style option[value=""] {
+  color: #6c757d;
+}
+
+/* Make it look good in table */
+td .custom-select-style {
+  min-width: 160px;
+}
+
+
+

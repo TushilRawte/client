@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { SharedModule, ReporttableComponent,ReportComponent } from 'shared';
+import { SharedModule, ReporttableComponent, ReportComponent } from 'shared';
 import { CapslockDirective } from '../../../shared/directive/capslock.directive';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -37,18 +37,39 @@ import { PaymentSettlementComponent } from './payment-settlement/payment-settlem
 import { FacultyListComponent } from './registration/faculty-list/faculty-list.component';
 import { ResultNotificationComponent } from './marks entry/result-notification/result-notification.component';
 import { StudentCategoryChangeComponent } from './student/student-category-change/student-category-change.component';
-import { GetSrcListComponent } from './student/get-src-list/get-src-list.component';
 import { StudentMobileNumberUpdateComponent } from './student/student-mobile-number-update/student-mobile-number-update.component';
 import { StudentNameCorrectionComponent } from './student/student-name-correction/student-name-correction.component';
 import { StudentPasswordResetComponent } from './student/student-password-reset/student-password-reset.component';
 import { StudentAddressChangeRequestComponent } from './student/student-address-change-request/student-address-change-request.component';
 import { ApproveUidnComponent } from './student-profile/approve-uidn/approve-uidn.component';
+import { AppliedListComponent } from './student/transfer-certificate/applied-list/applied-list.component';
 import { PromoteEvenSemesterComponent } from './student-academic-status/promote-even-semester/promote-even-semester.component';
 import { MarksEntryPracticalComponent } from './marks entry/marks-entry-practical/marks-entry-practical.component';
 import { MarksEntryInternalPracticalComponent } from './marks entry/marks-entry-internal-practical/marks-entry-internal-practical.component';
 import { MarksEntryReportComponent } from './marks entry/marks-entry-report/marks-entry-report.component';
 import { MarksEntryAbsentComponent } from './marks entry/marks-entry-absent/marks-entry-absent.component';
-
+import { PdcEsignComponent } from './student/pdc-esign/pdc-esign.component';
+import { PdcGenerateComponent } from './student/pdc-generate/pdc-generate.component';
+import { PdcReportComponent } from './student/pdc-report/pdc-report.component';
+import { SrcReportComponent } from './student/src-report/src-report.component';
+import { TranscriptEsignComponent } from './student/transcript-esign/transcript-esign.component';
+import { TranscriptReportComponent } from './student/transcript-report/transcript-report.component';
+import { TranscriptGenerateComponent } from './student/transcript-generate/transcript-generate.component';
+import { StudentAddressChangeRequestPopupComponent } from './student/student-address-change-request-popup/student-address-change-request-popup.component';
+import { StudentBasicDetailsUpdateComponent } from './student/student-basic-details-update/student-basic-details-update.component';
+import { StudentBasicDetailsUpdatePopupComponent } from './student/student-basic-details-update-popup/student-basic-details-update-popup.component';
+import { RegistrationReportComponent } from './registration/registration-report/registration-report.component';
+import { CourseAttendanceFinalizeComponent } from './attendance/course-attendance-finalize/course-attendance-finalize.component';
+import { ExamTimeTableComponent } from './time-table/exam-time-table/exam-time-table.component';
+import { ExamTimeTableReportComponent } from './time-table/exam-time-table-report/exam-time-table-report.component';
+import { SrcReportByStudentComponent } from './student/src-report-by-student/src-report-by-student.component';
+import { SrcEsignComponent } from './student/src-esign/src-esign.component';
+import { GeneratedListComponent } from './student/transfer-certificate/applied-list/generated-list/generated-list.component';
+import { CollegeTransferComponent } from './student/college-transfer/college-transfer.component';
+import { CollegeTransferReportComponent } from './student/college-transfer-report/college-transfer-report.component';
+import { AppliedStudentsDashboardComponent } from './marks entry/applied-students-dashboard/applied-students-dashboard.component';
+import { UpdateCourseTypeComponent } from './course/update-course-type/update-course-type.component';
+import { RevaluationCancelComponent } from './marks entry/revaluation-cancel/revaluation-cancel.component';
 
 @NgModule({
   declarations: [
@@ -81,18 +102,39 @@ import { MarksEntryAbsentComponent } from './marks entry/marks-entry-absent/mark
     FacultyListComponent,
     ResultNotificationComponent,
     StudentCategoryChangeComponent,
-    GetSrcListComponent,
     StudentMobileNumberUpdateComponent,
     StudentNameCorrectionComponent,
     StudentPasswordResetComponent,
     StudentAddressChangeRequestComponent,
     ApproveUidnComponent,
+    AppliedListComponent,
     PromoteEvenSemesterComponent,
     MarksEntryPracticalComponent,
     MarksEntryInternalPracticalComponent,
     MarksEntryReportComponent,
     MarksEntryAbsentComponent,
-
+    PdcEsignComponent,
+    PdcGenerateComponent,
+    PdcReportComponent,
+    SrcReportComponent,
+    TranscriptEsignComponent,
+    TranscriptReportComponent,
+    TranscriptGenerateComponent,
+    StudentAddressChangeRequestPopupComponent,
+    StudentBasicDetailsUpdateComponent,
+    StudentBasicDetailsUpdatePopupComponent,
+    RegistrationReportComponent,
+    CourseAttendanceFinalizeComponent,
+    ExamTimeTableComponent,
+    ExamTimeTableReportComponent,
+    SrcReportByStudentComponent,
+    SrcEsignComponent,
+    GeneratedListComponent,
+    CollegeTransferComponent,
+    CollegeTransferReportComponent,
+    AppliedStudentsDashboardComponent,
+    UpdateCourseTypeComponent,
+    RevaluationCancelComponent,
   ],
   imports: [
     SharedModule,
@@ -103,13 +145,13 @@ import { MarksEntryAbsentComponent } from './marks entry/marks-entry-absent/mark
     CapslockDirective,
     FormsModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
-        enabled: true,
-        registrationStrategy: 'registerWhenStable:30000'
+      enabled: true,
+      registrationStrategy: 'registerWhenStable:30000'
     }),
     ReportComponent,
     ReporttableComponent
-],
- providers: [
+  ],
+  providers: [
     provideAnimationsAsync()
   ],
   bootstrap: [AppComponent]

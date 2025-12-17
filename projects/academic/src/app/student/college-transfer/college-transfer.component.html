@@ -1,0 +1,134 @@
+<mat-card>
+    <mat-card-content>
+        <h3 class="fw-bold mb-6 page-title">College Trasfer</h3>
+
+        <form [formGroup]="getCollegeTransferDetailsForm">
+            <div class="row">
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Academic Session</mat-label>
+                        <mat-select placeholder="Session" formControlName="academic_session_id">
+                            <mat-option *ngFor="let server of state.academicSessionList"
+                                [value]="server.academic_session_id">
+                                {{ server.academic_session_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6 col-6">
+                    <ng-select placeholder="Degree Programme" formControlName="degree_programme_id"
+                        appearance="outline">
+                        <ng-container *ngFor="let dp of state.degreeProgrammeList">
+                            <ng-option [value]="dp.degree_programme_id">
+                                {{ dp.degree_programme_name_e}}
+                            </ng-option>
+                        </ng-container>
+                    </ng-select>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Year</mat-label>
+                        <mat-select placeholder="Year" formControlName="course_year_id">
+                            <mat-option *ngFor="let courseYear of state.getCourseYear"
+                                [value]="courseYear.course_year_id">
+                                {{ courseYear.course_year_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Semester</mat-label>
+                        <mat-select placeholder="Semester" formControlName="semester_id">
+                            <mat-option *ngFor="let semester of state.semesterList" [value]="semester.semester_id">
+                                {{ semester.semester_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6 col-12">
+                    <ng-select placeholder="College Name" formControlName="college_id" appearance="outline">
+                        <ng-container *ngFor="let college of state.collegeList">
+                            <ng-option [value]="college.college_id">
+                                {{ college.college_name_e}}
+                            </ng-option>
+                        </ng-container>
+                    </ng-select>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex align-items-end gap-4 mt-3">
+                        <button mat-raised-button color="primary" (click)="getStudentListForSRC_Btn_click('show')">
+                            Show
+                        </button>
+
+                        <button mat-raised-button color="secondary" (click)="getStudentListForSRC_Btn_click('refresh')">
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div *ngIf="getStudentListOptions.listLength" class="mt-4">
+            <div class="table-scroll">
+                <form [formGroup]="generateColllegeTransferFormGroup">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>SNO.</th>
+                                <th>Student Name</th>
+                                <th>Student ID</th>
+                                <th>UE ID</th>
+                                <th>Photo</th>
+                                <th>Academic Status</th>
+                                <th>Transfer to College</th>
+                                <th>University Order Ref. NO</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody formArrayName="rows">
+                            <tr *ngFor="let row of getStudentListOptions.dataSource; let i = index" [formGroupName]="i">
+                                <td>{{i+1}}</td>
+                                <td>{{ row?.student_name }}</td>
+                                <td>{{row?.student_id}}</td>
+                                <td>{{row?.ue_id}}</td>
+                                <td>
+                                    <div style="width: 65px; height: 75px; border: 1px solid #969595;">
+                                        <img [src]="file_prefix + row?.student_photo_path || 'dummy.jpg'" alt="photo"
+                                            style="width: 100%; height: 100%; object-fit: cover;" />
+                                    </div>
+                                </td>
+                                <td>{{row.acad_status}}</td>
+                                <td>
+
+                                    <select formControlName="new_college_id" class="college-select">
+                                        <option value="">--- College Name ---</option>
+                                        <option *ngFor="let college of state.collegeList" [value]="college.college_id">
+                                            {{ college.college_name_e }}
+                                        </option>
+                                    </select>
+
+                                </td>
+                                <td>
+                                    <input type="text" placeholder="eg.123" style="width: 110px !important;"
+                                        formControlName="university_transfer_order_no" />
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm px-2 py-1" (click)="transfer_btn(row, i)">
+                                        Transfer
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+
+    </mat-card-content>
+</mat-card>
