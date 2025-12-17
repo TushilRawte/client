@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService, HttpService, PrintService } from 'shared';
 import { StudentBasicDetailsUpdatePopupComponent } from '../student-basic-details-update-popup/student-basic-details-update-popup.component';
+import { environment } from 'environment';
 
 @Component({
   selector: 'app-student-basic-details-update',
@@ -11,6 +12,7 @@ import { StudentBasicDetailsUpdatePopupComponent } from '../student-basic-detail
   styleUrl: './student-basic-details-update.component.scss'
 })
 export class StudentBasicDetailsUpdateComponent implements OnInit {
+  file_prefix: string = environment.filePrefix;
   actionType: string | null = null;
   selectedId: string | null = null;
   selectedStudentId: string | null = null;

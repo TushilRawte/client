@@ -1,37 +1,14 @@
 <mat-card>
     <mat-card-content>
-        <h3 class="fw-bold mb-6 page-title">Academic Report - SRC</h3>
-
-        <form [formGroup]="getSRCDetailsForm">
-            <div class="row">
-                <div class="col-md-4 col-6">
-                    <mat-form-field appearance="outline">
-                        <mat-label>UE ID / Student ID</mat-label>
-                        <input matInput placeholder="Ex. 20220021" formControlName="student_id">
-                    </mat-form-field>
-                </div>
-                <div class="col-md-4 col-4">
-                    <div class="d-flex align-items-end gap-4 mt-3">
-                        <button mat-raised-button color="primary" (click)="getStudentDetails_Btn_click('show')">
-                            Show
-                        </button>
-
-                        <button mat-raised-button color="secondary" (click)="getStudentDetails_Btn_click('refresh')">
-                            Refresh
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </form>
         <div *ngIf="getSRCDetailsOptions.listLength">
             <app-reporttable [options]="getSRCDetailsOptions">
                 <ng-template #headerTemplate>
                     <tr>
                         <th>UE ID</th>
                         <th>Name</th>
-                        <th>Addmission Session</th>
+                        <th>Admission Session</th>
                         <th>Degree Programme</th>
-                        <th>College Name</th>
+                        <th>College</th>
                         <th></th>
                     </tr>
                 </ng-template>

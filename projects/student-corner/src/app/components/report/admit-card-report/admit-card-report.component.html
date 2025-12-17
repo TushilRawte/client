@@ -1,0 +1,46 @@
+<mat-card>
+    <mat-card-content>
+        <div *ngIf="getSRCDetailsOptions.listLength">
+            <app-reporttable [options]="getSRCDetailsOptions">
+                <ng-template #headerTemplate>
+                    <tr>
+                        <th>Session</th>
+                        <th>Year /Sem</th>
+                        <th>Exam Type</th>
+                        <th class="d-print-none">Download</th>
+                        <th>Action</th>
+                    </tr>
+                </ng-template>
+                <ng-template #rowTemplate let-row let-i="index">
+                    <tr>
+                        <td>{{row?.academic_session_name_e}}</td>
+                        <td>{{row?.course_year_name_e}} / {{row?.semester_name_e}}</td>
+                        <td>{{ row?.exam_type_name_e }}</td>
+                        <!-- [disabled]="row.is_issue_yn !== 'Y'" -->
+                        <td class="d-print-none">
+                            <button mat-icon-button color="primary" [disabled]="!row.admit_card_issue_main_id"
+                                (click)="downloadAdmitCard(row)">
+                                <mat-icon>cloud_download</mat-icon>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary btn-sm px-2 py-1" (click)="generateAdmitCard(row)"
+                                *ngIf="!row.admit_card_issue_main_id">
+                                Generate
+                            </button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </app-reporttable>
+        </div>
+
+
+        <div class="text-center mt-3">
+            <button mat-raised-button color="primary" (click)="downloadAllAdmitCard_btn()">
+                <span class="m-2">Download All</span>
+                <mat-icon>arrow_downward</mat-icon>
+            </button>
+        </div>
+
+    </mat-card-content>
+</mat-card>

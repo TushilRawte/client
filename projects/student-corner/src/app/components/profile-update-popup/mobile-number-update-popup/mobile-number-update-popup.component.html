@@ -65,6 +65,21 @@
                             </mat-radio-group>
                         </div> -->
 
+                        <hr>
+                        <!-- <div class="col-md-6 mb-3">
+                            <label for="proof_document" class="form-label">Document Upload</label>
+                            <input type="file" class="form-control" id="proof_document"
+                                formControlName="proof_document" />
+                        </div> -->
+                        <div class="col-md-6 col-12">
+                            <!-- <mat-label>Upload Order Copy</mat-label> -->
+                            <app-fileupload formControlName="pdfFile">Document Upload</app-fileupload>
+                            <div class="text-danger" *ngIf="f['pdfFile'].touched && f['pdfFile'].hasError('required')">
+                                Document for Proof is require for changes
+                            </div>
+                            eg. Upload College ID, SRC, PDC etc.
+                        </div>
+
                     </div>
                 </form>
 

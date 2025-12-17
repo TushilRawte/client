@@ -31,9 +31,9 @@ export class NameUpdatePopupComponent implements OnInit {
   ngOnInit(): void {
     this.createAddressForm();   // initialize form FIRST
     Promise.all([
-      this.getcountryData(),
-      this.getStateData(),
-      this.getDistrictData()
+      // this.getcountryData(),
+      // this.getStateData(),
+      // this.getDistrictData()
     ]).then(() => {
       // Convert dob to input[type="date"] format
       const dobFormatted = this.getData.dob
@@ -103,7 +103,7 @@ export class NameUpdatePopupComponent implements OnInit {
 
     const formData = new FormData();
     formData.append('file', pdfFile);
-    formData.append('ue_id', this.getData.university_id);
+    formData.append('ue_id', this.getData.ue_id);
     formData.append('student_first_name_e', student_first_name_e);
     formData.append('student_middle_name_e', student_middle_name_e);
     formData.append('student_last_name_e', student_last_name_e);
@@ -128,7 +128,7 @@ export class NameUpdatePopupComponent implements OnInit {
     // console.log("formData :->--->> ", formData);
 
     // call API to update student category
-    this.http.postFile('/studentProfile/postFile/updateStudentBasicDetails',
+    this.http.postFile('/studentProfile/postFile/updateStudentBasicDetailsRequest',
       formData,
       'academic')
       .subscribe(
@@ -154,51 +154,51 @@ export class NameUpdatePopupComponent implements OnInit {
   }
 
 
-  getcountryData() {
-    return new Promise(resolve => {
-      this.http.getParam('/master/get/getCountry', {}, 'academic')
-        .subscribe((result: any) => {
-          this.countries = result.body.data;
-          resolve(true);
-        });
-    });
-  }
+  // getcountryData() {
+  //   return new Promise(resolve => {
+  //     this.http.getParam('/master/get/getCountry', {}, 'academic')
+  //       .subscribe((result: any) => {
+  //         this.countries = result.body.data;
+  //         resolve(true);
+  //       });
+  //   });
+  // }
 
-  getStateData() {
-    return new Promise(resolve => {
-      this.http.getParam('/master/get/getState', {}, 'academic')
-        .subscribe((result: any) => {
-          this.states = result.body.data;
-          // console.log("this.states ==> ", this.states);
-          resolve(true);
-        });
-    });
-  }
+  // getStateData() {
+  //   return new Promise(resolve => {
+  //     this.http.getParam('/master/get/getState', {}, 'academic')
+  //       .subscribe((result: any) => {
+  //         this.states = result.body.data;
+  //         // console.log("this.states ==> ", this.states);
+  //         resolve(true);
+  //       });
+  //   });
+  // }
 
-  getDistrictData() {
-    return new Promise(resolve => {
-      this.http.getParam('/master/get/getDistrict', {}, 'academic')
-        .subscribe((result: any) => {
-          this.districts = result.body.data;
-          resolve(true);
-        });
-    });
-  }
+  // getDistrictData() {
+  //   return new Promise(resolve => {
+  //     this.http.getParam('/master/get/getDistrict', {}, 'academic')
+  //       .subscribe((result: any) => {
+  //         this.districts = result.body.data;
+  //         resolve(true);
+  //       });
+  //   });
+  // }
 
-  getBlockData() {
-    this.http.getParam('/master/get/getBlock',
-      {},
-      'academic')
-      .subscribe(
-        (result: any) => {
-          // console.log("collegeList : ", result);
-          this.blocks = result.body.data;
-        },
-        (error) => {
-          console.error('Error in collegeList:', error);
-          this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
-        });
-  };
+  // getBlockData() {
+  //   this.http.getParam('/master/get/getBlock',
+  //     {},
+  //     'academic')
+  //     .subscribe(
+  //       (result: any) => {
+  //         // console.log("collegeList : ", result);
+  //         this.blocks = result.body.data;
+  //       },
+  //       (error) => {
+  //         console.error('Error in collegeList:', error);
+  //         this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
+  //       });
+  // };
 
   get f() {
     return this.basicDetailsUpdateForm.controls;

@@ -70,6 +70,8 @@ import { CollegeTransferReportComponent } from './student/college-transfer-repor
 import { AppliedStudentsDashboardComponent } from './marks entry/applied-students-dashboard/applied-students-dashboard.component';
 import { UpdateCourseTypeComponent } from './course/update-course-type/update-course-type.component';
 import { RevaluationCancelComponent } from './marks entry/revaluation-cancel/revaluation-cancel.component';
+import { SrcGeneratePdfComponent } from './student/src-generate-pdf/src-generate-pdf.component';
+import { StudentMobileNumberChangeRequestComponent } from './student/student-mobile-number-change-request/student-mobile-number-change-request.component';
 
 @NgModule({
   declarations: [
@@ -135,6 +137,8 @@ import { RevaluationCancelComponent } from './marks entry/revaluation-cancel/rev
     AppliedStudentsDashboardComponent,
     UpdateCourseTypeComponent,
     RevaluationCancelComponent,
+    SrcGeneratePdfComponent,
+    StudentMobileNumberChangeRequestComponent,
   ],
   imports: [
     SharedModule,

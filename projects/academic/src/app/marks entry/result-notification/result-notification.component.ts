@@ -11,7 +11,7 @@ import { apiPort } from 'environment';
   styleUrl: './result-notification.component.scss'
 })
 export class ResultNotificationComponent implements OnInit {
-  @Input() options: any; // PDF or Print options
+   @Input() options: any; // PDF or Print options
   state = {
     acadmicSessionList: [] as any[],
     semesterList: [] as any[],
@@ -48,66 +48,42 @@ export class ResultNotificationComponent implements OnInit {
         course_year_id: [''],
         dean_committee_id: ['']
       }),
-      // resultDetail: this.fb.group({
-      //   notification_number: [''],
-      //   notification_date: ['']
-      // })
       resultDetails: this.fb.array([])
     });
   }
 
   ngOnInit(): void {
     this.getAcademicSession();
+    this.getSemesterData();
+    this.getDegreeProgrammeTypeData();
+    this.getExamTypeData();
+    this.getValuationTypeData();
 
     this.resultNotificationReportFormGroup.get('selection.academic_session_id')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(academicSessionId => {
         this.clearState([
-          'semesterList',
-          'degreeProgrammeTypeList',
-          'degreeProgrammeList',
-          'examTypeList',
-          'valuationTypeList',
           'matrixList',
           'collegeDetailList'
         ]);
         this.resetFormFields([
-          'selection.semester_id',
-          'selection.degree_programme_type_id',
-          'selection.degree_programme_id',
-          'selection.exam_type_id',
-          'selection.valuation_type_id',
           'selection.course_year_id',
           'selection.dean_committee_id',
         ]);
 
-        if (academicSessionId) {
-          this.getSemesterData();
-        }
       });
 
     this.resultNotificationReportFormGroup.get('selection.semester_id')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(semesterId => {
         this.clearState([
-          'degreeProgrammeTypeList',
-          'degreeProgrammeList',
-          'examTypeList',
-          'valuationTypeList',
           'matrixList',
           'collegeDetailList'
         ]);
         this.resetFormFields([
-          'selection.degree_programme_type_id',
-          'selection.degree_programme_id',
-          'selection.exam_type_id',
-          'selection.valuation_type_id',
           'selection.course_year_id',
           'selection.dean_committee_id',
         ]);
-        if (semesterId) {
-          this.getDegreeProgrammeTypeData();
-        }
       });
 
     this.resultNotificationReportFormGroup.get('selection.degree_programme_type_id')?.valueChanges
@@ -115,17 +91,13 @@ export class ResultNotificationComponent implements OnInit {
       .subscribe(degreeProgrammeTypeId => {
         this.clearState([
           'degreeProgrammeList',
-          'examTypeList',
-          'valuationTypeList',
           'matrixList',
           'collegeDetailList'
         ]);
         this.resetFormFields([
           'selection.degree_programme_id',
-          'selection.exam_type_id',
-          'selection.valuation_type_id',
-          'selection.course_year_id',
           'selection.dean_committee_id',
+          'selection.course_year_id',
         ]);
         if (degreeProgrammeTypeId) {
           this.getDegreeProgrammeData(degreeProgrammeTypeId);
@@ -136,38 +108,26 @@ export class ResultNotificationComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(degreeProgrammeId => {
         this.clearState([
-          'examTypeList',
-          'valuationTypeList',
           'matrixList',
           'collegeDetailList'
         ]);
         this.resetFormFields([
-          'selection.exam_type_id',
-          'selection.valuation_type_id',
           'selection.course_year_id',
           'selection.dean_committee_id',
         ]);
-        if (degreeProgrammeId) {
-          this.getExamTypeData();
-        }
       });
 
     this.resultNotificationReportFormGroup.get('selection.exam_type_id')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(examTypeId => {
         this.clearState([
-          'valuationTypeList',
           'matrixList',
           'collegeDetailList'
         ]);
         this.resetFormFields([
-          'selection.valuation_type_id',
           'selection.course_year_id',
           'selection.dean_committee_id',
         ]);
-        if (examTypeId) {
-          this.getValuationTypeData();
-        }
       });
 
     this.resultNotificationReportFormGroup.get('selection.valuation_type_id')?.valueChanges
@@ -181,9 +141,6 @@ export class ResultNotificationComponent implements OnInit {
           'selection.course_year_id',
           'selection.dean_committee_id',
         ]);
-        if (examTypeId) {
-          this.getValuationTypeData();
-        }
       });
   }
 
@@ -299,8 +256,8 @@ export class ResultNotificationComponent implements OnInit {
       .subscribe(
         (result: any) => {
           // console.log("valuationTypeList : ", result);
-          let tempData = result?.body?.data?.filter((data: any) => data.valuation_type_id === 1 || data.valuation_type_id === 2);
-          this.state.valuationTypeList = tempData;
+          // let tempData = result?.body?.data?.filter((data: any) => data.valuation_type_id === 1 || data.valuation_type_id === 2);
+          this.state.valuationTypeList = result?.body?.data;
         },
         (error) => {
           console.error('Error in valuationTypeList:', error);
@@ -314,119 +271,122 @@ export class ResultNotificationComponent implements OnInit {
     degree_programme_type_id: number,
     dean_committee_id: number,
     dean_committee_name_e: string,
-    valuation_type_id: number) {
-    let url = type === 'notGenerated' ? '/master/get/getCollege' : '/markEntry/get/getExamResultNotificationList'
-    this.http.getParam(url,
-      { degree_programme_type_id, valuation_type_id },
+    exam_type_id: number,
+    valuation_type_id: number,
+    academic_session_id: number,
+    course_year_id: number,
+    semester_id: number,
+    degree_programme_id: number) {
+    let opration = this.checkTypeForParam(type);
+    this.http.getParam(`/markEntry/get/getExamResultNotificationList?${opration}`,
+      {
+        academic_session_id,
+        degree_programme_id,
+        exam_type_id,
+        course_year_id,
+        semester_id,
+        valuation_type_id,
+        degree_programme_type_id
+      },
       'academic')
       .subscribe(
         (result: any) => {
-          this.state.collegeDetailList = result?.body?.data
+          this.state.collegeDetailList = result?.body?.data || []
           // console.log("collegeDetailList : ", this.state.collegeDetailList);
           let array = this.resultNotificationReportFormGroup.get('resultDetails') as FormArray;
           if (array && array instanceof FormArray) {
             array.clear(); //! clear old data
           }
           // let array: any = []
-          if (type === 'notGenerated') {
-            this.state.collegeDetailList
-              .filter((college: any) => !college.exam_result_notification_id)
-              .forEach((college: any) => {
-                const group = this.fb.group({
-                  college_id: [college.college_id || null],
-                  college_name_e: [college.college_name_e || ''],
-                  notification_number: [''],
-                  notification_date: [''],
-                  dean_committee_id: [dean_committee_id],
-                  dean_committee_name_e: [dean_committee_name_e],
-                  selected: [true],
-                  remark: "Not Generated"
-                });
-                array.push(group);
+          if (this.state.collegeDetailList.length === 0) {
+            this.alert.alertMessage("No Records Found", "", "warning");
+          } else if (type === 'notGenerated') {
+            this.state.collegeDetailList.forEach((college: any) => {
+              const group = this.fb.group({
+                college_id: [college.college_id || null],
+                college_name_e: [college.college_name_e || ''],
+                notification_number: [''],
+                notification_date: [''],
+                dean_committee_id: [dean_committee_id],
+                dean_committee_name_e: [dean_committee_name_e],
+                selected: [true],
+                remark: "Not Generated"
               });
+              array.push(group);
+            });
             this.generatedListOption.title = "Notification Not Generated Colleges"
           } else if (type === 'generated') {
-            this.state.collegeDetailList
-              .filter((college: any) => college.is_declared === 'Y')
-              .forEach((college: any) => {
-                const group = this.fb.group({
-                  exam_result_notification_id: college.exam_result_notification_id || null,
-                  college_id: college.college_id || null,
-                  college_name_e: college.college_name_e || '',
-                  notification_number: college?.notification_number || '',
-                  notification_date: college?.notification_date || '',
-                  file_path: college?.file_path || '',
-                  is_published: college?.is_published || '',
-                  remark: college.is_published !== 'Y' ? college.is_notification_signed === 'Y' ? "E-Sign Done" : "" : ""
-                });
-                array.push(group);
+            this.state.collegeDetailList.forEach((college: any) => {
+              const group = this.fb.group({
+                exam_result_notification_id: college.exam_result_notification_id || null,
+                college_id: college.college_id || null,
+                college_name_e: college.college_name_e || '',
+                notification_number: college?.notification_number || '',
+                notification_date: college?.notification_date || '',
+                file_path: college?.file_path || '',
+                is_published: college?.is_published || '',
+                remark: college.is_published !== 'Y' ? college.is_notification_signed === 'Y' ? "E-Sign Done" : "" : ""
               });
+              array.push(group);
+            });
             this.generatedListOption.title = "List of Generated Notification"
           } else if (type === 'notSigned') {
-            this.state.collegeDetailList
-              .filter((college: any) => college.is_notification_signed !== 'Y')
-              .forEach((college: any) => {
-                const group = this.fb.group({
-                  exam_result_notification_id: [college.exam_result_notification_id || null],
-                  college_id: [college.college_id || null],
-                  college_name_e: [college.college_name_e || ''],
-                  notification_number: [college.notification_number || ''],
-                  notification_date: [college.notification_date || ''],
-                  file_path: [college?.file_path || ''],
-                  selected: [true],
-                  remark: college.is_published !== 'Y' ? "E-Sign Penging" : ""
-                });
-                array.push(group);
+            this.state.collegeDetailList.forEach((college: any) => {
+              const group = this.fb.group({
+                exam_result_notification_id: [college.exam_result_notification_id || null],
+                college_id: [college.college_id || null],
+                college_name_e: [college.college_name_e || ''],
+                notification_number: [college.notification_number || ''],
+                notification_date: [college.notification_date || ''],
+                file_path: [college?.file_path || ''],
+                selected: [true],
+                remark: college.is_published !== 'Y' ? "E-Sign Penging" : ""
               });
+              array.push(group);
+            });
             this.generatedListOption.title = "List of not Signed Notification";
           } else if (type === 'signed') {
-            this.state.collegeDetailList
-              .filter((college: any) => college.is_notification_signed === 'Y')
-              .forEach((college: any) => {
-                const group = this.fb.group({
-                  exam_result_notification_id: college.exam_result_notification_id || null,
-                  college_id: college.college_id || null,
-                  college_name_e: college.college_name_e || '',
-                  notification_number: college?.notification_number || '',
-                  notification_date: college?.notification_date || '',
-                  is_published: college?.is_published || '',
-                  file_path: college?.file_path || '',
-                  remark: college.is_published !== 'Y' ? "Publish Pending" : ""
-                });
-                array.push(group);
+            this.state.collegeDetailList.forEach((college: any) => {
+              const group = this.fb.group({
+                exam_result_notification_id: college.exam_result_notification_id || null,
+                college_id: college.college_id || null,
+                college_name_e: college.college_name_e || '',
+                notification_number: college?.notification_number || '',
+                notification_date: college?.notification_date || '',
+                is_published: college?.is_published || '',
+                file_path: college?.file_path || '',
+                remark: college.is_published !== 'Y' ? "Publish Pending" : ""
               });
+              array.push(group);
+            });
             this.generatedListOption.title = "List of Signed Notification"
           } else if (type === 'notPublished') {
-            this.state.collegeDetailList
-              .filter((college: any) => college.is_published !== 'Y' && college.is_notification_signed === 'Y')
-              .forEach((college: any) => {
-                const group = this.fb.group({
-                  exam_result_notification_id: college.exam_result_notification_id || null,
-                  college_id: college.college_id || null,
-                  college_name_e: college.college_name_e || '',
-                  notification_number: college?.notification_number || '',
-                  notification_date: college?.notification_date || '',
-                  file_path: college?.file_path || '',
-                  selected: [true],
-                  remark: "Publish Pending"
-                });
-                array.push(group);
+            this.state.collegeDetailList.forEach((college: any) => {
+              const group = this.fb.group({
+                exam_result_notification_id: college.exam_result_notification_id || null,
+                college_id: college.college_id || null,
+                college_name_e: college.college_name_e || '',
+                notification_number: college?.notification_number || '',
+                notification_date: college?.notification_date || '',
+                file_path: college?.file_path || '',
+                selected: [true],
+                remark: "Publish Pending"
               });
+              array.push(group);
+            });
             this.generatedListOption.title = "List of not Published Notification"
           } else if (type === 'published') {
-            this.state.collegeDetailList
-              .filter((college: any) => college.is_published === 'Y')
-              .forEach((college: any) => {
-                const group = this.fb.group({
-                  exam_result_notification_id: college.exam_result_notification_id || null,
-                  college_id: college.college_id || null,
-                  college_name_e: college.college_name_e || '',
-                  notification_number: college?.notification_number || '',
-                  notification_date: college?.notification_date || '',
-                  file_path: college?.file_path || '',
-                });
-                array.push(group);
+            this.state.collegeDetailList.forEach((college: any) => {
+              const group = this.fb.group({
+                exam_result_notification_id: college.exam_result_notification_id || null,
+                college_id: college.college_id || null,
+                college_name_e: college.college_name_e || '',
+                notification_number: college?.notification_number || '',
+                notification_date: college?.notification_date || '',
+                file_path: college?.file_path || '',
               });
+              array.push(group);
+            });
             this.generatedListOption.title = "List of Published Notification"
           }
           this.generatedListOption.dataSource = this.resultNotificationReportFormGroup.get('resultDetails')?.value;
@@ -438,6 +398,32 @@ export class ResultNotificationComponent implements OnInit {
         });
   };
 
+  checkTypeForParam(type: string) {
+    switch (type) {
+
+      case "notGenerated":
+        return "not_generated=1";
+
+      case "generated":
+        return "is_declared=Y";
+
+      case "notSigned":
+        return "is_notification_signed=N";
+
+      case "signed":
+        return "is_notification_signed=Y";
+
+      case "notPublished":
+        return "is_published=N";
+
+      case "published":
+        return "is_published=Y";
+
+      default:
+        return "";
+    }
+  }
+
   getDetails_click() {
     this.actionType = '';
     this.generatedListOption.dataSource = [];
@@ -446,17 +432,20 @@ export class ResultNotificationComponent implements OnInit {
       academic_session_id,
       semester_id,
       degree_programme_type_id,
-      degree_programme_id
+      degree_programme_id,
+      valuation_type_id,
+      exam_type_id
     } = this.resultNotificationReportFormGroup.get('selection')?.value;
-    // console.log("===========.......->>>>> : ", this.resultNotificationReportFormGroup.get('selection')?.value);
     if (
-      academic_session_id &&
-      semester_id &&
-      degree_programme_type_id) {
+      academic_session_id && exam_type_id &&
+      semester_id && valuation_type_id &&
+      degree_programme_type_id && degree_programme_id) {
       this.getMatrixData(
         academic_session_id,
         semester_id,
-        degree_programme_type_id
+        degree_programme_id,
+        valuation_type_id,
+        exam_type_id
       );
     } else {
       this.alert.alertMessage("Please select all fields", "", "warning");
@@ -476,6 +465,7 @@ export class ResultNotificationComponent implements OnInit {
       semester_id,
       degree_programme_type_id,
       degree_programme_id,
+      exam_type_id,
       valuation_type_id
     } = this.resultNotificationReportFormGroup.get('selection')?.value;
     // this.resultNotificationReportFormGroup.get('resultDetail.course_nature_id')?.setValue(item.course_nature_id);
@@ -484,28 +474,87 @@ export class ResultNotificationComponent implements OnInit {
       case 'notGenerated':
         this.actionType = 'notGenerated';
         // this.getCollegeDetailData('notGenerated', degree_programme_type_id, dean_committee_id, dean_committee_name_e);
-        this.getDetailData('notGenerated', degree_programme_type_id, dean_committee_id, dean_committee_name_e, valuation_type_id);
+        this.getDetailData('notGenerated',
+          degree_programme_type_id,
+          dean_committee_id,
+          dean_committee_name_e,
+          exam_type_id,
+          valuation_type_id,
+          academic_session_id,
+          course_year_id,
+          semester_id,
+          degree_programme_id);
         break;
       case 'generated':
         this.actionType = 'generated';
-        this.getDetailData('generated', degree_programme_type_id, dean_committee_id, dean_committee_name_e, valuation_type_id);
+        this.getDetailData('generated',
+          degree_programme_type_id,
+          dean_committee_id,
+          dean_committee_name_e,
+          exam_type_id,
+          valuation_type_id,
+          academic_session_id,
+          course_year_id,
+          semester_id,
+          degree_programme_id
+        );
         // this.alert.alertMessage("Feature will be activated soon", "", "warning");
         break;
       case 'notSigned':
         this.actionType = 'notSigned';
-        this.getDetailData('notSigned', degree_programme_type_id, dean_committee_id, dean_committee_name_e, valuation_type_id);
+        this.getDetailData('notSigned',
+          degree_programme_type_id,
+          dean_committee_id,
+          dean_committee_name_e,
+          exam_type_id,
+          valuation_type_id,
+          academic_session_id,
+          course_year_id,
+          semester_id,
+          degree_programme_id
+        );
         break;
       case 'signed':
         this.actionType = 'signed';
-        this.getDetailData('signed', degree_programme_type_id, dean_committee_id, dean_committee_name_e, valuation_type_id);
+        this.getDetailData('signed',
+          degree_programme_type_id,
+          dean_committee_id,
+          dean_committee_name_e,
+          exam_type_id,
+          valuation_type_id,
+          academic_session_id,
+          course_year_id,
+          semester_id,
+          degree_programme_id
+        );
         break;
       case 'notPublished':
         this.actionType = 'notPublished';
-        this.getDetailData('notPublished', degree_programme_type_id, dean_committee_id, dean_committee_name_e, valuation_type_id);
+        this.getDetailData('notPublished',
+          degree_programme_type_id,
+          dean_committee_id,
+          dean_committee_name_e,
+          exam_type_id,
+          valuation_type_id,
+          academic_session_id,
+          course_year_id,
+          semester_id,
+          degree_programme_id
+        );
         break;
       case 'published':
         this.actionType = 'published';
-        this.getDetailData('published', degree_programme_type_id, dean_committee_id, dean_committee_name_e, valuation_type_id);
+        this.getDetailData('published',
+          degree_programme_type_id,
+          dean_committee_id,
+          dean_committee_name_e,
+          exam_type_id,
+          valuation_type_id,
+          academic_session_id,
+          course_year_id,
+          semester_id,
+          degree_programme_id
+        );
         break;
       default:
         this.actionType = '';
@@ -530,54 +579,43 @@ export class ResultNotificationComponent implements OnInit {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
-  // * Get Matrix data
+  
   getMatrixData(
     academic_session_id: number,
     semester_id: number,
-    degree_programme_type_id: number
+    degree_programme_id: number,
+    valuation_type_id: number,
+    exam_type_id: number
   ) {
-    this.http.getParam('/course/get/getRunningCourseYear', {
+    this.http.getParam('/markEntry/get/getDashboardForExamResultNotification', {
       academic_session_id,
       semester_id,
-      degree_programme_type_id
+      degree_programme_id,
+      valuation_type_id,
+      exam_type_id
     }, 'academic')
       .subscribe(
         (result: any) => {
-          let data = result?.body?.data || [];
-
-          // Sanitize data types if needed
-          data.forEach((item: any) => {
-            item.dean_committee_id = +item.dean_committee_id;
-            item.exam_type_id = +item.exam_type_id;
-          });
-
-          let temp = data.filter((mat: any) => mat.course_nature_id === 1);
-
-          // Correct multi-level sort
-          let sorted = temp.sort((a: any, b: any) => {
-            if (a.dean_committee_id !== b.dean_committee_id) {
-              return a.dean_committee_id - b.dean_committee_id;
-            } else if (a.exam_type_id !== b.exam_type_id) {
-              return a.exam_type_id - b.exam_type_id;
-            } else if (a.course_year_id !== b.course_year_id) {
-              return a.course_year_id - b.course_year_id;
-            } else {
-              return a.course_nature_id - b.course_nature_id;
-            }
-          });
-
-          this.state.matrixList = sorted;
-          this.matrixTableOptions.dataSource = this.state.matrixList;
-          this.matrixTableOptions.listLength = this.state.matrixList.length
-          // console.log("Sorted matrixList:===> ", this.state);
+          if (result?.body?.data?.message) {
+            this.alert.alertMessage(result.body.data.message || "Result Notification Generated.", "", "success")
+          } else if (result?.body?.error?.message) {
+            this.alert.alertMessage(result.body.error.message || "Something went wrong!", "", "error");
+          } else if (result?.body?.error) {
+            this.alert.alertMessage(result?.body?.error || "", "", "error");
+          } else if (result?.body?.data?.length > 0) {
+            let data = result?.body?.data || [];
+            this.state.matrixList = data;
+            this.matrixTableOptions.dataSource = this.state.matrixList;
+            this.matrixTableOptions.listLength = this.state.matrixList.length
+          } else {
+            this.alert.alertMessage("No Records Found", "", "warning");
+          }
         },
         (error) => {
           console.error('Error in matrixList:', error);
           this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
         }
       );
-
   }
 
   onToggleSelectAll(isChecked: boolean): void {
@@ -611,6 +649,7 @@ export class ResultNotificationComponent implements OnInit {
     let selectedCollege = collegeDetails.filter((collegeDetail: any) => collegeDetail.college_id === selectedCollegeDetails[0]?.college_id);
     let academicSession = this.state.acadmicSessionList.filter((academicS: any) => academicS.academic_session_id === selection.academic_session_id);
     let examType = this.state.examTypeList.filter((examT: any) => examT.exam_type_id === selection.exam_type_id);
+    let valuationType = this.state.valuationTypeList.filter((valT: any) => valT.valuation_type_id === selection.valuation_type_id);
     let payload = {
       data: selectedCollegeDetails,
       dean_committee_name_e: selectedCollege[0]?.dean_committee_name_e,
@@ -618,6 +657,7 @@ export class ResultNotificationComponent implements OnInit {
       exam_type_name_e: examType[0]?.exam_type_name_e,
       exam_type_id: selection.exam_type_id,
       valuation_type_id: selection.valuation_type_id,
+      valuation_type_name_e: valuationType[0].valuation_type_name_e
     }
     // console.log("payload---------s-payload---------------------");
     // console.log("payload :", payload);
@@ -637,7 +677,7 @@ export class ResultNotificationComponent implements OnInit {
           this.getDetails_click(); //^ reload page
         },
         (error) => {
-          console.error('Error in valuationTypeList:', error);
+          console.error('Error in generateResultNotification:', error);
           this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
         });
   }

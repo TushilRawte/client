@@ -20,6 +20,7 @@ export class CollegeTransferComponent implements OnInit {
     collegeList: [] as any,
     semesterList: [] as any,
     getCourseYear: [] as any,
+    getFilterCourseYearList: [] as any,
   }
   generateColllegeTransferFormGroup!: FormGroup;
   rowsFormArray!: FormArray;
@@ -39,6 +40,46 @@ export class CollegeTransferComponent implements OnInit {
     this.getCollegeData();
     this.getSemesterData();
     this.getCourseYearData();
+    // 🔥 When user selects degree programme, auto load course years
+    // this.getCollegeTransferDetailsForm.get('degree_programme_id')?.valueChanges.subscribe(
+    //   (degree_programme_id) => {
+    //     this.state.getCourseYear = [];   // clear old data
+    //     this.getCollegeTransferDetailsForm.patchValue({ course_year_id: '' }); // reset year dropdown
+
+    //     if (degree_programme_id) {
+    //       this.getCourseYearData(degree_programme_id);
+    //     }
+    //   }
+    // );
+
+    this.getCollegeTransferDetailsForm.get('degree_programme_id')?.valueChanges.subscribe(
+      (degree_programme_id) => {
+
+        this.state.getFilterCourseYearList = []  // clear old data
+        this.getCollegeTransferDetailsForm.patchValue({ course_year_id: '' }); // reset dropdown
+
+        if (degree_programme_id) {
+
+          let selectedDegreePro = this.state.degreeProgrammeList
+            .find((degreePro: any) => degreePro.degree_programme_id === degree_programme_id);
+
+          if (!selectedDegreePro) return;
+
+          // ⭐ CONDITION: if type_id is 2 or 3 -> allow only year 1,2,3
+          if (selectedDegreePro.degree_programme_type_id === 2 ||
+            selectedDegreePro.degree_programme_type_id === 3) {
+
+            this.state.getFilterCourseYearList = this.state.getCourseYear.filter(
+              (obj: any) => [1, 2, 3].includes(obj.course_year_id)
+            );
+          } else {
+            // otherwise show all
+            this.state.getFilterCourseYearList = this.state.getCourseYear
+          }
+        }
+      }
+    );
+
   }
 
   getStudentListOptions: any = {
@@ -149,6 +190,23 @@ export class CollegeTransferComponent implements OnInit {
       return this.alert.alertMessage("Old College and New College will not be the same.", "Please Enter Another College Name for Transfer.", "warning");
     }
     let selectedDegreePro = this.state.degreeProgrammeList.filter((degreePro: any) => degreePro.degree_programme_id === degree_programme_id);
+    let selectedCollege = this.state.collegeList.filter((collegeObj: any) => collegeObj.college_id == college_id);
+    let selectedNewCollege = this.state.collegeList.filter((collegeObj: any) => collegeObj.college_id == new_college_id);
+    // ✔ Fix variable naming & sentence
+    let old_college_type_id = selectedCollege?.[0].college_type_id;
+    let new_college_type_id = selectedNewCollege?.[0].college_type_id;
+
+    let old_col_type = old_college_type_id === 1 ? "Constituent College" : "Affiliated College";
+    let new_col_type = new_college_type_id === 1 ? "Constituent College" : "Affiliated College";
+
+    // ✔ Same-type transfer check
+    if (old_college_type_id !== new_college_type_id) {
+      return this.alert.alertMessage(
+        `You cannot transfer a student from ${old_col_type} to ${new_col_type}.`,
+        "Note: You can transfer only between colleges of the same type (Constituent → Constituent or Affiliated → Affiliated).",
+        "warning"
+      );
+    }
 
     this.http.putData('/studentProfile/update/studentCollegeTransfer', {
       academic_session_id,
@@ -251,6 +309,7 @@ export class CollegeTransferComponent implements OnInit {
         (result: any) => {
           // console.log("getCourseYear : ", result.body.data);
           this.state.getCourseYear = result.body.data;
+          this.state.getFilterCourseYearList = this.state.getCourseYear
         },
         (error) => {
           console.error('Error in getCourseYear:', error);

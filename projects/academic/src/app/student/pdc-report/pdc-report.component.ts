@@ -74,13 +74,18 @@ export class PdcReportComponent implements OnInit {
 
       // call API to get data
       this.http.getParam('/studentProfile/get/getStudentListForPDC',
-        { academic_session_id, degree_programme_id, college_id, pdc_gen_yn: 'Y' },
+        {
+          degree_completed_session: academic_session_id,
+          degree_programme_id,
+          college_id,
+          pdc_gen_yn: 'Y'
+        },
         'academic')
         .subscribe(
           (result: any) => {
             // console.log("result?.body==> ", result?.body);
             if (result?.body?.data?.length === 0) {
-              this.alert.alertMessage("Invalid User", "No Records Found in Databse", "error");
+              this.alert.alertMessage("No Records Found in Databse", "Not Generated for this session", "error");
             } else if (result?.body?.error?.message) {
               this.alert.alertMessage(result?.body?.error?.message || "No Degree Found OR Invalid UE ID", "", "error");
             }
