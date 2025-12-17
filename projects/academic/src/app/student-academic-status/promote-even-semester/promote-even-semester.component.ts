@@ -91,7 +91,9 @@ getStudentList()
   }
   console.log(formData, 'formdata');
   const params = {
-    academic_session_id: formData.academic_session_id,
+    academic_session_id: formData.academic_session_id  + 1,
+    academic_session_id2: formData.academic_session_id,
+    academic_session_id3: formData.academic_session_id,
     semester_id: formData.semester_id,
     course_year_id: formData.course_year_id,
     degree_programme_id: formData.degree_programme_id,
@@ -104,5 +106,6 @@ getStudentList()
     });
   
 }
+// academic_session_id,academic_session_id2,academic_session_id3,course_year_id,degree_programme_id,dean_committee_id,semester_id
 
 }

@@ -69,7 +69,8 @@
               <th>Degree Programme</th>
                <th>Dean Committee</th>
               <th>Student Id</th>
-              <!-- <th>Year</th> -->
+              <th>Promoted Status</th>
+              <th>Is Required</th>
             </tr>
           </thead>
     
@@ -77,9 +78,12 @@
             <tr *ngFor="let item of studentList; let i = index " >
               <td>{{i+1}}</td>
               <td>{{item.college_name_e}}</td>
+              <td>{{item.ue_id}}</td>
               <td>{{item.degree_programme_name_e}}</td>
               <td>{{item.dean_committee_name_e}}</td>
-              <td>{{item.ue_id}}</td>
+              <td>{{item.promoted_status}}</td>
+              <td>{{item.Final_Status}}</td>
+              
             </tr>
           </tbody>
         </table>

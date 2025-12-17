@@ -2,7 +2,6 @@ import { Component, EventEmitter, input, Input, OnInit, Output } from '@angular/
 import { FormGroup } from '@angular/forms';
 import { HttpService } from 'shared'; 
 
-
 @Component({
   selector: 'app-marks-entry-dropdown',
   standalone: false,
@@ -20,6 +19,8 @@ export class MarksEntryDropdownComponent implements OnInit {
   @Input() showExamType : boolean = true
   @Input() showExamPaper:boolean = true
   @Input() showDeanCommitee:boolean = false
+  @Input() showStudent:boolean = false
+  @Input() showSingleDegreeProgramme: boolean = false;
 
 
   @Output() collegeChange = new EventEmitter<any>();
@@ -37,6 +38,7 @@ export class MarksEntryDropdownComponent implements OnInit {
   examTypeList: any;
   getExamPaperTypeList: any;
   getDeanCommiteeList: any;
+  singleDegreeProgrammeList: any
 
   constructor(private HTTP: HttpService) {}
 ngOnInit(): void {
@@ -49,6 +51,7 @@ ngOnInit(): void {
   this.getExamType();
   this.getExamPaperType();
   this.getDeanCommitee();
+  this.getDegreeProgrammeSingle();
 }
 
   // ✅ Dropdown API calls (using your same HTTP pattern)
@@ -124,6 +127,21 @@ ngOnInit(): void {
       this.getDeanCommiteeList = result.body.data;
       // console.log('Course Year List:', this.getDeanCommiteeList);
     })
+  }
+
+     getDegreeProgrammeSingle() {
+
+    // fetch degree programmes for this college
+    this.HTTP.getParam('/master/get/getDegreePrograamList/', {}, 'academic')
+      .subscribe((res: any) => {
+        this.singleDegreeProgrammeList = res.body.data || [];
+        // Add extra hardcoded programmes for college_id = 5
+          this.singleDegreeProgrammeList.push(
+            { degree_programme_id: 14, degree_programme_name_e: "M.Sc.(Ag.) (PGS)", degree_id: 12, subject_id: 139 },
+            { degree_programme_id: 37, degree_programme_name_e: "Ph.D in Agriculture (PGS)", degree_id: 5, subject_id: 139 }
+          );
+        // reset degree programme selection in the form
+      });
   }
 
 onDegreeProgrammeChange(degree_programme_id: number) {

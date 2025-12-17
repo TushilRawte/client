@@ -44,6 +44,10 @@ import { StudentPasswordResetComponent } from './student/student-password-reset/
 import { StudentAddressChangeRequestComponent } from './student/student-address-change-request/student-address-change-request.component';
 import { ApproveUidnComponent } from './student-profile/approve-uidn/approve-uidn.component';
 import { PromoteEvenSemesterComponent } from './student-academic-status/promote-even-semester/promote-even-semester.component';
+import { MarksEntryPracticalComponent } from './marks entry/marks-entry-practical/marks-entry-practical.component';
+import { MarksEntryInternalPracticalComponent } from './marks entry/marks-entry-internal-practical/marks-entry-internal-practical.component';
+import { MarksEntryReportComponent } from './marks entry/marks-entry-report/marks-entry-report.component';
+import { MarksEntryAbsentComponent } from './marks entry/marks-entry-absent/marks-entry-absent.component';
 
 
 @NgModule({
@@ -84,6 +88,10 @@ import { PromoteEvenSemesterComponent } from './student-academic-status/promote-
     StudentAddressChangeRequestComponent,
     ApproveUidnComponent,
     PromoteEvenSemesterComponent,
+    MarksEntryPracticalComponent,
+    MarksEntryInternalPracticalComponent,
+    MarksEntryReportComponent,
+    MarksEntryAbsentComponent,
 
   ],
   imports: [

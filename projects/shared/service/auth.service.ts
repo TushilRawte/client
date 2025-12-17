@@ -77,8 +77,13 @@ export class AuthService {
     return this.es.decrypt(this.cookie.get('designation_id')) || undefined
   }
 
-    getEmpID() {
-    return this.es.decrypt(this.cookie.get('emp_id')) || undefined
+  //   getEmpID() {
+  //   return this.es.decrypt(this.cookie.get('emp_id')) || undefined
+  // }
+
+  getEmpID() {
+    const user = this.currentUser;
+    return user ? user.emp_id : null;
   }
 
   setModuleID(module_id: any) {

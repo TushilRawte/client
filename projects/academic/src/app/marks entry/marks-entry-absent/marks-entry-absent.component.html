@@ -1,0 +1,80 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Registered but Marks Not Entered</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="marksEntryFacultyFormGroup">
+      <app-marks-entry-dropdown 
+        [formGroup]="marksEntryFacultyFormGroup" 
+        [showDegreeProgramme]="false" 
+        [showDeanCommitee]="true" 
+        [showExamPaper]="true" 
+        [showvaluation]="false" 
+        [showExamType]="false" 
+        [showCollege]="false" 
+        [showStudent]="true"
+        [showExamType]="true"
+        [showvaluation]="true" 
+        (examPaperTypeChange)="onExamPaperTypeChange($event)" 
+        [showSingleDegreeProgramme]="true">
+      </app-marks-entry-dropdown>
+
+      <div class="row">
+        <div class="col-md-2 mt-4">
+          <button class="btn btn-primary" type="button" (click)="getStudent()">Get List</button>
+        </div>
+      </div>
+
+      <div class="row mt-3" *ngIf="students.length > 0">
+        <!-- Add formArrayName directive here -->
+        <div class="table-responsive custom-table-wrapper" formArrayName="students">
+          <table class="table table-bordered">
+            <thead class="table-header">
+              <tr>
+                <th>#</th>
+                <th>Student Id</th>
+                <th>Course Code</th>
+                <th>Obtained Marks</th>
+                <th>Remark</th>
+                <th>Other Remark</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Use ng-container with formGroupName for each row -->
+              <ng-container *ngFor="let student of students.controls; let i = index">
+                <tr [formGroupName]="i">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ student.get('student_master_id')?.value }}</td>
+                  <td>{{ student.get('course_code')?.value }}</td>
+                  <td>
+                    <input 
+                      type="number" 
+                      formControlName="obtained_mark"  readonly
+                      class="form-control" 
+                      style="width: 80px;"
+                      min="0">
+                  </td>
+                  <td>
+                    <select class="form-select" formControlName="remark_id">
+                      <option value="">Select Remark</option>
+                      <option *ngFor="let s of remarkList" [value]="s.remark_id">
+                        {{ s.remark_name_e }}
+                      </option>
+                    </select>
+                  </td>
+                  <td>
+                    <span style="color: red;">Marks Not Imported !</span>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+          <div class="col-md-2">
+          <button class="btn btn-success" type="button" (click)="onSubmit()">Submit</button>
+        </div>
+        </div>
+      </div>
+        
+    </form>
+  </mat-card-content>
+</mat-card>

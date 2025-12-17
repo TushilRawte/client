@@ -579,7 +579,7 @@ onSave() {
     is_render: true,
     page: 0,
     pageSize: 10,
-    title: 'Report Filter',
+    title: 'Report',
   };
 
     dashBoardListoptions: any = {
@@ -594,7 +594,7 @@ onSave() {
     is_render: true,
     page: 0,
     pageSize: 2,
-    title: 'Report Filter',
+    title: 'Report',
   };
 
 

@@ -1,4 +1,7 @@
 <mat-card>
+         <mat-card-header>
+        <mat-card-title>Course Allotment</mat-card-title>
+    </mat-card-header>
     <mat-card-content>
       <form [formGroup]="courseAllotFormGroup">
         <div class="row">
@@ -72,10 +75,9 @@
                   <td>
                     <div class="btnsection">
                       <span class="a-btn">
-                        <!-- <button [disabled]="hasSpecificProgramme && !showChildButton" mat-icon-button color="primary" type="button" (click)="openCourseGeneralCall(item)" ><mat-icon>add_circle</mat-icon>
-                        </button> -->
-                        <!-- [disabled]="hasSpecificProgramme && !showChildButton" -->
-                        <button [disabled]="item.allotment_type === 'M'" mat-icon-button color="primary" type="button" (click)="openCourseGenforUpdate(item,i)" ><mat-icon>edit</mat-icon></button>
+                     
+                         <!-- [disabled]="item.allotment_type === 'M'" -->
+                        <button  mat-icon-button color="primary" type="button" (click)="openCourseGenforUpdate(item,i)" ><mat-icon>edit</mat-icon></button>
 
                         <!-- <button mat-icon-button color="primary" type="button" (click)="openCourseGeneralforDilog(item,i)"><mat-icon>visibility</mat-icon></button> -->
                       </span>
@@ -141,39 +143,7 @@
                   </div>
               </ng-container>
              <ng-container *ngIf="ifShowContainer">
-                <!-- <div class="col-md-2 col-3 align-items-center" >
-                  <label>Other Department Course</label>
-                  <mat-checkbox [(ngModel)]="isAllCourse" (change)="toggleCourseSection()">Yes</mat-checkbox>
-                </div>
-              
-                <div class="col-md-6 col-12 mt-2">
-                  <ng-select *ngIf="isAllCourse"
-                             placeholder="Other Deparment Course"
-                             formControlName="course_id"
-                             appearance="outline"
-                             (change)="onCourseChange($event)">
-                    <ng-option *ngFor="let item of allCourses" [value]="item.course_id">
-                      {{ item.course_name }}
-                    </ng-option>
-                  </ng-select>
-              
-                  <ng-select *ngIf="!isAllCourse"
-                             placeholder="Course"
-                             formControlName="course_id"
-                             appearance="outline"
-                             (change)="onCourseChange($event)">
-                    <ng-option *ngFor="let item of courseList" [value]="item.course_id">
-                      {{ item.course_name }}
-                    </ng-option>
-                  </ng-select>
-                </div>
-    
-                  <div class="col-md-2 col-6">
-                    <mat-form-field appearance="outline">
-                      <mat-label>Course Nature</mat-label>
-                      <input matInput formControlName="course_nature" readonly>
-                    </mat-form-field>
-                  </div> -->
+             
                                     <div class="col-md-2 col-3 align-items-center">
                       <label>Other Department Course</label>
                       <mat-checkbox formControlName="isAllCourse">
@@ -286,18 +256,30 @@
                       {{ getTeacherName(teacher?.emp_id) }}{{ !last ? ', ' : '' }}
                     </span>
                   </td>
-                  <td>
-                    <!-- <button  mat-icon-button color="warn" (click)="removeRow(i)">
+                   <!-- <button  mat-icon-button color="warn" (click)="removeRow(i)">
                       <mat-icon>delete</mat-icon>
                     </button> -->
+                  <!-- <td>
                     <button  mat-icon-button color="warn" (click)="deleteParticularCourse(row, i)">
                       <mat-icon>delete</mat-icon>
+                    </button>
+                  </td> -->
+                  <td>
+                    <button mat-icon-button 
+                            [color]="isEditModeDelete && row.get('allotment_detail_id')?.value ? 'warn' : 'accent'" 
+                            (click)="deleteParticularCourse(row, i)"
+                            [matTooltip]="isEditModeDelete && row.get('allotment_detail_id')?.value ? 
+                                        'Delete permanently from database' : 
+                                        'Remove from list'">
+                      <mat-icon>
+                        {{ isEditModeDelete && row.get('allotment_detail_id')?.value ? 'delete_forever' : 'delete' }}
+                      </mat-icon>
                     </button>
                   </td>
                   <td>
                     <!-- *ngIf="isShowbutton == true" -->
                      <!-- [disabled]="isFilalizeThanHideDeleteButton" -->
-                    <button    mat-icon-button color="primary"(click)="visibleForm()" (click)="editRow(row, i)">
+                    <button  mat-icon-button color="primary"(click)="visibleForm()" (click)="editRow(row, i)">
                       <mat-icon>edit</mat-icon>
                     </button>
                   </td>

@@ -51,6 +51,10 @@ export class CourseFinalizeComponent implements OnInit {
   showFinalizeButton: boolean = false;
   showUnfinalizeButton: boolean = false;
   isFinalizedStatusbtn: any;
+  selectedDeanCommitteeId: any;
+  // In the component class, add these properties:
+selectedRowIndex: number = -1;
+isFinalizedStatusForSelectedRow: string = '';
 
   constructor(
     private HTTP: HttpService,
@@ -101,13 +105,44 @@ export class CourseFinalizeComponent implements OnInit {
     this.getDegreeProgramme(college_id);
   }
 
-  getDegreeProgramme(college_id: number) {
-    this.HTTP.getParam('/master/get/getDegreePrograamList/', { college_id }, 'academic').subscribe((result: any) => {
-      console.log('GP', result);
-      this.degreeProgramme = result.body.data;
+  // getDegreeProgramme(college_id: number) {
+  //   this.HTTP.getParam('/master/get/getDegreePrograamList/', { college_id }, 'academic').subscribe((result: any) => {
+  //     console.log('GP', result);
+  //     this.degreeProgramme = result.body.data;
 
-    })
-  }
+  //   })
+  // }
+
+  getDegreeProgramme(college_id: number) {
+  this.HTTP.getParam('/master/get/getDegreePrograamList/', { college_id }, 'academic')
+    .subscribe((result: any) => {
+      this.degreeProgramme = result.body.data;
+      console.log('Initial Degree Programme:', this.degreeProgramme);
+
+      // Add hardcoded objects only if college_id = 5
+      if (college_id === 5) {
+        const extraProgrammes = [
+          {
+            degree_programme_id: 14,
+            degree_programme_name_e: "M.Sc.(Ag.) (PGS)",
+            degree_id: 12,
+            subject_id: 139
+          },
+          {
+            degree_programme_id: 37,
+            degree_programme_name_e: "Ph.D in Agriculture (PGS)",
+            degree_id: 5,
+            subject_id: 139
+          }
+        ];
+
+        // Push into array
+        this.degreeProgramme.push(...extraProgrammes);
+      }
+
+      console.log('Final Degree Programme:', this.degreeProgramme);
+    });
+}
 
   getallCourse() {
     this.HTTP.getParam('/master/get/getCourseList/', {}, 'academic').subscribe((result: any) => {
@@ -144,61 +179,120 @@ export class CourseFinalizeComponent implements OnInit {
     this.responseData = [];
   }
 
+// //old
+//   getCourseYearList() {
+//     const formValue = this.finalizecourseFormGroup.value;
+//     if (
+//       !formValue.academic_session_id ||
+//       !formValue.college_id ||
+//       !formValue.semester_id
+//     ) {
+//       alert('Please fill all required fields ...');
+//       return;
+//     }
+//     const params = {
+//       academic_session_id: formValue.academic_session_id,
+//       semester_id: formValue.semester_id,
+//       college_id: formValue.college_id,
+//       degree_id: this.selectedDegree
+//     };
+//     console.log('Params for course year list:', params);
+//     this.HTTP.getParam('/master/get/getYearDeancmtList/', params, 'academic').subscribe((result: any) => {
+//       console.log('course Year', result);
+//       this.courseYearList = result.body.data;
+//       if (this.courseYearList && this.courseYearList.length > 0) {
+//         // Loop through each year row and call status API
+//         this.courseYearList.forEach((row: any, index: number) => {
+//           const checkParams = {
+//             academic_session_id: params.academic_session_id,
+//             semester_id: params.semester_id,
+//             college_id: params.college_id,
+//             degree_programme_id: formValue.degree_programme_id,
+//             course_year_id: row.course_year_id,
+//             dean_committee_id: row.dean_committee_id
+//           };
+//           // this.HTTP.getParam('/master/get/checkCourseAllotment', checkParams, 'academic').subscribe((response: any) => {
+//           //   const exists = response.body?.data?.data_exists === 1;
+//           //   console.log('Allotment status for row', index, ':', exists);
+//           //   this.courseYearList[index].allotmentStatus = exists;
+//           // });
 
-  getCourseYearList() {
-    const formValue = this.finalizecourseFormGroup.value;
-    if (
-      !formValue.academic_session_id ||
-      !formValue.college_id ||
-      !formValue.semester_id
-    ) {
-      alert('Please fill all required fields ...');
-      return;
-    }
-    const params = {
-      academic_session_id: formValue.academic_session_id,
-      semester_id: formValue.semester_id,
-      college_id: formValue.college_id,
-      degree_id: this.selectedDegree
-    };
-    console.log('Params for course year list:', params);
-    this.HTTP.getParam('/master/get/getYearDeancmtList/', params, 'academic').subscribe((result: any) => {
-      console.log('course Year', result);
-      this.courseYearList = result.body.data;
-      if (this.courseYearList && this.courseYearList.length > 0) {
-        // Loop through each year row and call status API
-        this.courseYearList.forEach((row: any, index: number) => {
-          const checkParams = {
-            academic_session_id: params.academic_session_id,
-            semester_id: params.semester_id,
-            college_id: params.college_id,
-            degree_programme_id: formValue.degree_programme_id,
-            course_year_id: row.course_year_id,
-            dean_committee_id: row.dean_committee_id
-          };
-          // this.HTTP.getParam('/master/get/checkCourseAllotment', checkParams, 'academic').subscribe((response: any) => {
-          //   const exists = response.body?.data?.data_exists === 1;
-          //   console.log('Allotment status for row', index, ':', exists);
-          //   this.courseYearList[index].allotmentStatus = exists;
-          // });
+//           this.HTTP.getParam('/master/get/checkCourseAllotment', checkParams, 'academic')
+//             .subscribe((response: any) => {
+//               const exists = response?.body?.data?.[0]?.data_exists === 1;
+//               row.allotmentStatus = exists; // ✅ Update directly on the row
+//                   // this.getCourseYearList();
 
-          this.HTTP.getParam('/master/get/checkCourseAllotment', checkParams, 'academic')
-            .subscribe((response: any) => {
-              const exists = response?.body?.data?.[0]?.data_exists === 1;
-              row.allotmentStatus = exists; // ✅ Update directly on the row
 
-            });
-          this.HTTP.getParam('/master/get/checkCourseFinalizeStatus', checkParams, 'academic')
-            .subscribe((response: any) => {
-              console.log('Response for finalize status:', response);
-              const finalizeYN = response?.body?.data[0].finalize_yn;
-              this.isFinalizedStatusbtn = finalizeYN;
-              this.courseYearList[index].finalizeStatus = finalizeYN;
-            });
-        });
-      }
-    })
+//             });
+//           this.HTTP.getParam('/master/get/checkCourseFinalizeStatus', checkParams, 'academic')
+//             .subscribe((response: any) => {
+//               console.log('Response for finalize status:', response);
+//               const finalizeYN = response?.body?.data[0]?.finalize_yn;
+//               this.isFinalizedStatusbtn = finalizeYN;
+//               this.courseYearList[index].finalizeStatus = finalizeYN;
+//                   // this.getCourseYearList();
+
+//             });
+//         });
+//       }
+//     })
+//   }
+
+getCourseYearList() {
+  const formValue = this.finalizecourseFormGroup.value;
+  if (
+    !formValue.academic_session_id ||
+    !formValue.college_id ||
+    !formValue.semester_id
+  ) {
+    alert('Please fill all required fields ...');
+    return;
   }
+  
+  const params = {
+    academic_session_id: formValue.academic_session_id,
+    semester_id: formValue.semester_id,
+    college_id: formValue.college_id,
+    degree_id: this.selectedDegree
+  };
+  
+  this.HTTP.getParam('/master/get/getYearDeancmtList/', params, 'academic').subscribe((result: any) => {
+    this.courseYearList = result.body.data;
+    
+    if (this.courseYearList && this.courseYearList.length > 0) {
+      // Reset selected row
+      this.selectedRowIndex = -1;
+      this.responseData = [];
+      
+      // Loop through each year row and call status APIs
+      this.courseYearList.forEach((row: any, index: number) => {
+        const checkParams = {
+          academic_session_id: params.academic_session_id,
+          semester_id: params.semester_id,
+          college_id: params.college_id,
+          degree_programme_id: formValue.degree_programme_id,
+          course_year_id: row.course_year_id,
+          dean_committee_id: row.dean_committee_id
+        };
+        
+        // Check allotment status
+        this.HTTP.getParam('/master/get/checkCourseAllotment', checkParams, 'academic')
+          .subscribe((response: any) => {
+            const exists = response?.body?.data?.[0]?.data_exists === 1;
+            row.allotmentStatus = exists;
+          });
+        
+        // Check finalize status
+        this.HTTP.getParam('/master/get/checkCourseFinalizeStatus', checkParams, 'academic')
+          .subscribe((response: any) => {
+            const finalizeYN = response?.body?.data?.[0]?.finalize_yn || 'N';
+            row.finalizeStatus = finalizeYN;
+          });
+      });
+    }
+  });
+}
 
   getCourseList() {
     this.HTTP.getParam(
@@ -233,36 +327,89 @@ export class CourseFinalizeComponent implements OnInit {
     });
   }
 
-  getCourse(item: any) {
-    const formValue = this.finalizecourseFormGroup.value;
-    if (
-      !formValue.academic_session_id ||
-      !formValue.college_id ||
-      !formValue.degree_programme_id ||
-      !formValue.semester_id ||
-      !item.course_year_id ||
-      !item.dean_committee_id
-    ) {
-      alert('Please fill all required fields before Print.');
-      return;
-    }
-    const params = {
-      academic_session_id: formValue.academic_session_id,
-      college_id: formValue.college_id,
-      degree_programme_id: formValue.degree_programme_id,
-      semester_id: formValue.semester_id,
-      dean_committee_id: item?.dean_committee_id,
-      course_year_id: item?.course_year_id,
-    };
-    this.HTTP.getParam('/master/get/getCourseForUpdate/', params, "academic").subscribe(
-      (result: any) => {
-        this.responseData = result.body.data;
-        this.print_row = result.body?.data?.courserows;
-        // this.isShowbutton = true;  
+  // // old
+  // getCourse(item: any) {
+  //   const formValue = this.finalizecourseFormGroup.value;
+  //   this.selectedCourseYearId = item.course_year_id;
+  //   this.selectedDeanCommitteeId = item.dean_committee_id;
+  //   if (
+  //     !formValue.academic_session_id ||
+  //     !formValue.college_id ||
+  //     !formValue.degree_programme_id ||
+  //     !formValue.semester_id ||
+  //     !item.course_year_id ||
+  //     !item.dean_committee_id
+  //   ) {
+  //     alert('Please fill all required fields before Print.');
+  //     return;
+  //   }
+  //   const params = {
+  //     academic_session_id: formValue.academic_session_id,
+  //     college_id: formValue.college_id,
+  //     degree_programme_id: formValue.degree_programme_id,
+  //     semester_id: formValue.semester_id,
+  //     dean_committee_id: item?.dean_committee_id,
+  //     course_year_id: item?.course_year_id,
+  //   };
+  //   this.HTTP.getParam('/master/get/getCourseForUpdate/', params, "academic").subscribe(
+  //     (result: any) => {
+  //       this.responseData = result.body.data;
+  //       this.print_row = result.body?.data?.courserows;
+  //       // this.isShowbutton = true;  
 
-      })
+  //     })
 
+  // }
+
+  getCourse(item: any, index: number) {
+  const formValue = this.finalizecourseFormGroup.value;
+  this.selectedCourseYearId = item.course_year_id;
+  this.selectedDeanCommitteeId = item.dean_committee_id;
+  this.selectedRowIndex = index; // Track which row is selected
+  
+  if (
+    !formValue.academic_session_id ||
+    !formValue.college_id ||
+    !formValue.degree_programme_id ||
+    !formValue.semester_id ||
+    !item.course_year_id ||
+    !item.dean_committee_id
+  ) {
+    alert('Please fill all required fields before Print.');
+    return;
   }
+  
+  const params = {
+    academic_session_id: formValue.academic_session_id,
+    college_id: formValue.college_id,
+    degree_programme_id: formValue.degree_programme_id,
+    semester_id: formValue.semester_id,
+    dean_committee_id: item?.dean_committee_id,
+    course_year_id: item?.course_year_id,
+  };
+  
+  this.HTTP.getParam('/master/get/getCourseForUpdate/', params, "academic").subscribe(
+    (result: any) => {
+      this.responseData = result.body.data;
+      this.print_row = result.body?.data?.courserows;
+      
+      // Get finalize status for this specific row
+      this.getFinalizeStatusForRow(params, index);
+    }
+  );
+}
+
+getFinalizeStatusForRow(params: any, index: number) {
+  this.HTTP.getParam('/master/get/checkCourseFinalizeStatus/', params, "academic")
+    .subscribe((result: any) => {
+      const data = result.body?.data;
+      if (data && data.length > 0) {
+        this.isFinalizedStatusForSelectedRow = data[0].finalize_yn;
+        // Also update the row's finalizeStatus
+        this.courseYearList[index].finalizeStatus = data[0].finalize_yn;
+      }
+    });
+}
 
 
   chckFinlize(item: any) {
@@ -449,12 +596,13 @@ export class CourseFinalizeComponent implements OnInit {
                 const deleteParams = {
                   allotment_main_id: this.allotmentMain_id
                 };
-
+               console.log('Delete Params:', deleteParams);
                 this.HTTP.deleteData('/course/delete/deleteMultipleCourse', deleteParams, 'academic')
                   .subscribe({
                     next: (deleteRes: any) => {
                       console.log('✅ Delete successful:', deleteRes);
                       alert('✅ Course allotment deleted successfully.');
+                          // this.getCourseYearList();
                       this.print_row = [];
                       this.responseData = [];
                     },
@@ -478,6 +626,77 @@ export class CourseFinalizeComponent implements OnInit {
       });
   }
 
+
+  finlizeCourseAllotment() {
+  const payload = {
+    allotment_main_id: this.print_row[0]?.allotment_main_id
+  };
+  
+  this.HTTP.putData('/course/update/updateFinalizeStatus/', payload, 'academic').subscribe(
+    (res: any) => {
+      if (!res.body.error) {
+        this.alert.alertMessage("Course Finalized.....!", "", "success");
+        
+        // Update the finalize status for the selected row
+        if (this.selectedRowIndex !== -1) {
+          this.courseYearList[this.selectedRowIndex].finalizeStatus = 'Y';
+        }
+        
+        this.print_row = [];
+        this.responseData = [];
+      } else {
+        this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning")
+      }
+    },
+  );
+}
+
+unfinalizeCourseAllotment() {
+  const formValue = this.finalizecourseFormGroup.value;
+  if (
+    !formValue.academic_session_id ||
+    !formValue.college_id ||
+    !formValue.degree_programme_id ||
+    !formValue.semester_id ||
+    !this.selectedCourseYearId ||
+    !this.selectedDeanCommitteeId
+  ) {
+    alert('Please fill all required fields OR Click to Show Course Button to Unfinalize.');
+    return;
+  }
+
+  const payload = {
+    academic_session_id: formValue.academic_session_id,
+    college_id: formValue.college_id,
+    degree_programme_id: formValue.degree_programme_id,
+    semester_id: formValue.semester_id,
+    course_year_id: this.selectedCourseYearId,
+    dean_committee_id: this.selectedDeanCommitteeId,
+    allotment_main_id: this.print_row[0]?.allotment_main_id
+  };
+
+  this.HTTP.putData('/course/update/updateUnfinalizeStatus/', payload, 'academic').subscribe(
+    (res: any) => {
+      if (!res.body.error) {
+        this.alert.alertMessage("Course Unfinalized.....!", "", "success");
+        
+        // Update the finalize status for the selected row
+        if (this.selectedRowIndex !== -1) {
+          this.courseYearList[this.selectedRowIndex].finalizeStatus = 'N';
+        }
+        
+        this.print_row = [];
+        this.responseData = [];
+      } else {
+        this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
+      }
+    },
+    (error) => {
+      console.error('Error in unfinalizeCourseAllotment:', error);
+      this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
+    }
+  );
+}
 
   // deleteAllotment(item:any){
   //   const formValue = this.finalizecourseFormGroup.value;
@@ -547,54 +766,75 @@ export class CourseFinalizeComponent implements OnInit {
 
   // Finalize and Unfinalize Course Allotment Methods ------------------------------
 
-  finlizeCourseAllotment() {
-    const payload = {
-      allotment_main_id: this.print_row[0]?.allotment_main_id
-    }
-    console.log(payload);
+  // finlizeCourseAllotment() {
+  //   const payload = {
+  //     allotment_main_id: this.print_row[0]?.allotment_main_id
+  //   }
+  //   console.log(payload);
 
-    console.log();
-    this.HTTP.putData('/course/update/updateFinalizeStatus/', payload, 'academic').subscribe(
-      (res: any) => {
-        if (!res.body.error) {
-          this.alert.alertMessage("Course Finalized.....!", "", "success");
-          this.print_row = [];
-          this.responseData = [];
-          this.getCourseYearList();
-        } else {
-          this.alert.alertMessage("Something went wring!", res.body.error?.message, "warning")
-        }
-      },
-    );
+  //   console.log();
+  //   this.HTTP.putData('/course/update/updateFinalizeStatus/', payload, 'academic').subscribe(
+  //     (res: any) => {
+  //       if (!res.body.error) {
+  //         this.alert.alertMessage("Course Finalized.....!", "", "success");
+  //         this.getCourseYearList();
+  //         this.print_row = [];
+  //         this.responseData = [];
+          
+  //       } else {
+  //         this.alert.alertMessage("Something went wring!", res.body.error?.message, "warning")
+  //       }
+  //     },
+  //   );
 
-  }
+  // }
 
-  unfinalizeCourseAllotment() {
-    const payload = {
-      allotment_main_id: this.print_row[0]?.allotment_main_id
-    }
-    console.log('Payload for unfinalize:', payload);
-    this.HTTP.putData('/course/update/updateUnfinalizeStatus/', payload, 'academic').subscribe(
-      (res: any) => {
-        if (!res.body.error) {
-          this.alert.alertMessage("Course Finalized.....!", "", "success");
-          this.print_row = [];
-          this.responseData = [];
+  // unfinalizeCourseAllotment() {
+  //    const formValue = this.finalizecourseFormGroup.value;
+  //   if (
+  //     !formValue.academic_session_id ||
+  //     !formValue.college_id ||
+  //     !formValue.degree_programme_id ||
+  //     !formValue.semester_id ||
+  //     !this.selectedCourseYearId ||
+  //     !this.selectedDeanCommitteeId
+  //   ) {
+  //     alert('Please fill all required fields OR Click to Show Course Button to Unfinalize.');
+  //     return;
+  //   }
 
-          // Call getCourseYearList() after successful unfinalize operation
-          this.getCourseYearList();
+  //   const payload = {
+  //     academic_session_id: formValue.academic_session_id,
+  //     college_id: formValue.college_id,
+  //     degree_programme_id: formValue.degree_programme_id,
+  //     semester_id: formValue.semester_id,
+  //     course_year_id: this.selectedCourseYearId,
+  //      dean_committee_id: this.selectedDeanCommitteeId,
+  //      allotment_main_id: this.print_row[0]?.allotment_main_id
+  //   };
 
-        } else {
-          this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
-        }
-      },
-      (error) => {
-        // Handle HTTP error
-        console.error('Error in unfinalizeCourseAllotment:', error);
-        this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
-      }
-    );
-  }
+  //   console.log('Payload for unfinalize:', payload);
+  //   this.HTTP.putData('/course/update/updateUnfinalizeStatus/', payload, 'academic').subscribe(
+  //     (res: any) => {
+  //       if (!res.body.error) {
+  //         this.alert.alertMessage("Course Finalized.....!", "", "success");
+  //        this.getCourseYearList();
+
+  //         this.print_row = [];
+  //         this.responseData = [];
+
+
+  //       } else {
+  //         this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
+  //       }
+  //     },
+  //     (error) => {
+  //       // Handle HTTP error
+  //       console.error('Error in unfinalizeCourseAllotment:', error);
+  //       this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
+  //     }
+  //   );
+  // }
 
 
 }

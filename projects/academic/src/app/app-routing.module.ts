@@ -32,6 +32,9 @@ import { GetSrcListComponent } from './student/get-src-list/get-src-list.compone
 import { StudentAddressChangeRequestComponent } from './student/student-address-change-request/student-address-change-request.component';
 import { ApproveUidnComponent } from './student-profile/approve-uidn/approve-uidn.component';
 import { PromoteEvenSemesterComponent } from './student-academic-status/promote-even-semester/promote-even-semester.component';
+import { MarksEntryPracticalComponent } from './marks entry/marks-entry-practical/marks-entry-practical.component';
+import { MarksEntryInternalPracticalComponent } from './marks entry/marks-entry-internal-practical/marks-entry-internal-practical.component';
+import { MarksEntryAbsentComponent } from './marks entry/marks-entry-absent/marks-entry-absent.component';
 
 const routes: Routes = [
   {
@@ -199,6 +202,21 @@ const routes: Routes = [
       {
         path: 'promote-even-sem',
         component: PromoteEvenSemesterComponent,
+        pathMatch: 'full',
+      },
+       {
+        path: 'marks-entry-practical',
+        component: MarksEntryPracticalComponent,
+        pathMatch: 'full',
+      },
+        {
+        path: 'marks-entry-internal-practical',
+        component: MarksEntryInternalPracticalComponent,
+        pathMatch: 'full',
+      },
+       {
+        path: 'marks-entry-absent',
+        component: MarksEntryAbsentComponent,
         pathMatch: 'full',
       },
     ]
