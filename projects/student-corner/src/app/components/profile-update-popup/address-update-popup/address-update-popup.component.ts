@@ -60,29 +60,37 @@ export class AddressUpdatePopupComponent implements OnInit {
 
       //   address_proof: ['', Validators.required]
       // });
+      console.log("this.getData ===????.>", this.getData);
       this.addressUpdateForm.patchValue(this.getData);
     });
 
   }
   createAddressForm() {
     this.addressUpdateForm = this.fb.group({
-      permanent_address1: [''],
+      counseling_adm_id: ['', Validators.required],
+      ue_id: ['', Validators.required],
+      student_id: ['', Validators.required],
+      admission_session: ['', Validators.required],
+      college_id: ['', Validators.required],
+      degree_programme_id: ['', Validators.required],
+
+      permanent_address1: ['', Validators.required],
       permanent_address2: [''],
       permanent_address3: [''],
-      permanent_country_id: [''],
-      permanent_state_id: [''],
-      permanent_district_id: [''],
-      permanent_pin_code: [''],
+      permanent_country_id: ['', Validators.required],
+      permanent_state_id: ['', Validators.required],
+      permanent_district_id: ['', Validators.required],
+      permanent_pin_code: ['', Validators.required],
 
-      current_address1: [''],
+      current_address1: ['', Validators.required],
       current_address2: [''],
       current_address3: [''],
-      current_country_id: [''],
-      current_state_id: [''],
-      current_district_id: [''],
-      current_pin_code: [''],
+      current_country_id: ['', Validators.required],
+      current_state_id: ['', Validators.required],
+      current_district_id: ['', Validators.required],
+      current_pin_code: ['', Validators.required],
 
-      address_proof: ['']
+      address_proof: ['', Validators.required]
     });
   }
 
@@ -92,27 +100,86 @@ export class AddressUpdatePopupComponent implements OnInit {
   }
 
   onUpdateAddress() {
-    let temp = this.addressUpdateForm.value
-    console.log("temp ==>>>   _> ", temp);
+    let {
+      counseling_adm_id,
+      ue_id,
+      student_id,
+      admission_session,
+      college_id,
+      degree_programme_id,
+      address_proof,
+      current_address1,
+      current_address2,
+      current_address3,
+      current_country_id,
+      current_district_id,
+      current_pin_code,
+      current_state_id,
+      permanent_address1,
+      permanent_address2,
+      permanent_address3,
+      permanent_country_id,
+      permanent_district_id,
+      permanent_pin_code,
+      permanent_state_id
+    } = this.addressUpdateForm.value
+    const formData = new FormData();
+    formData.append('ue_id', ue_id);
+    formData.append('admission_id', counseling_adm_id);
+    formData.append('student_id', student_id);
+    formData.append('admission_session', admission_session);
+    formData.append('college_id', college_id);
+    formData.append('degree_programme_id', degree_programme_id);
+
+    formData.append('address_proof', address_proof);
+
+    formData.append('current_address1', current_address1);
+    formData.append('current_address2', current_address2);
+    formData.append('current_address3', current_address3);
+    formData.append('current_country_id', current_country_id);
+    formData.append('current_district_id', current_district_id);
+    formData.append('current_pin_code', current_pin_code);
+    formData.append('current_state_id', current_state_id);
+
+    formData.append('permanent_address1', permanent_address1);
+    formData.append('permanent_address2', permanent_address2);
+    formData.append('permanent_address3', permanent_address3);
+    formData.append('permanent_country_id', permanent_country_id);
+    formData.append('permanent_district_id', permanent_district_id);
+    formData.append('permanent_pin_code', permanent_pin_code);
+    formData.append('permanent_state_id', permanent_state_id);
+
+    // if (!mobile_no) {
+    //   return this.alert.alertMessage("Mobile Number is Required", "", "warning");
+    // }
+
+    // if (!pdfFile) {
+    //   return this.alert.alertMessage("Document Proof is Required", "", "warning");
+    // }
     // if (!mobile_no) {
     //   return this.alert.alertMessage("Mobile Number is Required", "", "warning");
     // }
     // call API to update student mobile no
-    // this.http.putData('/studentProfile/update/updateStudentAddressRequest', {
-    //   // ue_id: ue_id,
-    //   // mobile_no: mobile_no
-    // }, 'academic')
-    //   .subscribe(
-    //     (result: any) => {
-    //       // console.log("result ===> ", result);
-    //       this.dialogRef.close();
-    //       this.alert.alertMessage(result.body?.data?.message || "Address Updated.", "", "success");
-    //     },
-    //     (error) => {
-    //       console.error('Error in updateStudentAddress:', error);
-    //       this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
-    //     }
-    //   )
+    this.http.postFile('/studentProfile/postFile/updateStudentAddressRequest', formData, 'academic')
+      .subscribe(
+        (result: any) => {
+          // console.log("result ===> ", result);
+          if (result?.body?.data?.message) {
+            this.dialogRef.close();
+            this.alert.alertMessage(result.body.data.message || "Address Change Request Sended.", "Wait For Approval", "success")
+          } else if (result?.body?.error?.message) {
+            this.alert.alertMessage(result.body.error.message || "Something went wrong!", "", "error");
+          } else if (result?.body?.error) {
+            this.alert.alertMessage(result?.body?.error || "", "", "error");
+          } else {
+            this.alert.alertMessage("Something went wrong!", "Please try again latter", "error")
+          }
+        },
+        (error) => {
+          console.error('Error in updateStudentAddress:', error);
+          this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
+        }
+      )
   }
 
 
@@ -164,4 +231,8 @@ export class AddressUpdatePopupComponent implements OnInit {
   //         this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
   //       });
   // };
+
+  get f() {
+    return this.addressUpdateForm.controls;
+  }
 }

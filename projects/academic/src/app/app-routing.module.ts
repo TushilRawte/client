@@ -56,6 +56,7 @@ import { MarksEntryInternalPracticalComponent } from './marks entry/marks-entry-
 import { MarksEntryAbsentComponent } from './marks entry/marks-entry-absent/marks-entry-absent.component';
 import { StudentMobileNumberChangeRequestComponent } from './student/student-mobile-number-change-request/student-mobile-number-change-request.component';
 import { SrcGeneratePdfComponent } from './student/src-generate-pdf/src-generate-pdf.component';
+import { UidnReportComponent } from './student-profile/uidn-report/uidn-report.component';
 
 const routes: Routes = [
   {
@@ -165,6 +166,11 @@ const routes: Routes = [
       {
         path: 'approve-uidn',
         component: ApproveUidnComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'approved-uidn-report',
+        component: UidnReportComponent,
         pathMatch: 'full',
       },
       {

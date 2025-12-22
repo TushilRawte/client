@@ -29,7 +29,7 @@ export class ProfileComponent implements OnInit {
   student: any = {}
   states: any = []
   districts: any = []
-  student_id = 20242185;
+  student_id: number = 20190906; // 20242185;
 
   // New properties for image upload
   profileImageFile: File | null = null;

@@ -137,7 +137,7 @@ export class NameUpdatePopupComponent implements OnInit {
           // this.alert.alertMessage(result.body?.data?.message, "", "success"); // || 'Category Update Done.'
           if (result?.body?.data?.message) {
             this.dialogRef.close();
-            this.alert.alertMessage(result.body.data.message || "Basic Details Updated.", "", "success")
+            this.alert.alertMessage(result.body.data.message || "Basic Details Updated.", "Wait For Approval", "success")
           } else if (result?.body?.error?.message) {
             this.alert.alertMessage(result.body.error.message || "Something went wrong!", "", "error");
           } else if (result?.body?.error) {
