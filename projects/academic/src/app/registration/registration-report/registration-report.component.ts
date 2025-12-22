@@ -64,7 +64,7 @@ export class RegistrationReportComponent implements OnInit, OnDestroy {
     is_render: true,
     page: 0,
     pageSize: 50,
-    title: "Registration Fee Report Filter"
+    title: "Registration Fee"
   };
 
   matrixCourseTableOptions: any = {
@@ -79,7 +79,7 @@ export class RegistrationReportComponent implements OnInit, OnDestroy {
     is_render: true,
     page: 0,
     pageSize: 50,
-    title: "Registered Courses Report Filter"
+    title: "Registered Courses"
   };
 
   ngOnInit(): void {

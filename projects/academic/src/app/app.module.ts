@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { SharedModule, ReporttableComponent,ReportComponent } from 'shared';
+import { SharedModule, ReporttableComponent, ReportComponent } from 'shared';
 import { CapslockDirective } from '../../../shared/directive/capslock.directive';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -43,6 +43,10 @@ import { StudentAddressChangeRequestComponent } from './student/student-address-
 import { ApproveUidnComponent } from './student-profile/approve-uidn/approve-uidn.component';
 import { AppliedListComponent } from './student/transfer-certificate/applied-list/applied-list.component';
 import { PromoteEvenSemesterComponent } from './student-academic-status/promote-even-semester/promote-even-semester.component';
+import { MarksEntryPracticalComponent } from './marks entry/marks-entry-practical/marks-entry-practical.component';
+import { MarksEntryInternalPracticalComponent } from './marks entry/marks-entry-internal-practical/marks-entry-internal-practical.component';
+import { MarksEntryReportComponent } from './marks entry/marks-entry-report/marks-entry-report.component';
+import { MarksEntryAbsentComponent } from './marks entry/marks-entry-absent/marks-entry-absent.component';
 import { PdcEsignComponent } from './student/pdc-esign/pdc-esign.component';
 import { PdcGenerateComponent } from './student/pdc-generate/pdc-generate.component';
 import { PdcReportComponent } from './student/pdc-report/pdc-report.component';
@@ -63,7 +67,12 @@ import { GeneratedListComponent } from './student/transfer-certificate/applied-l
 import { CollegeTransferComponent } from './student/college-transfer/college-transfer.component';
 import { CollegeTransferReportComponent } from './student/college-transfer-report/college-transfer-report.component';
 import { MigrationCertificateComponent } from './student/migration-certificate/migration-certificate.component';
-
+import { AppliedStudentsDashboardComponent } from './marks entry/applied-students-dashboard/applied-students-dashboard.component';
+import { UpdateCourseTypeComponent } from './course/update-course-type/update-course-type.component';
+import { RevaluationCancelComponent } from './marks entry/revaluation-cancel/revaluation-cancel.component';
+import { SrcGeneratePdfComponent } from './student/src-generate-pdf/src-generate-pdf.component';
+import { StudentMobileNumberChangeRequestComponent } from './student/student-mobile-number-change-request/student-mobile-number-change-request.component';
+import { UidnReportComponent } from './student-profile/uidn-report/uidn-report.component';
 
 @NgModule({
   declarations: [
@@ -102,6 +111,10 @@ import { MigrationCertificateComponent } from './student/migration-certificate/m
     ApproveUidnComponent,
     AppliedListComponent,
     PromoteEvenSemesterComponent,
+    MarksEntryPracticalComponent,
+    MarksEntryInternalPracticalComponent,
+    MarksEntryReportComponent,
+    MarksEntryAbsentComponent,
     PdcEsignComponent,
     PdcGenerateComponent,
     PdcReportComponent,
@@ -122,7 +135,12 @@ import { MigrationCertificateComponent } from './student/migration-certificate/m
     CollegeTransferComponent,
     CollegeTransferReportComponent,
     MigrationCertificateComponent,
-
+    AppliedStudentsDashboardComponent,
+    UpdateCourseTypeComponent,
+    RevaluationCancelComponent,
+    SrcGeneratePdfComponent,
+    StudentMobileNumberChangeRequestComponent,
+    UidnReportComponent,
   ],
   imports: [
     SharedModule,
@@ -133,13 +151,13 @@ import { MigrationCertificateComponent } from './student/migration-certificate/m
     CapslockDirective,
     FormsModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
-        enabled: true,
-        registrationStrategy: 'registerWhenStable:30000'
+      enabled: true,
+      registrationStrategy: 'registerWhenStable:30000'
     }),
     ReportComponent,
     ReporttableComponent
-],
- providers: [
+  ],
+  providers: [
     provideAnimationsAsync()
   ],
   bootstrap: [AppComponent]

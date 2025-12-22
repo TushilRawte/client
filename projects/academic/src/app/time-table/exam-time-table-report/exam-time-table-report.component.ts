@@ -12,7 +12,7 @@ import { AlertService, HttpService, PrintService } from 'shared';
   styleUrl: './exam-time-table-report.component.scss'
 })
 export class ExamTimeTableReportComponent {
-  groupedData: any = {};
+   groupedData: any = {};
   objectKeys = Object.keys;
   apiData: any = [];
   @ViewChild('print_content') print_content!: ElementRef;
@@ -104,7 +104,10 @@ export class ExamTimeTableReportComponent {
     this.HTTP.getParam('/course/get/getRegisteredCourseList', payload, 'academic')
       .subscribe((result: any) => {
         if (!result.body.error) {
-          this.apiData = result.body.data || [];
+          let temp = result.body.data || [];
+          this.apiData = temp.filter((row: any) => row.timetable_main_id !== null &&
+            row.timetable_detail_id !== null);
+          // this.apiData = temp
           if (this.apiData.length === 0) {
             this.alert.alertMessage("No Record Found!", "", "warning");
           } else {
@@ -115,24 +118,6 @@ export class ExamTimeTableReportComponent {
         }
       });
   }
-
-  // onSubmit() {
-  //   const rawData = this.TimeTableFiledFormGroup.value;
-  //   let apiUrl = '/timetable/post/saveExamTimeTable';
-  //   let finalPayload: any;
-  //   const allData = this.fildList.reduce((acc, field) => {
-  //     acc[field.name] = rawData[field.id] || null;
-  //     return acc;
-  //   }, {} as any);
-
-  //   const payload = {
-  //     "academic_session_id": allData["Academic Session"],
-  //     "degree_programme_id": allData["Degree Program"],
-  //     "course_year_id": allData["Course Year"],
-  //     "semester_id": allData["Semester"],
-  //     "exam_type_id": allData["Exam Type"]
-  //   };
-  // }
 
   // ^ ---------------------------------------- master method start
   // onDropdownChange(event: any, fieldName: string) {

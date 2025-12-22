@@ -48,6 +48,15 @@ import { AppliedListComponent } from './student/transfer-certificate/applied-lis
 import { CollegeTransferComponent } from './student/college-transfer/college-transfer.component';
 import { CollegeTransferReportComponent } from './student/college-transfer-report/college-transfer-report.component';
 import { MigrationCertificateComponent } from './student/migration-certificate/migration-certificate.component';
+import { AppliedStudentsDashboardComponent } from './marks entry/applied-students-dashboard/applied-students-dashboard.component';
+import { UpdateCourseTypeComponent } from './course/update-course-type/update-course-type.component';
+import { RevaluationCancelComponent } from './marks entry/revaluation-cancel/revaluation-cancel.component';
+import { MarksEntryPracticalComponent } from './marks entry/marks-entry-practical/marks-entry-practical.component';
+import { MarksEntryInternalPracticalComponent } from './marks entry/marks-entry-internal-practical/marks-entry-internal-practical.component';
+import { MarksEntryAbsentComponent } from './marks entry/marks-entry-absent/marks-entry-absent.component';
+import { StudentMobileNumberChangeRequestComponent } from './student/student-mobile-number-change-request/student-mobile-number-change-request.component';
+import { SrcGeneratePdfComponent } from './student/src-generate-pdf/src-generate-pdf.component';
+import { UidnReportComponent } from './student-profile/uidn-report/uidn-report.component';
 
 const routes: Routes = [
   {
@@ -155,6 +164,11 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       {
+        path: 'approved-uidn-report',
+        component: UidnReportComponent,
+        pathMatch: 'full',
+      },
+      {
         path: 'src-generate',
         component: SrcGenerateComponent,
 
@@ -195,6 +209,11 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       {
+        path: 'student-mobile-number-change-request',
+        component: StudentMobileNumberChangeRequestComponent,
+        pathMatch: 'full',
+      },
+      {
         path: 'student-category-change',
         component: StudentCategoryChangeComponent,
         pathMatch: 'full',
@@ -217,6 +236,11 @@ const routes: Routes = [
       {
         path: 'src-esign',
         component: SrcEsignComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'src-generate-pdf',
+        component: SrcGeneratePdfComponent,
         pathMatch: 'full',
       },
       {
@@ -274,7 +298,7 @@ const routes: Routes = [
         component: ExamTimeTableReportComponent,
         pathMatch: 'full',
       },
-       {
+      {
         path: 'transfer-applied-list',
         component: AppliedListComponent,
         pathMatch: 'full',
@@ -294,7 +318,37 @@ const routes: Routes = [
         component: CollegeTransferReportComponent,
         pathMatch: 'full',
       },
+      {
+        path: 'applied-students-dashboard',
+        component: AppliedStudentsDashboardComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'update-course-type',
+        component: UpdateCourseTypeComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'revaluation-cancel',
+        component: RevaluationCancelComponent,
+        pathMatch: 'full',
+      },
       // { path: 'student-corner', loadChildren: () => import('./student-corner/student-corner.module').then(m => m.StudentCornerModule) },
+      {
+        path: 'marks-entry-practical',
+        component: MarksEntryPracticalComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'marks-entry-internal-practical',
+        component: MarksEntryInternalPracticalComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'marks-entry-absent',
+        component: MarksEntryAbsentComponent,
+        pathMatch: 'full',
+      },
     ]
   },
   {

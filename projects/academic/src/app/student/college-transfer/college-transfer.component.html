@@ -31,7 +31,7 @@
                     <mat-form-field appearance="outline" class="w-100">
                         <mat-label>Year</mat-label>
                         <mat-select placeholder="Year" formControlName="course_year_id">
-                            <mat-option *ngFor="let courseYear of state.getCourseYear"
+                            <mat-option *ngFor="let courseYear of state.getFilterCourseYearList"
                                 [value]="courseYear.course_year_id">
                                 {{ courseYear.course_year_name_e }}
                             </mat-option>

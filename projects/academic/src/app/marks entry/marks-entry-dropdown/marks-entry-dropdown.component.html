@@ -28,6 +28,16 @@
             </mat-select>
         </mat-form-field>
     </div>
+      <div class="col-md-3 col-6" *ngIf="showSingleDegreeProgramme">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Degree Programme</mat-label>
+            <mat-select formControlName="degree_programme_id">
+                <mat-option *ngFor="let prog of singleDegreeProgrammeList" [value]="prog.degree_programme_id">
+                    {{ prog.degree_programme_name_e }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
 
     <div class="col-md-3 col-6" *ngIf="showYear">
         <ng-select placeholder="Year" formControlName="course_year_id" appearance="outline">
@@ -87,5 +97,11 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+          </div>
+              <div class="col-md-3 col-6" *ngIf="showStudent">
+            <mat-form-field appearance="outline">
+                        <mat-label>Student Id</mat-label>
+                        <input matInput placeholder="Ex. 10072" formControlName="student_master_id">
+                    </mat-form-field>
           </div>
 </div>

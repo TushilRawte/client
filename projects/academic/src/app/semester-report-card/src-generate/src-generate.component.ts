@@ -19,7 +19,6 @@ export class SrcGenerateComponent {
 
   constructor(private fb: FormBuilder,private HTTP :HttpService, private alert: AlertService,){ }
   
-  
   ngOnInit(): void {  
     this.marksEntryAdmin();
   }

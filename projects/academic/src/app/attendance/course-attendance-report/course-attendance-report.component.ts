@@ -151,7 +151,7 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
     is_render: true,
     page: 0,
     pageSize: 10,
-    title: "Report Filter"
+    title: ""
   };
 
   courseListOption: any = {

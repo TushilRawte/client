@@ -42,8 +42,7 @@
                                 </option>
                             </select>
                         </div>
-
-                        <div class="col-md-3 mb-3">
+                        <!--   <div class="col-md-3 mb-3">
                             <label for="permanent_state_id" class="form-label">Parnmanent State</label>
                             <select class="form-select" id="permanent_state_id" formControlName="permanent_state_id">
                                 <option *ngFor="let state of states" [value]="state.state_code">{{state.state_name_e}}
@@ -56,6 +55,23 @@
                                 formControlName="permanent_district_id">
                                 <option *ngFor="let district of districts" [value]="district.district_code">
                                     {{district.district_name_e}}</option>
+                            </select>
+                        </div> -->
+                        <div class="col-md-3 mb-3">
+                            <label for="permanent_state_id" class="form-label">Parnmanent State</label>
+                            <select class="form-select" id="permanent_state_id" formControlName="permanent_state_id">
+                                <!-- <option *ngFor="let state of states" [value]="state.state_code">{{state.state_name_e}}</option> -->
+                                <option *ngFor="let state of states" [value]="state.state_id">{{state.name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="permanent_district_id" class="form-label">Parnmanent District</label>
+                            <select class="form-select" id="permanent_district_id"
+                                formControlName="permanent_district_id">
+                                <!-- <option *ngFor="let district of districts" [value]="district.district_code">
+                            {{district.district_name_e}}</option> -->
+                                <option *ngFor="let district of districts" [value]="district.district_id">
+                                    {{district.district_name}}</option>
                             </select>
                         </div>
                         <div class="col-md-3 mb-3">
@@ -100,7 +116,7 @@
                             </select>
                         </div>
 
-                        <div class="col-md-3 mb-3">
+                        <!-- <div class="col-md-3 mb-3">
                             <label for="current_state_id" class="form-label">Current State</label>
                             <select class="form-select" id="current_state_id" formControlName="current_state_id">
                                 <option *ngFor="let state of states" [value]="state.state_code">{{state.state_name_e}}
@@ -116,6 +132,25 @@
                                     {{district.district_name_e}}
                                 </option>
                             </select>
+                        </div> -->
+                        <div class="col-md-3 mb-3">
+                            <label for="current_state_id" class="form-label">Current State</label>
+                            <select class="form-select" id="current_state_id" formControlName="current_state_id">
+                                <!-- <option *ngFor="let state of states" [value]="state.state_code">{{state.state_name_e}}</option> -->
+                                <option *ngFor="let state of states" [value]="state.state_id">{{state.name}}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="current_district_id" class="form-label">Current District</label>
+                            <select class="form-select" id="current_district_id" formControlName="current_district_id">
+                                <option value="">Select District</option>
+                                <!-- <option *ngFor="let district of districts" [value]="district.district_code">
+                            {{district.district_name_e}}
+                        </option> -->
+                                <option *ngFor="let district of districts" [value]="district.district_id">
+                                    {{district.district_name}}</option>
+                            </select>
                         </div>
                         <div class="col-md-3 mb-3">
                             <label for="current_pin_code" class="form-label">Current Pincode</label>
@@ -123,10 +158,18 @@
                                 formControlName="current_pin_code" />
                         </div>
                         <hr>
-                        <div class="col-md-6 mb-3">
+                        <!-- <div class="col-md-6 mb-3">
                             <label for="address_proof" class="form-label">Address Proof</label>
                             <input type="file" class="form-control" id="address_proof"
                                 formControlName="address_proof" />
+                        </div> -->
+                        <div class="col-md-6 col-12">
+                            <!-- <mat-label>Upload Order Copy</mat-label> -->
+                            <app-fileupload formControlName="address_proof">Address Proof</app-fileupload>
+                            <div class="text-danger" *ngIf="f['address_proof'].touched && f['address_proof'].hasError('required')">
+                                Document for Address Proof is require for changes
+                            </div>
+                            eg. Upload Aadhar, Driving License, Voter Id etc.
                         </div>
                     </div>
                 </mat-card-content>

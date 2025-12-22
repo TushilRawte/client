@@ -134,43 +134,6 @@ onTopSectionChange(sectionId: number | string) {
   }
 
 
-  // sections = [
-  //   { section_name: 'A', section_id: 1 },
-  //   { section_name: 'B', section_id: 2 },
-  //   { section_name: 'C', section_id: 3 },
-  //   { section_name: 'D', section_id: 4 }
-  // ];
-
-//   students = [
-//   { ue_id: 1001, student_name: 'Rahul Sharma', academic_status: 'Active' },
-//   { ue_id: 1002, student_name: 'Priya Verma', academic_status: 'Active' },
-//   { ue_id: 1003, student_name: 'Amit Patel', academic_status: 'Inactive' },
-//   { ue_id: 1004, student_name: 'Sneha Gupta', academic_status: 'Active' },
-//   { ue_id: 1005, student_name: 'Vikas Yadav', academic_status: 'Suspended' },
-//   { ue_id: 1006, student_name: 'Neha Singh', academic_status: 'Active' },
-//   { ue_id: 1007, student_name: 'Rohit Mehra', academic_status: 'Active' },
-//   { ue_id: 1008, student_name: 'Anjali Nair', academic_status: 'Inactive' },
-//   { ue_id: 1009, student_name: 'Karan Joshi', academic_status: 'Active' },
-//   { ue_id: 1010, student_name: 'Divya Kapoor', academic_status: 'Active' }
-// ];
-
-
-// getStudentList(){
-//   const  params = {
-//    academic_session_id : this.studentSectionAlotFormGroup.value.academic_session_id,
-//    semester_id : this.studentSectionAlotFormGroup.value.semester_id,
-//    course_year_id : this.studentSectionAlotFormGroup.value.course_year_id,
-//    degree_progamme_type_id : this.studentSectionAlotFormGroup.value.degree_programme_type_id,
-//   }
-
-//   console.log('Params',params);
-//   this.HTTP.getParam('/course/get/getStudentList/',params,'academic').subscribe(result => {
-//     this.studentList = result.body.data;
-//     console.log(result);
-//   })
-
-// }
-
 getStudentList() {
   const params = {
     academic_session_id: this.studentSectionAlotFormGroup.value.academic_session_id,

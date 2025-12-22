@@ -1,0 +1,50 @@
+.btns{
+    width: 10px;
+    padding-right: 0px;
+    color: white;
+}
+
+//status
+.status-cell {
+  border: 1px solid #ddd;
+  padding: 6px;
+  background: #fafafa;
+  border-radius: 6px;
+}
+
+.status-icon {
+  font-size: 18px;
+  margin: 2px;
+  padding: 2px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  transition: transform 0.2s;
+}
+
+.status-icon:hover {
+  transform: scale(1.2);
+}
+
+/* Legend styling */
+.status-legend {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #f9f9f9;
+  // padding: 10px 15px;
+  font-size: 13px;
+  // max-width: 700px;
+}
+
+.legend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2px 2px;
+  margin-top: 5px;
+}
+
+.status-legend mat-icon {
+  font-size: 16px;
+  vertical-align: middle;
+  margin-right: 2px;
+}

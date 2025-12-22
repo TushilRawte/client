@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup,  Validators} from '@angular/forms';
-import { AlertService, HttpService, PrintService } from 'shared';
+import { AlertService, AuthService, HttpService, PrintService } from 'shared';
+import { MarksEntryReportComponent } from '../marks-entry-report/marks-entry-report.component';
+import { MatDialog } from '@angular/material/dialog';
+
 @Component({
   selector: 'app-marks-entry-admin',
   standalone: false,
@@ -32,8 +35,16 @@ export class MarksEntryAdminComponent implements OnInit{
   selectedDegreeProTypeId: any;
   yearList: any;
   selectedCourse:any
+  specialRemarkList: any;
 
-  constructor(private fb: FormBuilder,private HTTP :HttpService, private alert: AlertService,){ }
+  constructor(private fb: FormBuilder,private HTTP :HttpService, private alert: AlertService,private dialog: MatDialog, private  auth:AuthService){ }
+
+  emp_id: any;
+
+  getEmployeeID(){
+    this.emp_id = this.auth.getEmpID();
+    console.log(this.emp_id);
+  }
 
   ngOnInit(): void {
         this.showEmpIdField = this.hasAllowedDesignation([327, 342, 2423]);
@@ -44,6 +55,7 @@ export class MarksEntryAdminComponent implements OnInit{
         // this.getValuationType();
         // this.getExamType();
         this.getRemark();
+        this.getSpecialRemark();
         // this.getExamPaperType();
         // this.getCollegeData();
         // this.getYearData();
@@ -126,7 +138,7 @@ populateStudents(attandanceList: any, selectedCourse: any) {
     const intFinalized = Number(item.int_marks_finalize) === 1;
     const extFinalized = Number(item.ext_marks_finalize) === 1;
     const remarkId = item[remarkField] ?? '';
-    const finalRemarkId = item[finalRemarkField] ?? '';
+    const finalRemarkId = item[finalRemarkField] ;
     const activeFinalizeValue = Number(item[finalizeField]) === 1;
     const finalizeStatus = Number(item[finalizeField]) === 1;
 
@@ -191,7 +203,7 @@ populateStudents(attandanceList: any, selectedCourse: any) {
         int_obtained_mark: [item.int_obtained_mark ?? ''],
         ext_obtained_mark: [item.ext_obtained_mark ?? ''],
         remark_id: [item.ext_remark_id ?? ''],
-        final_remark_id: [item.ext_remark_id ?? ''],
+        final_remark_id: [item.ext_special_remark_id],
          reval_obtained_mark: [item.reval_obtained_mark ?? ''],
         r_reval_obtained_mark: [item.r_reval_intered_obtained_mark ?? ''],
 
@@ -202,8 +214,8 @@ populateStudents(attandanceList: any, selectedCourse: any) {
       
      if (Number(item.ext_marks_finalize) === 1) {
       // studentForm.get('ext_obtained_mark')?.disable();
-      // studentForm.get('remark_id')?.disable();
-      // studentForm.get('final_remark_id')?.disable();
+      studentForm.get('remark_id')?.disable();
+      studentForm.get('final_remark_id')?.disable();
     }
 
 
@@ -276,6 +288,12 @@ updateTotal(studentForm: FormGroup) {
   getRemark() {
     this.HTTP.getParam('/master/get/getRemark/',{} ,'academic').subscribe((result:any) => {
       this.remarkList = result.body.data;
+    })
+  }
+
+    getSpecialRemark() {
+    this.HTTP.getParam('/master/get/getSpecialRemark/',{} ,'academic').subscribe((result:any) => {
+      this.specialRemarkList = result.body.data;
     })
   }
 
@@ -900,92 +918,6 @@ onFinalize() {
   });
 }
 
-// onFinalize() {
-//   if (this.marksEntryFacultyFormGroup.invalid) {
-//     this.alert.alertMessage("Required", "Please fill all required fields.", "warning");
-//     return;
-//   }
-
-//   const confirmFinalize = window.confirm("Are you sure you want to finalize marks?");
-//   if (!confirmFinalize) return; // ❌ stop if user cancels
-
-//   const payload: any[] = [];
-
-//   this.students.controls.forEach((control) => {
-//     const studentControl = control as FormGroup;
-//     const student = studentControl.value;
-//     const original = student._original;
-
-//     // --- skip change detection or dirty check (as per your request) ---
-//     const intMark = student.int_obtained_mark || 0;
-//     const extMark = student.ext_obtained_mark || 0;
-//     const totalMark = intMark + extMark;
-//     const marksFinalize = student.marks_finalize ? 1 : 0;
-
-//     // === Condition 1: Insert + Update + Club ===
-//     if (this.is_insert_in_marks_entry_detail && this.is_update_in_registration_marks && this.is_insert_club_in_marks_entry_detail) {
-//       payload.push({
-//         ...student,
-//         obtained_mark: extMark,
-//         marks_finalize: marksFinalize,
-//       });
-
-//       let mappedExamTypeId = student.exam_paper_type_id;
-//       if (student.exam_paper_type_id === 9) mappedExamTypeId = 1;
-//       else if (student.exam_paper_type_id === 12) mappedExamTypeId = 2;
-
-//       payload.push({
-//         ...student,
-//         obtained_mark: totalMark,
-//         exam_paper_type_id: mappedExamTypeId,
-//         marks_finalize: marksFinalize,
-//       });
-//     }
-
-//     // === Condition 2: Insert + Update (No Club) ===
-//     else if (this.is_insert_in_marks_entry_detail && this.is_update_in_registration_marks && !this.is_insert_club_in_marks_entry_detail) {
-//       payload.push({
-//         ...student,
-//         obtained_mark: extMark,
-//         marks_finalize: marksFinalize,
-//       });
-//     }
-
-//     // === Condition 3: Only Insert ===
-//     else if (this.is_insert_in_marks_entry_detail && !this.is_update_in_registration_marks && !this.is_insert_club_in_marks_entry_detail) {
-//       payload.push({
-//         ...student,
-//         obtained_mark: totalMark,
-//         marks_finalize: marksFinalize,
-//       });
-//     }
-//   });
-
-//   if (payload.length === 0) {
-//     this.alert.alertMessage("No Data", "Nothing to finalize.", "info");
-//     return;
-//   }
-
-//   console.log("✅ Final Payload:", payload);
-
-//   let apiUrl = '';
-//   if (this.is_insert_in_marks_entry_detail && this.is_update_in_registration_marks && this.is_insert_club_in_marks_entry_detail)
-//     apiUrl = '/attendance/update/updateMarksFinalizeWithClub';
-//   else if (this.is_insert_in_marks_entry_detail && this.is_update_in_registration_marks && !this.is_insert_club_in_marks_entry_detail)
-//     apiUrl = '/attendance/update/updateMarksFinalizeWithClub';
-//   else if (this.is_insert_in_marks_entry_detail && !this.is_update_in_registration_marks && !this.is_insert_club_in_marks_entry_detail)
-//     apiUrl = '/attendance/update/updateMarksFinalizeInternal';
-
-//   // this.HTTP.putData(apiUrl, payload, 'academic').subscribe(res => {
-//   //   if (!res.body.error){
-//   //           this.alert.alertMessage("Marks Finalized!", "", "success");
-//   //           this.refreshStudentList()
-//   //   }
-//   //   else
-//   //     this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
-//   // });
-// }
-
   // Refresh student list
   refreshStudentList() {
     if (this.selectedCourse) {
@@ -995,122 +927,7 @@ onFinalize() {
     }
   }
 
-//main 30-10-25
-onSubmit2() {
-  if (this.marksEntryFacultyFormGroup.invalid) {
-    this.alert.alertMessage("Required", "Please fill all required fields.", "warning");
-    return;
-  }
 
-  const payload: any[] = [];
-
- this.students.controls.forEach((control) => {
-    const studentControl = control as FormGroup;  // ✅ Cast explicitly
-    const student = studentControl.value;
-    const original = student._original;
-
-    // Check if new row (no original data)
-    const isNewRow = !original;
-
-    // Compare each relevant field
-    const isChanged =
-      isNewRow ||
-      student.int_obtained_mark !== original.int_obtained_mark ||
-      student.ext_obtained_mark !== original.ext_obtained_mark ||
-      student.remark_id !== original.remark_id ||
-      student.final_remark_id !== original.final_remark_id ||
-      student.marks_finalize !== original.marks_finalize;
-
-    if (!isChanged) return; // skip unchanged rows
-
-    // Normalize marks
-    const valuationTypeId = Number(this.marksEntryFacultyFormGroup.value.valuation_type_id);
-    const intMark = student.int_obtained_mark || 0;
-    const extOBtinedMark = student.ext_obtained_mark;
-    console.log('extOBtinedMark',extOBtinedMark);
-    
-    const extMark = valuationTypeId === 1
-        ? (student.ext_obtained_mark || 0)
-        : (student.reval_obtained_mark || 0);
-    const totalMark = intMark + extMark;
-    const marksFinalize = student.marks_finalize ? '1' : '0';
-
-
-  let re_reval_flag = 'F';
-if (student.max_marks_external && student.reval_obtained_mark != null && student.ext_obtained_mark != null) {
-  const margin = Math.abs(student.reval_obtained_mark - student.ext_obtained_mark);
-  const threshold = student.max_marks_external * 0.2;  // ✅ Correct reference
-  if (margin > threshold) {
-    re_reval_flag = 'T';
-  }
-}
-
-    // === Condition 1: Insert + Update + Club ===
-    if (this.is_insert_in_marks_entry_detail && this.is_update_in_registration_marks && this.is_insert_club_in_marks_entry_detail) {
-      payload.push({
-        ...student,
-        obtained_mark: extMark,
-        marks_finalize: marksFinalize,
-        re_reval_flag: re_reval_flag
-      });
-
-      let mappedExamTypeId = student.exam_paper_type_id;
-      if (student.exam_paper_type_id === 9) mappedExamTypeId = 1;
-      else if (student.exam_paper_type_id === 12) mappedExamTypeId = 2;
-
-      payload.push({
-        ...student,
-        obtained_mark: totalMark,
-        exam_paper_type_id: mappedExamTypeId,
-        marks_finalize: marksFinalize,
-        re_reval_flag: re_reval_flag
-      });
-    }
-
-    // === Condition 2: Insert + Update (No Club) ===
-    else if (this.is_insert_in_marks_entry_detail && this.is_update_in_registration_marks && !this.is_insert_club_in_marks_entry_detail) {
-      payload.push({
-        ...student,
-        obtained_mark: extMark,
-        marks_finalize: marksFinalize,
-        re_reval_flag: re_reval_flag
-      });
-    }
-
-    // === Condition 3: Only Insert ===
-    else if (this.is_insert_in_marks_entry_detail && !this.is_update_in_registration_marks && !this.is_insert_club_in_marks_entry_detail) {
-      payload.push({
-        ...student,
-        obtained_mark: totalMark,
-        marks_finalize: marksFinalize,
-      });
-    }
-  });
-
-  if (payload.length === 0) {
-    this.alert.alertMessage("No Changes", "No new or modified rows found.", "info");
-    return;
-  }
-
-  console.log("✅ Final Payload:", payload);
-  // Send to correct API (same logic)
-  let apiUrl = '';
-  if (this.is_insert_in_marks_entry_detail && this.is_update_in_registration_marks && this.is_insert_club_in_marks_entry_detail)
-    apiUrl = '/attendance/post/saveStudentsclubedMarks';
-  else if (this.is_insert_in_marks_entry_detail && this.is_update_in_registration_marks && !this.is_insert_club_in_marks_entry_detail)
-    apiUrl = '/attendance/post/saveStudentsMarkDirectAndUpdateInReg';
-  else if (this.is_insert_in_marks_entry_detail && !this.is_update_in_registration_marks && !this.is_insert_club_in_marks_entry_detail)
-    apiUrl = '/attendance/post/saveStudentMarkEntryInternalManually';
-
-  this.HTTP.postData(apiUrl, payload, 'academic').subscribe(res => {
-    if (!res.body.error){
-            this.alert.alertMessage("Record Inserted!", "", "success");
-      this.refreshStudentList()
-    }
-    else
-      this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
-  });
-}
 
 clearStudentTable() {
   // Clear the FormArray
@@ -1120,45 +937,61 @@ clearStudentTable() {
   this.attandanceList = [];
 }
 
+getStudentListForDialog(selectedCourse: any, getParticularExamPaperType: any) {
+  return new Promise((resolve, reject) => {
 
+    const formValue = this.marksEntryFacultyFormGroup.value;
 
+    const params = {
+      academic_session_id: formValue?.academic_session_id,
+      semester_id: formValue?.semester_id,
+      degree_programme_type_id: formValue?.degree_programme_type_id,
+      college_id: selectedCourse?.college_id,
+      course_nature_id: formValue?.course_nature_id,
+      course_id: selectedCourse?.course_id,
+      course_registration_type_id: 1,
+      exam_type_id: formValue?.exam_type_id,
+      course_semester_id: formValue?.semester_id,
+      exam_paper_type_id_int: getParticularExamPaperType ?? formValue.exam_paper_type_id,
+      exam_paper_type_id_ext: formValue?.exam_paper_type_id
+    };
 
+    this.HTTP.getParam('/attendance/get/getStudentListforMarksEntry/', params, 'academic')
+      .subscribe((res: any) => {
+        if (!res.body.error) {
+          resolve(res.body.data);  // 🔥 return fresh data
+        } else {
+          this.alert.alertMessage("Something Went Wrong...!", "", "warning");
+          reject([]);
+        }
+      });
+  });
+}
 
+openDialog(item: any) {
 
+  this.getStudentListForDialog(item, null).then((freshStudents: any) => {
+    const dialogRef = this.dialog.open(MarksEntryReportComponent, {
+      width: '800px',
+      height:'600px',
+      data: {
+        emp_id: this.auth.getEmpID(),
+        selectedCourse: item,
+        formHeader: this.marksEntryFacultyFormGroup.value,
+        students: freshStudents      // 🔥 fresh students always
+      },
+      autoFocus: true
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log("Dialog closed:", result);
+      }
+    });
 
+  });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 
 }

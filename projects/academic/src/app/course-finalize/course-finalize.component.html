@@ -1,4 +1,6 @@
 <mat-card>
+   <h3 class="card-header mt-3 mb-3" style="margin-left: 5px;">Course Unfinalize</h3>
+
   <mat-card-content>
     <form [formGroup]="finalizecourseFormGroup">
       <div class="row">
@@ -31,15 +33,6 @@
         </div>
 
         <div class="col-md-2 col-6">
-          <!-- <ng-select placeholder="Semester" 
-                         formControlName="semester_id" 
-                         appearance="outline" 
-                         (change)="onSemesterChange($event)">
-                <ng-option *ngFor="let semester of semesterList" 
-                           [value]="semester.semester_id">
-                  {{ semester.semester_name_e }}
-                </ng-option>
-              </ng-select> -->
 
           <mat-form-field appearance="outline" class="w-100">
             <mat-label>semester_id</mat-label>
@@ -52,33 +45,7 @@
           </mat-form-field>
         </div>
       </div>
-      <!-- <div class="row mt-3">
-                
-                  <table class="table    table-bordered">
-                    <thead>
-                      <tr>
-                        <th>Year</th>
-                        <th>Dean Committee</th>
-                        <th>Batch</th>
-                        <th>Get Allotment</th>
-                        <th>Print</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let item of courseYearList">
-                        <td>{{ item.Course_Year_Name_E }}</td>
-                        <td>{{item.Dean_Commite_Name_E}}</td>
-                        <td>I & II</td>
-                        <td>
-                            <button mat-raised-button color="primary" matTooltip="Show Course" (click)="getDataForPrint(item)"  class="tools mx-auto">Get Allotment</button>
-                        </td>
-                        <td>
-                           <button mat-raised-button color="primary" matTooltip="Print"  class="tools mx-auto"> <mat-icon>print</mat-icon> </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-              </div> -->
+    
       <div class="row mt-3">
         <ng-container class="card-header">Course Allotment</ng-container>
         <table class="table table-bordered">
@@ -94,56 +61,49 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of courseYearList; let i = index">
-              <td>{{ item.course_year_name_e }}</td>
-              <td>{{item.dean_committee_name_e}}</td>
-              <td>
-                <div class="btnsection">
-                  <button mat-raised-button color="primary" matTooltip="Show Course" (click)="chckFinlize(item)"
-                    (click)="getCourse(item)" [disabled]="!item.allotmentStatus" class="tools mx-auto">Show
-                    Course</button>
-                </div>
-              </td>
-              <td>
-                <!-- <span class="a-btn">
-                          <span 
-                          [ngClass]="{
-                            '': courseYearList[i].finalizeStatus === 'Y',
-                            '': courseYearList[i]?.finalizeStatus === 'N'
-                          }"
-                        >
-                          {{ courseYearList[i]?.finalizeStatus === 'Y' ? 'Finalized' : 'Not Finalized' }}
-                        </span>
-                        </span> -->
-                <span>
-                  {{ courseYearList[i]?.finalizeStatus === 'Y' ? 'Finalized' : 'Not Finalized' }}
-                </span>
-
-              </td>
-              <td>
-                <span [ngClass]="{
-                          'text-danger': !item.allotmentStatus,
-                          'text-success': item.allotmentStatus
-                        }">
-                  {{ item.allotmentStatus ? 'Allotted' : 'Not Allotted' }}
-                </span>
-              </td>
-              <td>
-                <button mat-raised-button color="primary" matTooltip="Print" (click)="getCourseFoprint(item)"
-                  class="tools mx-auto" [disabled]="!item.allotmentStatus">
-                   <mat-icon>save_alt</mat-icon>
-                </button>
-              </td>
-              <td>
-                <button class="btn btn-outline-danger btn-sm w-100" (click)="deleteAllotment(item)"
-                  matTooltip="Delete Course Year" [disabled]="courseYearList[i]?.finalizeStatus === 'Y'"
-                  [disabled]="!item.allotmentStatus">
-                  <mat-icon>
-                    restore_from_trash
-                  </mat-icon>
-                </button>
-              </td>
-            </tr>
+          
+<tr *ngFor="let item of courseYearList; let i = index">
+  <td>{{ item.course_year_name_e }}</td>
+  <td>{{item.dean_committee_name_e}}</td>
+  <td>
+    <div class="btnsection">
+      <button mat-raised-button color="primary" matTooltip="Show Course" 
+              (click)="getCourse(item, i)" 
+              [disabled]="!item.allotmentStatus" 
+              class="tools mx-auto">
+        Show Course
+      </button>
+    </div>
+  </td>
+  <td>
+    <span>
+      {{ item.finalizeStatus === 'Y' ? 'Finalized' : 'Not Finalized' }}
+    </span>
+  </td>
+  <td>
+    <span [ngClass]="{
+      'text-danger': !item.allotmentStatus,
+      'text-success': item.allotmentStatus
+    }">
+      {{ item.allotmentStatus ? 'Allotted' : 'Not Allotted' }}
+    </span>
+  </td>
+  <td>
+    <button mat-raised-button color="primary" matTooltip="Print" 
+            (click)="getCourseFoprint(item)"
+            class="tools mx-auto" [disabled]="!item.allotmentStatus">
+      <mat-icon>save_alt</mat-icon>
+    </button>
+  </td>
+  <td>
+    <button class="btn btn-outline-danger btn-sm w-100" 
+            (click)="deleteAllotment(item)"
+            matTooltip="Delete Course Year" 
+            [disabled]="item.finalizeStatus === 'Y' || !item.allotmentStatus">
+      <mat-icon>restore_from_trash</mat-icon>
+    </button>
+  </td>
+</tr>
           </tbody>
         </table>
       </div>
@@ -178,56 +138,36 @@
                     </li>
                   </ul>
                 </td>
-                <!-- <td>{{ course.teacherRows[0]?.emp_name || 'Not Allotted' }}</td> -->
-                <!-- </tr>
-              <tr *ngFor="let teacher of course.teacherRows.slice(1)">
-                <td>{{ teacher.emp_name || 'Not Allotted' }}</td>
-              </tr> -->
+         
             </ng-container>
-            <!--                 
-                    <ng-template #noTeacherRow>
-                      <tr>
-                        <td>{{ i + 1 }}</td>
-                        <td>{{ course.course_name }}</td>
-                        <td>{{ course.course_type_name_e }}</td>
-                        <td>{{ course.course_nature }}</td>
-                        <td>{{ course.credit }}</td>
-                        <td>{{ course.cou_allot_type_name_e }}</td>
-                        <td>Not Allotted</td>
-                      </tr>
-                    </ng-template> -->
+           
           </tbody>
         </table>
 
       </div>
+     
       <div class="row">
-        <div class="">
-          <button *ngIf="isFinalizedStatusbtn  === 'N'" mat-raised-button color="primary" class="btn btn-primary"
-            (click)="finlizeCourseAllotment()" [disabled]="finalizecourseFormGroup.invalid">
-            Finalize Course
-          </button>
-        </div>
-        <div class="">
-          <button *ngIf="isFinalizedStatusbtn  === 'Y'" mat-raised-button color="primary" class="btn btn-primary"
-            (click)="unfinalizeCourseAllotment()" [disabled]="finalizecourseFormGroup.invalid">
-            Unfinalize Course
-          </button>
-        </div>
-      </div>
-      <!-- <div class="row"> 
-                <div class="col-md-4">
-                    <button *ngIf="isFinalized == true" mat-raised-button color="primary" class="btn btn-primary" click
-                      (click)="finlizeCourseAllotment()" [disabled]="finalizecourseFormGroup.invalid">
-                        Finalize Course 
-                      </button>
-                </div>
-                <div class="col-md-4">
-                    <button *ngIf="isFinalized == true" mat-raised-button color="primary" class="btn btn-primary" click
-                      (click)="unfinalizeCourseAllotment()" [disabled]="finalizecourseFormGroup.invalid">
-                        Unfinalize Course 
-                      </button>
-                </div>
-              </div> -->
+  <!-- <div class="">
+    <button *ngIf="selectedRowIndex !== -1 && 
+                   courseYearList[selectedRowIndex]?.finalizeStatus === 'N'" 
+            mat-raised-button color="primary" class="btn btn-primary"
+            (click)="finlizeCourseAllotment()" 
+            [disabled]="finalizecourseFormGroup.invalid">
+      Finalize Course
+    </button>
+  </div> -->
+  <div class="">
+    <!-- Show Unfinalize button only for the selected row that is finalized -->
+    <button *ngIf="selectedRowIndex !== -1 && 
+                   courseYearList[selectedRowIndex]?.finalizeStatus === 'Y'" 
+            mat-raised-button color="primary" class="btn btn-primary"
+            (click)="unfinalizeCourseAllotment()" 
+            [disabled]="finalizecourseFormGroup.invalid">
+      Unfinalize Course
+    </button>
+  </div>
+</div>
+     
     </form>
   </mat-card-content>
 </mat-card>
