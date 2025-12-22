@@ -16,7 +16,7 @@ export class ApproveUidnComponent {
   generateUIDNFormGroup!: FormGroup
   acadmcSesnList: any;
   collegeList: any;
-  degreeProgramme: any;
+  degreeList: any;
   studentList: any;
   selectedDegree: any;
   selectAll = false;
@@ -59,48 +59,49 @@ export class ApproveUidnComponent {
   }
 
   onCollegeChange(college_id: number) {
-    this.getDegreeProgramme(college_id);
+    this.getDegree(college_id);
     // this.courseYearList = [];
   }
 
-  getDegreeProgramme(college_id: number) {
-    this.HTTP.getParam('/master/get/getDegreePrograamList/', { college_id }, 'academic')
+  getDegree(college_id: number) {
+    this.HTTP.getParam('/master/get/getDegreeByDegPrgTyp/', { college_id }, 'academic')
       .subscribe((result: any) => {
-        this.degreeProgramme = result.body.data;
-        console.log('Initial Degree Programme:', this.degreeProgramme);
+        this.degreeList = result.body.data;
+        // console.log('Initial Degree Programme:', this.degree);
 
         // Add hardcoded objects only if college_id = 5
-        if (college_id === 5) {
-          const extraProgrammes = [
-            {
-              degree_programme_id: 14,
-              degree_programme_name_e: "M.Sc.(Ag.) (PGS)",
-              degree_id: 12,
-              subject_id: 139
-            },
-            {
-              degree_programme_id: 37,
-              degree_programme_name_e: "Ph.D in Agriculture (PGS)",
-              degree_id: 5,
-              subject_id: 139
-            }
-          ];
+        // if (college_id === 5) {
+        //   const extraProgrammes = [
+        //     {
+        //       degree_programme_id: 14,
+        //       degree_programme_name_e: "M.Sc.(Ag.) (PGS)",
+        //       degree_id: 12,
+        //       subject_id: 139
+        //     },
+        //     {
+        //       degree_programme_id: 37,
+        //       degree_programme_name_e: "Ph.D in Agriculture (PGS)",
+        //       degree_id: 5,
+        //       subject_id: 139
+        //     }
+        //   ];
 
-          // Push into array
-          this.degreeProgramme.push(...extraProgrammes);
-        }
+        //   // Push into array
+        //   this.degreeProgramme.push(...extraProgrammes);
+        // }
       });
   }
 
-  onDegreeProgrammeChange(degree_programme_id: number) {
-    const selected = this.degreeProgramme.find((p: { degree_programme_id: number; }) => p.degree_programme_id === degree_programme_id);
-    const degree_id = selected?.degree_id;
-    const subject_id = selected?.subject_id;
-    const degree_programme_type_id = selected?.degree_programme_type_id;
+  onDegreeChange(degree_id: number) {
+    // const selected = this.degreeProgramme.find((p: { degree_programme_id: number; }) => p.degree_programme_id === degree_programme_id);
+    // const degree_id = selected?.degree_id;
+    // const subject_id = selected?.subject_id;
+    // const degree_programme_type_id = selected?.degree_programme_type_id;
     // console.log('degree_id to send:', degree_id);
     this.selectedDegree = degree_id
   }
 
+  // ! qlMessage: "Table 'igkv_admission.a_stu_couns_seat_allotment_old' doesn't exist",
   getStudentList() {
     const formData = this.generateUIDNFormGroup.value;
     console.log('Form Data to Submit:', formData);
@@ -196,13 +197,26 @@ export class ApproveUidnComponent {
 
   submitSelected() {
     const selectedRows = this.students.value.filter((r: any) => r.selected);
+    const { academic_session_id, college_id } = this.generateUIDNFormGroup.value;
 
     if (selectedRows.length === 0) {
       alert("⚠️ No student selected!");
       return;
     }
     console.log("Submit Payload:", selectedRows);
-    this.HTTP.postData('/studentProfile/post/saveApproveUIDN', selectedRows, 'academic')
+    const selectedAcademicSession = this.acadmcSesnList.find((ac: any) => ac.academic_session_id === academic_session_id);
+    const selectedCollege = this.collegeList.find((college: any) => college.college_id === college_id);
+    const selectedDegree = this.degreeList.find((degree: any) => degree.degree_id === this.selectedDegree);
+
+    this.HTTP.postData('/studentProfile/post/saveApproveUIDN', {
+      selectedRows,
+      academic_session_id,
+      academic_session_name_e: selectedAcademicSession?.academic_session_name_e,
+      college_id,
+      college_name_e: selectedCollege?.college_name_e,
+      degree_id: this.selectedDegree,
+      degree_name_e: selectedDegree?.degree_name_e,
+    }, 'academic')
       .subscribe(res => {
         const api = res.body.error;  // this contains { error, message, result }
         if (api && api.error === false) {
