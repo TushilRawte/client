@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { HttpService, AlertService } from 'shared';
+import { HttpService, AlertService ,AuthService } from 'shared';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -22,14 +22,16 @@ export class CourseRegistrationComponent {
   registeredCourseList: any[] = [];
   failedCoursesList: any[] = [];
   studentData: any = null;
-  sessionData: any = {};
+  userData: any = {};
+
 
   constructor(
     private snackBar: MatSnackBar,
     private HTTP: HttpService,
     private alert: AlertService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private auth: AuthService,
+  ) { this.userData = this.auth.getSession()}
 
   tableOptions: any = {
     is_read: true,
@@ -39,25 +41,20 @@ export class CourseRegistrationComponent {
     title: 'Courses List',
   };
 
-  ngOnInit() {
-    const storedData = sessionStorage.getItem('studentData');
-    if (storedData) {
-      const studentData = JSON.parse(storedData);
-      this.sessionData = studentData;
-      this.getStudentDetails();
-    } else {
-      this.router.navigateByUrl('/dashboard');
-    }
+
+  ngOnInit(): void {
+    this.getStudentDetails();
+    console.log(this.userData);
+    
   }
 
   getStudentDetails() {
-    // ^ this data will get from login session
-    const academic_session_id = this.sessionData.academic_session_id;
-    const course_year_id = this.sessionData.course_year_id;
-    const semester_id = this.sessionData.semester_id;
-    const college_id = this.sessionData.college_id;
-    const degree_programme_id = this.sessionData.degree_programme_id;
-    const ue_id = this.sessionData.ue_id;
+    const academic_session_id = this.userData.academic_session_id;
+    const course_year_id = this.userData.course_year_id;
+    const semester_id = this.userData.semester_id;
+    const college_id = this.userData.college_id;
+    const degree_programme_id = this.userData.degree_programme_id;
+    const ue_id = this.userData.user_id;
 
     const params = {
       academic_session_id: academic_session_id,
@@ -66,6 +63,7 @@ export class CourseRegistrationComponent {
       college_id: college_id,
       degree_programme_id: degree_programme_id,
       ue_id: ue_id,
+      payment:true
     };
     this.HTTP.getParam(
       '/course/get/getStudentList/',
@@ -74,24 +72,6 @@ export class CourseRegistrationComponent {
     ).subscribe((result: any) => {
       this.studentData = !result.body.error ? result.body.data[0] : [];
 
-      /*   if (this.studentData) {
-        if (this.studentData?.registration_status_id === 1) {
-          this.getRegisteredCourses();
-        } else if (this.studentData?.course_regular_type == 'Y') {
-          this.getCourseFromAllotment();
-          this.getOtherCourseFromAllotment();
-        }
-
-        if (this.studentData?.course_regular_type == 'Y') {
-        }
-        if (
-          this.studentData?.course_failed_type == 'Y' &&
-          this.studentData?.registration_status_id === 2 &&
-          this.studentData?.course_year_id !== 2
-        ) {
-          this.getFailedCourse(); //for normal failed course
-        }
-      } */
 
       if (!this.studentData) return;
 
@@ -165,6 +145,7 @@ export class CourseRegistrationComponent {
       semester_id: this.studentData?.semester_id,
       college_id: this.studentData?.college_id,
       degree_programme_id: this.studentData?.degree_programme_id,
+      dean_committee_id:this.studentData?.dean_committee_id
     };
     this.HTTP.getParam(
       '/course/get/getCourseFromAllotment/',
@@ -331,6 +312,7 @@ export class CourseRegistrationComponent {
       semester_id: this.studentData?.semester_id,
       not_degree_programme_id: this.studentData?.degree_programme_id,
       degree_programme_id_not: true,
+      dean_committee_id:this.studentData?.dean_committee_id
     };
     this.HTTP.getParam(
       '/course/get/getCourseFromAllotment/',
@@ -414,7 +396,7 @@ export class CourseRegistrationComponent {
       dataSource: [...this.selectedCourses],
       listLength: this.selectedCourses.length
     };
-    console.log("after", this.selectedCourses);
+    // console.log("after", this.selectedCourses);
 
   }
 

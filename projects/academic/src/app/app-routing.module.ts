@@ -18,7 +18,6 @@ import { MarksEntryUnfinalizeComponent } from './marks entry/marks-entry-unfinal
 import { ResultNotificationComponent } from './marks entry/result-notification/result-notification.component';
 import { PaymentSettlementComponent } from './payment-settlement/payment-settlement.component';
 import { AutomaticRegistrationComponent } from './registration/automatic-registration/automatic-registration.component';
-import { CourseRegistrationComponent } from './registration/course-registration/course-registration.component';
 import { FacultyListComponent } from './registration/faculty-list/faculty-list.component';
 import { RegistrationReportComponent } from './registration/registration-report/registration-report.component';
 import { SrcGenerateComponent } from './semester-report-card/src-generate/src-generate.component';
@@ -48,6 +47,7 @@ import { SrcEsignComponent } from './student/src-esign/src-esign.component';
 import { AppliedListComponent } from './student/transfer-certificate/applied-list/applied-list.component';
 import { CollegeTransferComponent } from './student/college-transfer/college-transfer.component';
 import { CollegeTransferReportComponent } from './student/college-transfer-report/college-transfer-report.component';
+import { MigrationCertificateComponent } from './student/migration-certificate/migration-certificate.component';
 
 const routes: Routes = [
   {
@@ -83,11 +83,6 @@ const routes: Routes = [
         path: 'teacher-allotment',
         component: TeacherAllotmentComponent,
         pathMatch: 'full',
-      },
-      {
-        path: 'course-registration',
-        component: CourseRegistrationComponent,
-        // pathMatch: 'full',
       },
       {
         path: 'course-registration-unfinalize',
@@ -282,6 +277,11 @@ const routes: Routes = [
        {
         path: 'transfer-applied-list',
         component: AppliedListComponent,
+        pathMatch: 'full',
+      },
+       {
+        path: 'migration-applied',
+        component: MigrationCertificateComponent,
         pathMatch: 'full',
       },
       {

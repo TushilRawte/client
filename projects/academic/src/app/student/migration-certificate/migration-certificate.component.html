@@ -1,12 +1,12 @@
 <mat-card>
   <mat-card-content>
     <div class="page-heading text-center py-2">
-      <h3 class="m-0 text-white fw-bold">Transfer Applied List</h3>
+      <h3 class="m-0 text-white fw-bold">Migration Applied</h3>
     </div>
 
     <hr />
 
-    <form [formGroup]="transappliedFormGroup" *ngIf="isListData">
+    <form [formGroup]="migrationFormGroup" *ngIf="isListData">
       <div class="row">
         <div class="col-md-4 col-6">
           <ng-select [items]="acadmcSession" bindLabel="academic_session_name_e" bindValue="academic_session_id"
@@ -71,11 +71,11 @@
           <button *ngIf="isListData" type="button" class="btn btn-link fw-bolder fs-5 p-0" style="text-decoration: underline;" (click)="getStudentByUE_ID()">
          👉 Get Student By University ID
           </button>
-          <button *ngIf="transappliedFormGroup.valid && isListData" type="button"
+          <button *ngIf="migrationFormGroup.valid && isListData" type="button"
             class="btn btn-success btn-sm text-dark fw-bolder fs-5 ms-5 me-5" (click)="getAppliedListTransferCertificate('Y')">
             Generated Transfer Certificate
           </button>
-          <button *ngIf="transappliedFormGroup.valid && isListData" type="button"
+          <button *ngIf="migrationFormGroup.valid && isListData" type="button"
             class="btn btn-success btn-sm text-dark fw-bolder fs-5" (click)="getAppliedListTransferCertificate('N')">
             Show List of Students
           </button>

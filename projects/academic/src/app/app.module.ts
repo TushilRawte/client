@@ -14,7 +14,6 @@ import { CourseAllotmentComponent } from './course-allotment/course-allotment.co
 import { CourseDashboardComponent } from './course-dashboard/course-dashboard.component';
 import { CourseFinalizeComponent } from './course-finalize/course-finalize.component';
 import { CourseallotDashboardComponent } from './courseallot-dashboard/courseallot-dashboard.component';
-import { CourseRegistrationComponent } from './registration/course-registration/course-registration.component';
 import { CourseRegistrationUnfinlizeComponent } from './course-registration-unfinlize/course-registration-unfinlize.component';
 import { TeacherSectionAllotmentComponent } from './teacher-section-allotment/teacher-section-allotment.component';
 import { StudentSectionAllotmentComponent } from './student-section-allotment/student-section-allotment.component';
@@ -63,6 +62,7 @@ import { SrcEsignComponent } from './student/src-esign/src-esign.component';
 import { GeneratedListComponent } from './student/transfer-certificate/applied-list/generated-list/generated-list.component';
 import { CollegeTransferComponent } from './student/college-transfer/college-transfer.component';
 import { CollegeTransferReportComponent } from './student/college-transfer-report/college-transfer-report.component';
+import { MigrationCertificateComponent } from './student/migration-certificate/migration-certificate.component';
 
 
 @NgModule({
@@ -74,7 +74,6 @@ import { CollegeTransferReportComponent } from './student/college-transfer-repor
     CourseallotDashboardComponent,
     CourseFinalizeComponent,
     TeacherAllotmentComponent,
-    CourseRegistrationComponent,
     CourseRegistrationUnfinlizeComponent,
     TeacherSectionAllotmentComponent,
     StudentSectionAllotmentComponent,
@@ -122,6 +121,7 @@ import { CollegeTransferReportComponent } from './student/college-transfer-repor
     GeneratedListComponent,
     CollegeTransferComponent,
     CollegeTransferReportComponent,
+    MigrationCertificateComponent,
 
   ],
   imports: [

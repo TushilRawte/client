@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { HttpService } from 'shared';
+import { HttpService ,AuthService, AlertService } from 'shared';
 import { Router } from '@angular/router';
 import { environment } from 'environment';
 
@@ -49,29 +49,21 @@ export class NewLayoutComponent {
   studentData: any;
   isSidebarOpen: boolean = false;
   path: string = environment.igkvUrl;
-  sessionData: any = {};
-
-
+  public userData: any = {};
 
   toggleSidebar(): void {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
-  constructor(private HTTP: HttpService, private router: Router) { }
+  constructor(private HTTP: HttpService, private router: Router,private auth: AuthService,private alertService: AlertService) {
+    this.userData = this.auth.getSession()
+   }
 
   ngOnInit(): void {
-    const storedData = sessionStorage.getItem('studentData');
-    if (storedData) {
-      const studentData = JSON.parse(storedData);
-      this.sessionData = studentData
-      this.getStudentDetails();
-    }
+    this.getStudentDetails();
   }
 
   searchQuery: string = '';
-
-
-
 
   // ^ new code start
 
@@ -110,7 +102,7 @@ export class NewLayoutComponent {
       isExpanded: false,
       submenus: [
         { label: 'Registration', route: '/course-registration', isActive: false },
-        { label: 'Registration Cards', route: 'registration-card', isActive: false },
+        { label: 'Registration Cards', route: '/registration-card', isActive: false },
       ]
     },
     {
@@ -177,12 +169,12 @@ export class NewLayoutComponent {
         { label: 'Account', route: '/settings/account', isActive: false }
       ]
     },
-    {
-      icon: 'fas fa-sign-out-alt',
-      label: 'Logout',
-      isActive: false,
-      route: '/logout'
-    }
+    // {
+    //   icon: 'fas fa-sign-out-alt',
+    //   label: 'Logout',
+    //   isActive: false,
+    //   route: '/logout'
+    // }
   ];
 
 
@@ -252,20 +244,37 @@ export class NewLayoutComponent {
     this.closeSidebar();
   }
 
+   logout(): void {
+    this.alertService
+      .confirmAlert('Logout', 'Are you sure you want to logout?', 'warning')
+      .then((result: any) => {
+        if (result.isConfirmed) {
+          this.auth.studentLogout();
+          this.auth.clearSession();
+          this.alertService.alert(
+            false,
+            'You have been logged out successfully!',
+            2000
+          );
+        }
+      });
+  }
 
   getStudentDetails() {
     const params = {
-      academic_session_id: this.sessionData?.academic_session_id,
-      course_year_id: this.sessionData?.course_year_id,
-      semester_id: this.sessionData?.semester_id,
-      college_id: this.sessionData?.college_id,
-      degree_programme_id: this.sessionData?.degree_programme_id,
-      ue_id: this.sessionData?.ue_id
+      academic_session_id: this.userData?.academic_session_id,
+      course_year_id: this.userData?.course_year_id,
+      semester_id: this.userData?.semester_id,
+      college_id: this.userData?.college_id,
+      degree_programme_id: this.userData?.degree_programme_id,
+      ue_id: this.userData?.user_id
     }
     this.HTTP.getParam('/course/get/getStudentList/', params, 'academic').subscribe((result: any) => {
-      console.warn(result.body.data[0])
       this.studentData = result.body.data[0];
     })
+
+
+   
 
 
   }

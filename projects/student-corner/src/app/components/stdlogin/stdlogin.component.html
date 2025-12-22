@@ -1,0 +1,80 @@
+<!-- stdlogin.component.html -->
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+  <div class="card shadow-lg p-4 login-card">
+    <h4 class="text-center mb-4 fw-bold">Student Login</h4>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+
+      <!-- User ID -->
+      <mat-form-field appearance="outline" class="w-100 mb-3">
+        <mat-label>University ID</mat-label>
+        <input matInput formControlName="user_id" />
+        <mat-error *ngIf="loginForm.get('user_id')?.invalid">
+          User ID is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Password -->
+      <mat-form-field appearance="outline" class="w-100 mb-3">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="password"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="togglePasswordVisibility()"
+        >
+          <mat-icon>
+            {{ showPassword ? 'visibility_off' : 'visibility' }}
+          </mat-icon>
+        </button>
+        <mat-error *ngIf="loginForm.get('password')?.invalid">
+          Password is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Captcha -->
+      <div class="d-flex align-items-center mb-3">
+        <div
+          #captchaContainer
+          class="captcha-box me-3 border rounded p-2"
+        ></div>
+        <button
+          type="button"
+          mat-icon-button
+          (click)="getCaptcha()"
+          aria-label="Refresh captcha"
+        >
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-100 mb-3">
+        <mat-label>Enter Captcha</mat-label>
+        <input matInput formControlName="captcha" />
+        <mat-error *ngIf="loginForm.get('captcha')?.invalid">
+          Captcha is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Error Message -->
+      <div *ngIf="loginError" class="text-danger mb-3 text-center">
+        {{ loginError }}
+      </div>
+
+      <!-- Login Button -->
+      <button
+        mat-raised-button
+        color="primary"
+        class="w-100"
+        type="submit">
+        Login
+      </button>
+
+    </form>
+  </div>
+</div>

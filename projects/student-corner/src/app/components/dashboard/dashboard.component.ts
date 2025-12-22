@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HttpService } from 'shared';
+import { HttpService,AuthService } from 'shared';
 
 export interface StatCard {
   title: string;
@@ -41,11 +41,15 @@ export interface Announcement {
 export class DashboardComponent {
 studentData:any;
 igkvUrl:string = 'https://igkv.ac.in/'
+ public userData: any
 
- constructor(private HTTP: HttpService) { }
+ constructor(private HTTP: HttpService,private auth: AuthService) { 
+   this.userData = this.auth.getSession()   
+ }
 
    ngOnInit(): void {
     this.getStudentDetails();
+    
   }
 
   currentMonth = 'April 2023';
@@ -188,14 +192,12 @@ leaderboardData: LeaderboardData[] = [
   }
 
     getStudentDetails() {
-    // ^ this data will get from login session
-    const academic_session_id = 25;
-    const semester_id = 1;
-    const college_id = 5;
-
-    const course_year_id = 2;
-    const degree_programme_id = 1;// all pass
-    const ue_id = 20240301; // all pass
+    const academic_session_id = this.userData.academic_session_id;
+    const semester_id = this.userData.semester_id;
+    const college_id = this.userData.college_id;
+    const course_year_id = this.userData.course_year_id;
+    const degree_programme_id = this.userData.degree_programme_id;// all pass
+    const ue_id = this.userData.user_id; // all pass
 
     // const ue_id = 20230129; // fail in theory
     // const degree_programme_id = 16; // fail in theory
@@ -203,17 +205,15 @@ leaderboardData: LeaderboardData[] = [
 
 
     const params = {
-      academic_session_id: academic_session_id,
+      academic_session_id: academic_session_id, 
       course_year_id: course_year_id,
       semester_id: semester_id,
       college_id: college_id,
       degree_programme_id: degree_programme_id,
       ue_id: ue_id
     }
-    sessionStorage.setItem('studentData', JSON.stringify(params));
 
     this.HTTP.getParam('/course/get/getStudentList/', params, 'academic').subscribe((result: any) => {
-      console.warn(result.body.data[0])
       this.studentData = result.body.data[0];
     })
   }

@@ -47,7 +47,7 @@ export class LayoutComponent implements OnInit, AfterViewInit {
 
   docElement!: HTMLElement;
   isFullScreen = false;
-  public user: any
+  public user: any;
   @ViewChild('dialogContent') dialogContent!: any;
 
   constructor(@Inject(DOCUMENT) private document: Document, private alert: AlertService,
