@@ -191,16 +191,14 @@ export class MarksEntryExportComponent {
       return; // Stop execution
     }
     this.HTTP.getParam(
-      '/attendance/get/getDashForExportDataForFireEye/',
-      payload,
-      'academic'
+      '/attendance/get/getDashForExportDataForFireEye/',payload,'academic'
     ).subscribe((result: any) => {
       this.courseList = result.body.data;
       this.optionsCourse.dataSource = this.courseList;
       this.optionsCourse.listLength = this.courseList.length;
       this.studentPhotList = [];
       this.studentList = [];
-      console.log('API Response:', result);
+      console.log('API Response dash:', result);
     });
   }
 
@@ -216,14 +214,21 @@ export class MarksEntryExportComponent {
       course_year_id: item.course_year_id,
     };
     this.HTTP.getParam(
-      '/attendance/get/exportFireEyeDatafromTemp/',
-      payload,
-      'academic'
-    ).subscribe((result: any) => {
-      this.studentList = result.body.data;
+      '/attendance/get/exportFireEyeDatafromTemp/', payload,'academic').subscribe((result: any) => {
+ const data = result?.body?.data ?? [];
+
+      // 🔴 NO DATA FOUND
+      if (!data.length) {
+        alert('No data found. Please prepare data first.');
+        return;   // ⛔ stop further execution
+      }
+
+      // ✅ DATA FOUND
+      this.studentList = data;
       this.studentListoptions.dataSource = this.studentList;
       this.studentListoptions.listLength = this.studentList.length;
-      console.log('API Response:', result);
+
+      console.log('API Response:', data);
     });
   }
 
@@ -316,7 +321,7 @@ onSubmit(item: any) {
     is_render: true,
     page: 0,
     pageSize: 10,
-    title: 'Report Filter',
+    title: '',
   };
 
   studentListoptions: any = {
@@ -331,7 +336,7 @@ onSubmit(item: any) {
     is_render: true,
     page: 0,
     pageSize: 10,
-    title: 'Report Filter',
+    title: '',
   };
 
   studentPhotoListoptions: any = {
@@ -346,6 +351,6 @@ onSubmit(item: any) {
     is_render: true,
     page: 0,
     pageSize: 10,
-    title: 'Report Filter',
+    title: '',
   };
 }

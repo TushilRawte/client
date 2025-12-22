@@ -284,9 +284,7 @@ onSubmit() {
   ).subscribe(
     (res: any) => {
       console.log("Upload Response:", res);
-
       const responseData = res?.body?.data;
-
       if (responseData) {
         if (responseData.error === false) {
           this.alert.alertMessage(responseData.message || "File imported successfully!", "", "success");

@@ -15,10 +15,13 @@ export class MarksEntryReportComponent {
   List: any;
   showPayload: any;
   formValueData: any;
+  academic_session_id: any;
+  acadmcSesnList: any;
+  semester_id: any;
 
   constructor(private HTTP :HttpService, public dialogRef: MatDialogRef<MarksEntryReportComponent>, @Inject(MAT_DIALOG_DATA) public data: any ) {
     console.log('Received in Dialog:', data);
-    console.log('hrk',data.students);
+
     this.List=data.students
     this.showPayload = data.selectedCourse
     this.optionStudent.payload.college_name_e = this.showPayload.college_name_e;
@@ -27,6 +30,8 @@ export class MarksEntryReportComponent {
 
     this.getData = data.item
     this.formValueData = data.formHeader
+    this.academic_session_id = data.formHeader.academic_session_id
+    this.semester_id = data.formHeader.semester_id
     this.formValueData = data.formHeader.exam_paper_type_id   
      this.optionStudent.dataSource = this.List;
       this.optionStudent.listLength = this.List.length;
@@ -45,17 +50,35 @@ export class MarksEntryReportComponent {
     title: 'Marks Entry Report',
     payload: {
       college_name_e: this.showPayload.college_name_e,
-      academic_session_name_e: "2024-25",
+      academic_session_name_e:this.acadmcSesnList,
       course_year_name_e: this.showPayload.course_year_name_e,
-      semester_name_e: "1st Semester",
       course_code:this.showPayload.course_code
     }
   };
   }
 
       ngOnInit(): void {
-        
+        this.getAcademicSessionName(this.academic_session_id);
+              this.getSemesterName(this.semester_id);
   }
+
+
+getAcademicSessionName(academic_session_id: any) {
+  this.HTTP.getParam('/master/get/getAcademicSession1/', { academic_session_id }, 'academic').subscribe((result: any) => {
+      const sessionName = result?.body?.data?.[0]?.academic_session_name_e;
+      // ✅ update payload dynamically
+      this.optionStudent.payload.academic_session_name_e = sessionName;
+    });
+}
+
+  getSemesterName(semester_id: any) {
+    this.HTTP.getParam('/master/get/getSemesterList/', {semester_id},'academic').subscribe((result: any) => {
+     const sessionName = result?.body?.data?.[0]?.semester_name_e;
+      // ✅ update payload dynamically
+      this.optionStudent.payload.semester_name_e = sessionName;
+    });
+  }
+
 
       optionStudent: any = {
     is_read: true,

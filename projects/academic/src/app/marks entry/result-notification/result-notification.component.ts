@@ -199,7 +199,7 @@ export class ResultNotificationComponent implements OnInit {
     is_render: true,
     page: 0,
     pageSize: 10,
-    title: "Report Filter",
+    title: "",
     payload: {
       // college_name_e: "SRI-Tech-I",
       // degree_programme_name_e: "Horticulture",

@@ -77,6 +77,8 @@ export class CourseAllotmentComponent {
   allotment_type_for_flag:any
    isAllowed:boolean = false;
    isEditModeDelete: boolean = false;
+   hideUpdateButtonForalt:boolean = false;
+   hideAllotButton:boolean = false;
 
   
 
@@ -96,7 +98,7 @@ export class CourseAllotmentComponent {
     this.getCourseAllotType();
     this.getTeacherListForCrsAlt();
     this.mainforfun();
-    this.getallCourse();
+    // this.getallCourse();
     this.getModuleList();
     this.getModuleBatchGroup();
     this.getMasterCollege()
@@ -421,7 +423,7 @@ getChildCollegeForCounselling(m_college_id: number) {
       // console.log('child clg', this.childCollegeList);
 
       if (this.childCollegeList && this.childCollegeList.length > 0) {
-        this.showChildButton = true;
+        this.showChildButton = true;        
         // this.snackBar.open('Child colleges found.', 'Close', { duration: 3000 });
       } else {
         this.showChildButton = false;
@@ -433,6 +435,27 @@ getChildCollegeForCounselling(m_college_id: number) {
 }
 
 
+isButtonValid(){
+  if (!this.showChildButton && this.selectedDegreeProgrammeTypeId === 1){
+    this.hideUpdateButtonForalt = false;
+    console.log('hideUpdateButtonForalt',this.hideUpdateButtonForalt);
+    
+  }
+  else{
+    this.hideUpdateButtonForalt = true;
+  }
+}
+
+isAllotButtonValid(){
+  if (!this.showChildButton && this.selectedDegreeProgrammeTypeId === 1){
+    this.hideAllotButton = false;
+    console.log('hideAllotButton',this.hideAllotButton);
+    
+  }
+  else{
+    this.hideAllotButton = true;
+  }
+}
 
 getDegreeProgramme(college_id: number) {
   this.HTTP.getParam('/master/get/getDegreePrograamList/', { college_id }, 'academic')
@@ -466,8 +489,32 @@ getDegreeProgramme(college_id: number) {
 }
 
 
-  getallCourse() {
-    this.HTTP.getParam('/master/get/getCourseForAllot/',{},'academic').subscribe((result:any) => {
+  // getallCourse() {
+  //   this.HTTP.getParam('/master/get/getCourseForAllot/',{},'academic').subscribe((result:any) => {
+  //     // console.log(result);
+  //     this.allCourses = result.body.data;
+  //   })
+  // }
+
+    getallCourse() {
+         const formValue = this.courseAllotFormGroup.value;
+    if (
+      !formValue.semester_id 
+    ) {
+      // alert('Please fill all required fields ...');
+      return;
+    }
+   const  otherDeptWise= 'true'
+    const params = {
+      semester_id: formValue.semester_id,
+      dean_committee_id: this.selectedDnCmt,
+       degree_id: this.selectedDegree,
+      // course_subject_id: this.selectedSubject,
+      otherDeptWise: otherDeptWise
+      
+      // course_year_id: this.selectedCourseYearId
+    };
+    this.HTTP.getParam('/master/get/getCourseForAllot/',params,'academic').subscribe((result:any) => {
       // console.log(result);
       this.allCourses = result.body.data;
     })
@@ -928,6 +975,7 @@ checkCourseYear(selectedCourseYearId:any) {
     this.openCourseGeneral(item)
     this.getCourseforUpdate()
     this.resetCourseAllotmentFields()
+    this.isButtonValid()
     this.isaddRow = false
     this.isShowbutton = true
     this.previousYearaltBtn = false
@@ -992,6 +1040,7 @@ checkCourseYear(selectedCourseYearId:any) {
        const allotment_type = item?.allotment_type
     this.checkAllotmentType(allotment_type)
     this.openCourseGeneral(item)
+    this.isAllotButtonValid()
     const formValue = this.courseAllotFormGroup.value;
     if (
       !formValue.academic_session_id ||
@@ -1199,6 +1248,7 @@ checkCourseYear(selectedCourseYearId:any) {
     this.showCourse = true;
     this.selectedDnCmt = item.dean_committee_id;
     this.getCourseList();
+    this.getallCourse();
    this.checkCourseYear(this.selectedCourseYearId);
 
   }
@@ -1611,6 +1661,72 @@ visibleForm(){
   this.isAddMoreCourses = true
 }
 
+finalizeCourse() {
+  const formValue = this.courseAllotFormGroup.value;
+
+  if (
+    !formValue.academic_session_id ||
+    !formValue.degree_programme_id ||
+    !formValue.courseYear?.course_year_id ||
+    !formValue.semester_id ||
+    !formValue.deanCommittee?.dean_committee_id
+  ) {
+    alert('Please fill all required fields.');
+    return;
+  }
+
+  const params = {
+    academic_session_id: formValue.academic_session_id ,
+    degree_programme_id: formValue.degree_programme_id,
+    course_year_id: formValue.courseYear?.course_year_id,
+    semester_id: formValue.semester_id,
+    dean_committee_id: formValue.deanCommittee?.dean_committee_id,
+  };
+
+  this.HTTP
+    .getParam('/course/get/getCourseAllotmentMainDetailIds/', params, 'academic')
+    .subscribe(
+      (result: any) => {
+
+        const data = result?.body?.data || [];
+
+        // ✅ 1. Empty check
+        if (!data.length) {
+          this.snackBar.open('Course not allotted.', 'Close', { duration: 5000 });
+          return;
+        }
+
+        // ✅ 2. Remove duplicate allotment_main_id
+        const uniqueMainIds = [
+          ...new Set(data.map((item: any) => item.allotment_main_id))
+        ];
+
+        // ✅ 3. Prepare payload
+        const payload = {
+          allotment_main_id: uniqueMainIds
+        };
+
+        console.log('finalize payload', payload);
+
+        // ✅ Finalize API
+        this.HTTP.putData('/course/update/updateFinalizeStatus/', payload, 'academic')
+          .subscribe((res: any) => {
+            if (!res.body?.error) {
+                this.alert.alertMessage("Course Unfinalized.....!", "", "success");
+            } else {
+                this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
+            }
+          });
+
+      },
+      (error) => {
+        console.error('API Error:', error);
+      }
+    );
+}
+
 
 
 }
+
+

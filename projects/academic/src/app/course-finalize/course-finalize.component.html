@@ -61,47 +61,7 @@
             </tr>
           </thead>
           <tbody>
-            <!-- //old -->
-            <!-- <tr *ngFor="let item of courseYearList; let i = index">
-              <td>{{ item.course_year_name_e }}</td>
-              <td>{{item.dean_committee_name_e}}</td>
-              <td>
-                <div class="btnsection">
-                  <button mat-raised-button color="primary" matTooltip="Show Course" (click)="chckFinlize(item)"
-                    (click)="getCourse(item)" [disabled]="!item.allotmentStatus" class="tools mx-auto">Show
-                    Course</button>
-                </div>
-              </td>
-              <td>
-                <span>
-                  {{ courseYearList[i]?.finalizeStatus === 'Y' ? 'Finalized' : 'Not Finalized' }}
-                </span>
-              </td>
-              <td>
-                <span [ngClass]="{
-                          'text-danger': !item.allotmentStatus,
-                          'text-success': item.allotmentStatus
-                        }">
-                  {{ item.allotmentStatus ? 'Allotted' : 'Not Allotted' }}
-                </span>
-              </td>
-              <td>
-                <button mat-raised-button color="primary" matTooltip="Print" (click)="getCourseFoprint(item)"
-                  class="tools mx-auto" [disabled]="!item.allotmentStatus">
-                   <mat-icon>save_alt</mat-icon>
-                </button>
-              </td>
-              <td>
-                <button class="btn btn-outline-danger btn-sm w-100" (click)="deleteAllotment(item)"
-                  matTooltip="Delete Course Year" [disabled]="courseYearList[i]?.finalizeStatus === 'Y'"
-                  [disabled]="!item.allotmentStatus">
-                  <mat-icon>
-                    restore_from_trash
-                  </mat-icon>
-                </button>
-              </td>
-            </tr> -->
-            <!-- In your table row -->
+          
 <tr *ngFor="let item of courseYearList; let i = index">
   <td>{{ item.course_year_name_e }}</td>
   <td>{{item.dean_committee_name_e}}</td>
@@ -185,25 +145,9 @@
         </table>
 
       </div>
-      <!-- old -->
-      <!-- <div class="row">
-        <div class="">
-          <button *ngIf="isFinalizedStatusbtn  === 'N'" mat-raised-button color="primary" class="btn btn-primary"
-            (click)="finlizeCourseAllotment()" [disabled]="finalizecourseFormGroup.invalid">
-            Finalize Course
-          </button>
-        </div>
-        <div class="">
-          <button *ngIf="isFinalizedStatusbtn  === 'Y'" mat-raised-button color="primary" class="btn btn-primary"
-            (click)="unfinalizeCourseAllotment()" [disabled]="finalizecourseFormGroup.invalid">
-            Unfinalize Course
-          </button>
-        </div>
-      </div> -->
-
+     
       <div class="row">
-  <div class="">
-    <!-- Show Finalize button only for the selected row that is not finalized -->
+  <!-- <div class="">
     <button *ngIf="selectedRowIndex !== -1 && 
                    courseYearList[selectedRowIndex]?.finalizeStatus === 'N'" 
             mat-raised-button color="primary" class="btn btn-primary"
@@ -211,7 +155,7 @@
             [disabled]="finalizecourseFormGroup.invalid">
       Finalize Course
     </button>
-  </div>
+  </div> -->
   <div class="">
     <!-- Show Unfinalize button only for the selected row that is finalized -->
     <button *ngIf="selectedRowIndex !== -1 && 

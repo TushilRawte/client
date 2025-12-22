@@ -61,7 +61,7 @@ export class CheckDocumentForUidnComponent {
     is_render: true,
     page: 0,
     pageSize: 10,
-    title: 'Report Filter',
+    title: '',
   };
 
   closeDialog() {

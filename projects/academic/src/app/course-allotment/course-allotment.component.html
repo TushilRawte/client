@@ -124,6 +124,11 @@
         </div>
           <!-- <app-courseallot-dashboard [data]="currentData" ></app-courseallot-dashboard> -->
         <div class="row course-allot mt-3" *ngIf="showCourse">
+             <ng-container>
+                <p style="color: red; font-weight: bold; margin: 5px 0;">
+                Note:   ⚠ In case of UG 5th Dean Committee course allotment Except Raipur college (Master College), Other colleges Need to update there teacher.
+                </p>
+            </ng-container>
             <div class="row">
               <ng-container *ngIf="isAddMoreCourses">
                   <ng-container *ngIf="isHideModuleSection">
@@ -297,12 +302,19 @@
                 Is Section Allotment Required
               </mat-checkbox>
          </ng-container>
-          <div class="col-md-4 col-12 mt-2">
-            <button type="submit" class="btn btn-primary" *ngIf="isSbumitBtn == true" (click)="onSubmit()" >Allot Course</button>
+         <div class="row">
+  <div class="col-md-4 col-12 mt-2">
+            <button type="submit" class="btn btn-primary" *ngIf="isSbumitBtn == true && hideAllotButton" (click)="onSubmit()" >Allot Course</button>
             <!-- <button type="submit" class="btn btn-primary" (click)="onSubmit()" >Allot Course</button> -->
-            <button type="submit" class="btn btn-primary" *ngIf="previousYearaltBtn == true" (click)="onSubmit()" > Allot Course</button>
-             <button type="submit" class="btn btn-primary" *ngIf="isShowUpdateButton" (click)="onUpdateCouesNew()" >Update Alloted Course</button>
+            <button type="submit" class="btn btn-primary" *ngIf="previousYearaltBtn == true && hideAllotButton" (click)="onSubmit()" > Allot Course</button>
+             <button type="submit" class="btn btn-primary" *ngIf="isShowUpdateButton && hideUpdateButtonForalt" (click)="onUpdateCouesNew()" >Update Alloted Course</button>
+             
           </div>
+          <div class="col-md-3">
+           <button type="submit" *ngIf="isShowUpdateButton == true" class="btn btn-danger"  (click)="finalizeCourse()" >Finalize Course</button>
+          </div>
+         </div>
+        
       </form>
     </mat-card-content>
 </mat-card>  
