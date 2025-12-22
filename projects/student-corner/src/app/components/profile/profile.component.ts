@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { AlertService, HttpService, PrintService } from 'shared';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -7,11 +6,12 @@ import {
   FormArray,
   AbstractControl,
 } from '@angular/forms';
+import { AlertService, HttpService, PrintService } from 'shared';
 import { environment, apiPort } from 'environment';
+import { MatDialog } from '@angular/material/dialog';
 import { MobileNumberUpdatePopupComponent } from '../profile-update-popup/mobile-number-update-popup/mobile-number-update-popup.component';
 import { AddressUpdatePopupComponent } from '../profile-update-popup/address-update-popup/address-update-popup.component';
 import { NameUpdatePopupComponent } from '../profile-update-popup/name-update-popup/name-update-popup.component';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-profile',
@@ -20,60 +20,35 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrl: './profile.component.scss'
 })
 export class ProfileComponent implements OnInit {
-  // profileFormGroup:any 
+  @ViewChild('profileInput') profileInput!: ElementRef;
+  @ViewChild('signatureInput') signatureInput!: ElementRef;
 
-  //   constructor(private fb: FormBuilder){};
-
-  // finalizeCourseForm() {
-  //   this.profileFormGroup = this.fb.group({
-  //     academic_session_id: ['', Validators.required],
-  //     college_id: ['', Validators.required],
-  //     degree_programme_id: ['', Validators.required],
-  //     semester_id: ['', Validators.required],
-  //   });
-  // }
-
-  // constructor(private HTTP: HttpService) { }
-  // sessionData: any = {};
-  // ngOnInit(): void {
-  //   const storedData = sessionStorage.getItem('studentData');
-  //   if (storedData) {
-  //     const studentData = JSON.parse(storedData);
-  //     this.sessionData = studentData
-  //     this.getStudentDetails();
-  //   }
-  // }
-  // studentData: any;
-  // igkvUrl: string = 'https://igkv.ac.in/'
-
-  // getStudentDetails() {
-  //   const params = {
-  //     academic_session_id: this.sessionData?.academic_session_id,
-  //     course_year_id: this.sessionData?.course_year_id,
-  //     semester_id: this.sessionData?.semester_id,
-  //     college_id: this.sessionData?.college_id,
-  //     degree_programme_id: this.sessionData?.degree_programme_id,
-  //     ue_id: this.sessionData?.ue_id
-  //   }
-  //   this.HTTP.getParam('/course/get/getStudentList/', params, 'academic').subscribe((result: any) => {
-  //     console.warn(result.body.data[0])
-  //     this.studentData = result.body.data[0];
-  //   })
-  // }
-  student: any = {}
-  student_id = 20210572;
   profileFormGroup!: FormGroup;
   file_prefix: string = environment.filePrefix;
   countries: any = []
+  student: any = {}
   states: any = []
   districts: any = []
-  blocks: any = []
+  student_id = 20242185;
+
+  // New properties for image upload
+  profileImageFile: File | null = null;
+  signatureImageFile: File | null = null;
+  profileImagePreview: string = '';
+  signatureImagePreview: string = '';
+  isProfileUploading: boolean = false;
+  isSignatureUploading: boolean = false;
+
+  // Validation limits (in KB - file size)
+  readonly PROFILE_MIN_SIZE_KB = 20;
+  readonly PROFILE_MAX_SIZE_KB = 100;
+  readonly SIGNATURE_MIN_SIZE_KB = 10;
+  readonly SIGNATURE_MAX_SIZE_KB = 50;
 
   constructor(
     private http: HttpService,
     private fb: FormBuilder,
     private alert: AlertService,
-    public print: PrintService,
     private dialog: MatDialog
   ) {
     this.createForm();
@@ -85,7 +60,7 @@ export class ProfileComponent implements OnInit {
       this.getStateData(),
       this.getDistrictData()
     ]).then(() => {
-      this.getStudentProfileData();  // Run this AFTER dropdowns loaded
+      this.getStudentProfileData();
     });
   }
 
@@ -110,7 +85,7 @@ export class ProfileComponent implements OnInit {
 
       // Academic Details
       student_id: [{ value: '', disabled: true }],
-      university_id: [{ value: '', disabled: true }],
+      ue_id: [{ value: '', disabled: true }],
       course_year_name: [{ value: '', disabled: true }],
       semester_name: [{ value: '', disabled: true }],
       academic_status_name: [{ value: '', disabled: true }],
@@ -136,6 +111,252 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  // Method to trigger profile image upload
+  triggerProfileUpload(): void {
+    this.profileInput.nativeElement.click();
+  }
+
+  // Method to trigger signature upload
+  triggerSignatureUpload(): void {
+    this.signatureInput.nativeElement.click();
+  }
+
+  // Handle profile image selection
+  onProfileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.validateImage(file, 'profile');
+    }
+    // Reset input value to allow same file selection again
+    event.target.value = '';
+  }
+
+  // Handle signature image selection
+  onSignatureSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.validateImage(file, 'signature');
+    }
+    // Reset input value to allow same file selection again
+    event.target.value = '';
+  }
+
+  // Validate image file size in KB and show preview (NO AUTO UPLOAD)
+  validateImage(file: File, type: 'profile' | 'signature'): void {
+    const fileSizeKB = file.size / 1024; // Convert bytes to KB
+    const fileSizeKBFormatted = fileSizeKB.toFixed(2);
+
+    // console.log(`${type} File Details:`, {
+    //   name: file.name,
+    //   sizeBytes: file.size,
+    //   sizeKB: fileSizeKBFormatted
+    // });
+
+    // Check file type (allow only images)
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if (!allowedTypes.includes(file.type)) {
+      this.alert.alertMessage(
+        "Invalid File Type",
+        `Please select a valid image file (JPEG, PNG). Selected: ${file.type}`,
+        "error"
+      );
+      return;
+    }
+
+    if (type === 'profile') {
+      // Profile validation by file size in KB
+      if (fileSizeKB < this.PROFILE_MIN_SIZE_KB) {
+        this.alert.alertMessage(
+          "File Too Small",
+          `Profile image must be at least ${this.PROFILE_MIN_SIZE_KB} KB. Current: ${fileSizeKBFormatted} KB.`,
+          "error"
+        );
+        return;
+      }
+
+      if (fileSizeKB > this.PROFILE_MAX_SIZE_KB) {
+        this.alert.alertMessage(
+          "File Too Large",
+          `Profile image must be at most ${this.PROFILE_MAX_SIZE_KB} KB. Current: ${fileSizeKBFormatted} KB.`,
+          "error"
+        );
+        return;
+      }
+
+      this.profileImageFile = file;
+      this.createImagePreview(file, 'profile');
+    }
+    else if (type === 'signature') {
+      // Signature validation by file size in KB
+      if (fileSizeKB < this.SIGNATURE_MIN_SIZE_KB) {
+        this.alert.alertMessage(
+          "File Too Small",
+          `Signature image must be at least ${this.SIGNATURE_MIN_SIZE_KB} KB. Current: ${fileSizeKBFormatted} KB.`,
+          "error"
+        );
+        return;
+      }
+
+      if (fileSizeKB > this.SIGNATURE_MAX_SIZE_KB) {
+        this.alert.alertMessage(
+          "File Too Large",
+          `Signature image must be at most ${this.SIGNATURE_MAX_SIZE_KB} KB. Current: ${fileSizeKBFormatted} KB.`,
+          "error"
+        );
+        return;
+      }
+
+      this.signatureImageFile = file;
+      this.createImagePreview(file, 'signature');
+    }
+  }
+
+  // Create image preview
+  createImagePreview(file: File, type: 'profile' | 'signature'): void {
+    const reader = new FileReader();
+
+    reader.onload = (e: any) => {
+      if (type === 'profile') {
+        this.profileImagePreview = e.target.result;
+      } else {
+        this.signatureImagePreview = e.target.result;
+      }
+    };
+
+    reader.onerror = () => {
+      this.alert.alertMessage(
+        "Preview Error",
+        "Failed to load image preview.",
+        "error"
+      );
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  // Upload profile image (called only when Upload button is clicked)
+  uploadProfileImage(): void {
+    if (!this.profileImageFile) {
+      this.alert.alertMessage(
+        "No File Selected",
+        "Please select a profile image first.",
+        "error"
+      );
+      return;
+    }
+
+    this.isProfileUploading = true;
+    this.uploadImage(this.profileImageFile, 'profile');
+  }
+
+  // Upload signature image (called only when Upload button is clicked)
+  uploadSignatureImage(): void {
+    if (!this.signatureImageFile) {
+      this.alert.alertMessage(
+        "No File Selected",
+        "Please select a signature image first.",
+        "error"
+      );
+      return;
+    }
+
+    this.isSignatureUploading = true;
+    this.uploadImage(this.signatureImageFile, 'signature');
+  }
+
+  // Upload image to server
+  uploadImage(file: File, type: 'profile' | 'signature'): void {
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('student_id', this.student_id.toString());
+    formData.append('image_type', type);
+
+    // Determine API endpoint based on image type
+    // const endpoint = type === 'profile' 
+    //   ? '/studentProfile/upload/profileImage' 
+    //   : '/studentProfile/upload/signatureImage';
+
+    this.http.postFile("/studentProfile/postFile/updateStudentProfileSignPhoto", formData, 'academic').subscribe(
+      (result: any) => {
+        if (result?.body?.data?.message) {
+          this.alert.alertMessage(
+            result.body.data.message,
+            '',
+            "success"
+          );
+        } else if (result?.body?.error?.message) {
+          this.alert.alertMessage(
+            result?.body?.error?.message,
+            `${result?.body?.error?.message?.details || ''}`,
+            "error"
+          );
+        } else if (result?.body?.error) {
+          this.alert.alertMessage(
+            result?.body?.error,
+            `${result?.body?.error?.details || ''}`,
+            "error"
+          );
+        }
+
+        // Update student data with new image path
+        if (type === 'profile') {
+          this.student.student_photo_path = result?.body?.data?.image_path || this.student.student_photo_path;
+          this.isProfileUploading = false;
+
+          // Reset after successful upload
+          this.profileImagePreview = '';
+          this.profileImageFile = null;
+        } else {
+          this.student.student_signature_path = result?.body?.data?.image_path || this.student.student_signature_path;
+          this.isSignatureUploading = false;
+
+          // Reset after successful upload
+          this.signatureImagePreview = '';
+          this.signatureImageFile = null;
+        }
+      },
+      (error) => {
+        console.error('Error uploading image:', error);
+        this.alert.alertMessage(
+          "Upload Failed",
+          "Failed to upload image. Please try again.",
+          "error"
+        );
+
+        if (type === 'profile') {
+          this.isProfileUploading = false;
+        } else {
+          this.isSignatureUploading = false;
+        }
+      }
+    );
+  }
+
+  // Cancel profile upload
+  cancelProfileUpload(): void {
+    this.profileImagePreview = '';
+    this.profileImageFile = null;
+    this.isProfileUploading = false;
+  }
+
+  // Cancel signature upload
+  cancelSignatureUpload(): void {
+    this.signatureImagePreview = '';
+    this.signatureImageFile = null;
+    this.isSignatureUploading = false;
+  }
+
+  // Format file size for display
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
   getStudentProfileData() {
     this.http.getParam(
       '/studentProfile/get/getStudentProfile',
@@ -144,10 +365,9 @@ export class ProfileComponent implements OnInit {
     )
       .subscribe(
         (result: any) => {
-          this.student = result.body.data;
+          this.student = result.body.data?.[0];
           // console.log("getStudentProfile : ", this.student);
 
-          // Convert dob to input[type="date"] format
           const dobFormatted = this.student.dob
             ? this.student.dob.split("T")[0]
             : '';
@@ -172,7 +392,7 @@ export class ProfileComponent implements OnInit {
 
             // Academic
             student_id: this.student.student_id,
-            university_id: this.student.university_id,
+            ue_id: this.student.ue_id,
             course_year_name: this.student.course_year_name,
             semester_name: this.student.semester_name,
             academic_status_name: this.student.academic_status_name,
@@ -187,14 +407,14 @@ export class ProfileComponent implements OnInit {
             permanent_state_id: this.student.permanent_state_id,
             permanent_district_id: this.student.permanent_district_id,
             permanent_pin_code: this.student.permanent_pin_code,
-            permanent_address: (this.student.permanent_address1 + this.student.permanent_address2 + this.student.permanent_address3).toUpperCase(),
+            permanent_address: (this.student.permanent_address1 + this.student.permanent_address2 + this.student.permanent_address3)?.toString()?.toUpperCase(),
 
             // Current Address
             current_country_id: this.student.current_country_id,
             current_state_id: this.student.current_state_id,
             current_district_id: this.student.current_district_id,
             current_pin_code: this.student.current_pin_code,
-            current_address: (this.student.current_address1 + this.student.current_address2 + this.student.current_address3).toUpperCase(),
+            current_address: (this.student.current_address1 + this.student.current_address2 + this.student.current_address3)?.toString()?.toUpperCase(),
           });
         },
         (error) => {
@@ -204,10 +424,9 @@ export class ProfileComponent implements OnInit {
       );
   }
 
-
   getcountryData() {
     return new Promise(resolve => {
-      this.http.getParam('/master/get/getCountry', {}, 'academic')
+      this.http.getParam('/master/get/getCountryList', {}, 'recruitement')
         .subscribe((result: any) => {
           this.countries = result.body.data;
           resolve(true);
@@ -217,10 +436,9 @@ export class ProfileComponent implements OnInit {
 
   getStateData() {
     return new Promise(resolve => {
-      this.http.getParam('/master/get/getState', {}, 'academic')
+      this.http.getParam('/master/get/getStateList', {}, 'recruitement')
         .subscribe((result: any) => {
           this.states = result.body.data;
-          // console.log("this.states ==> ", this.states);
           resolve(true);
         });
     });
@@ -228,7 +446,7 @@ export class ProfileComponent implements OnInit {
 
   getDistrictData() {
     return new Promise(resolve => {
-      this.http.getParam('/master/get/getDistrict', {}, 'academic')
+      this.http.getParam('/master/get/getDistrictsByState', {}, 'recruitement')
         .subscribe((result: any) => {
           this.districts = result.body.data;
           resolve(true);
@@ -237,12 +455,11 @@ export class ProfileComponent implements OnInit {
   }
 
   onMobileNumberUpdate() {
-    let { university_id, mobile, e_mail } = this.profileFormGroup.value
+    let { ue_id, mobile, e_mail, dob } = this.profileFormGroup.value
     const dialogRef = this.dialog.open(MobileNumberUpdatePopupComponent, {
       width: '400px',
-      height: '300px', // 600 for email
-      data: { mobile, ue_id: university_id, e_mail }, // ✅ pass the entire row here
-      // disableClose: true, // optional
+      height: '400px',
+      data: { mobile, ue_id: ue_id, e_mail, dob },
       autoFocus: true
     });
 
@@ -258,7 +475,6 @@ export class ProfileComponent implements OnInit {
       width: '800px',
       height: '670px',
       data: this.student,
-      // disableClose: true, // optional
       autoFocus: true
     });
 
@@ -274,7 +490,6 @@ export class ProfileComponent implements OnInit {
       width: '800px',
       height: '550px',
       data: this.student,
-      // disableClose: true, // optional
       autoFocus: true
     });
 
@@ -284,10 +499,4 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
-
-
 }
-
-
-
-

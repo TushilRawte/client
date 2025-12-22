@@ -36,7 +36,7 @@ export class AddressUpdatePopupComponent implements OnInit {
       this.getDistrictData()
     ]).then(() => {
       // this.addressUpdateForm = this.fb.group({
-      //   ue_id: [this.getData.university_id],
+      //   ue_id: [this.getData.ue_id],
 
       //   // Permanent Address
       //   permanent_country_id: [this.getData.permanent_country_id],
@@ -98,7 +98,7 @@ export class AddressUpdatePopupComponent implements OnInit {
     //   return this.alert.alertMessage("Mobile Number is Required", "", "warning");
     // }
     // call API to update student mobile no
-    // this.http.putData('/studentProfile/update/updateStudentAddress', {
+    // this.http.putData('/studentProfile/update/updateStudentAddressRequest', {
     //   // ue_id: ue_id,
     //   // mobile_no: mobile_no
     // }, 'academic')
@@ -118,7 +118,8 @@ export class AddressUpdatePopupComponent implements OnInit {
 
   getcountryData() {
     return new Promise(resolve => {
-      this.http.getParam('/master/get/getCountry', {}, 'academic')
+      // this.http.getParam('/master/get/getCountry', {}, 'academic')
+      this.http.getParam('/master/get/getCountryList', {}, 'recruitement')
         .subscribe((result: any) => {
           this.countries = result.body.data;
           resolve(true);
@@ -128,7 +129,8 @@ export class AddressUpdatePopupComponent implements OnInit {
 
   getStateData() {
     return new Promise(resolve => {
-      this.http.getParam('/master/get/getState', {}, 'academic')
+      // this.http.getParam('/master/get/getState', {}, 'academic')
+      this.http.getParam('/master/get/getStateList', {}, 'recruitement')
         .subscribe((result: any) => {
           this.states = result.body.data;
           // console.log("this.states ==> ", this.states);
@@ -139,7 +141,8 @@ export class AddressUpdatePopupComponent implements OnInit {
 
   getDistrictData() {
     return new Promise(resolve => {
-      this.http.getParam('/master/get/getDistrict', {}, 'academic')
+      // this.http.getParam('/master/get/getDistrict', {}, 'academic')
+      this.http.getParam('/master/get/getDistrictsByState', {}, 'recruitement')
         .subscribe((result: any) => {
           this.districts = result.body.data;
           resolve(true);
@@ -147,19 +150,18 @@ export class AddressUpdatePopupComponent implements OnInit {
     });
   }
 
-
-  getBlockData() {
-    this.http.getParam('/master/get/getBlock',
-      {},
-      'academic')
-      .subscribe(
-        (result: any) => {
-          // console.log("collegeList : ", result);
-          this.blocks = result.body.data;
-        },
-        (error) => {
-          console.error('Error in collegeList:', error);
-          this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
-        });
-  };
+  // getBlockData() {
+  //   this.http.getParam('/master/get/getBlock',
+  //     {},
+  //     'academic')
+  //     .subscribe(
+  //       (result: any) => {
+  //         // console.log("collegeList : ", result);
+  //         this.blocks = result.body.data;
+  //       },
+  //       (error) => {
+  //         console.error('Error in collegeList:', error);
+  //         this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
+  //       });
+  // };
 }

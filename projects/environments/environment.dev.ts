@@ -49,7 +49,7 @@ export const apiPort: any = {
   academicApi: `${host}:3003/academicApi`,
   recruitementApi: `${host}:3500/recruitementApi`,
 
-  fileUrl: `${host}:3003`,
+  fileUrl: `${host}:3000`,
   esignApi: `${host}:8080/`
 };
 

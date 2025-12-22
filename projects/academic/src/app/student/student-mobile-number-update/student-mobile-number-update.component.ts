@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertService, HttpService, PrintService } from 'shared';
+import { environment } from 'environment';
+
 @Component({
   selector: 'app-student-mobile-number-update',
   standalone: false,
@@ -8,9 +10,9 @@ import { AlertService, HttpService, PrintService } from 'shared';
   styleUrl: './student-mobile-number-update.component.scss'
 })
 export class StudentMobileNumberUpdateComponent {
- mobileNoChangeForm!: FormGroup;
+  mobileNoChangeForm!: FormGroup;
   studentDetails: any = null;
-  image_prefix: string = 'https://igkv.ac.in/';
+  file_prefix: string = environment.filePrefix;
 
   constructor(
     private http: HttpService,
@@ -113,11 +115,11 @@ export class StudentMobileNumberUpdateComponent {
             this.alert.alertMessage(result.body?.data?.message || "Mobile Number Updated.", "", "success");
           },
           (error) => {
-            console.error('Error in getStudentList:', error);
+            console.error('Error in updateStudentMobileNumber:', error);
             this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
           }
-        );
-    }
+        )
+    };
   }
 
   formatDOB(dateString: string): string {

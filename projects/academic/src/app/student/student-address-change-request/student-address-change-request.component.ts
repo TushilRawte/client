@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService, HttpService, PrintService } from 'shared';
 import { StudentAddressChangeRequestPopupComponent } from '../student-address-change-request-popup/student-address-change-request-popup.component';
+import { environment } from 'environment';
 
 @Component({
   selector: 'app-student-address-change-request',
@@ -10,7 +11,8 @@ import { StudentAddressChangeRequestPopupComponent } from '../student-address-ch
   templateUrl: './student-address-change-request.component.html',
   styleUrl: './student-address-change-request.component.scss'
 })
-export class StudentAddressChangeRequestComponent  implements OnInit {
+export class StudentAddressChangeRequestComponent implements OnInit {
+  file_prefix: string = environment.filePrefix;
   actionType: string | null = null;
   selectedId: string | null = null;
   selectedStudentId: string | null = null;
@@ -115,6 +117,41 @@ export class StudentAddressChangeRequestComponent  implements OnInit {
       );
   }
 
+
+  // onUpdateStudentProfileAddressDetails(data: any, action: string) {
+  //   // Combine dataSource with form array values
+  //   const formValues = this.addressCorrections.value;
+
+  //   // console.log("formValues :+++++++++ ", formValues);
+  //   const payload = data.map((row: any, index: number) => ({
+  //     id: this.selectedId,
+  //     ue_id: this.selectedStudentUEId,
+  //     student_id: this.selectedStudentId,
+  //     correction_status: formValues[index].correction_status,
+  //     titleid: row.titleid,
+  //     action: action,
+  //   }));
+  //   // console.log("Payload to send:", payload);
+  //   this.http.putData('/studentProfile/update/updateStudentProfileAddressDetails', payload, 'academic').subscribe(
+  //     (res: any) => {
+  //       // console.log("res.body ---> ", res.body);
+  //       if (!res.body.error) {
+  //         this.alert.alertMessage(res.body?.data?.message || "Address Updated!", ``, "success");
+  //         this.getDegreeProgrammeTypeData(); //* Refresh dashboard data
+  //         this.studentsListOptions.dataSource = []; //~ Clear student list
+  //         this.studentsListOptions.listLength = 0;
+  //         this.studentAddressDetailOptions.dataSource = []; //~ Clear student address details
+  //         this.studentAddressDetailOptions.listLength = 0;
+  //       } else {
+  //         this.alert.alertMessage("Something went wrong!", res.body.error?.message || res.body.error, "warning");
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error('Error in updateStudentProfileAddressDetails:', error);
+  //       this.alert.alertMessage("Something went wrong!", "Network error occurred", "error");
+  //     });
+  // }
+
   getStudentChangesDetailsData(student: any) {
     // console.log("student ===ddsds>>>> ", student.id);
     this.selectedStudentUEId = student.ue_id;
@@ -127,6 +164,18 @@ export class StudentAddressChangeRequestComponent  implements OnInit {
         (result: any) => {
           // console.log("result.body ==dd==> ", result.body);
           let studentList = result.body.data;
+
+          // // Reset FormArray
+          // this.addressCorrections.clear();
+
+          // // Build form controls for each row
+          // studentList.forEach(() => {
+          //   this.addressCorrections.push(
+          //     this.fb.group({
+          //       correction_status: ['1'] // Default: "Correction Required"
+          //     })
+          //   );
+          // });
 
           const dialogRef = this.dialog.open(StudentAddressChangeRequestPopupComponent, {
             width: '900px',

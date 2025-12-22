@@ -54,6 +54,8 @@ import { RevaluationCancelComponent } from './marks entry/revaluation-cancel/rev
 import { MarksEntryPracticalComponent } from './marks entry/marks-entry-practical/marks-entry-practical.component';
 import { MarksEntryInternalPracticalComponent } from './marks entry/marks-entry-internal-practical/marks-entry-internal-practical.component';
 import { MarksEntryAbsentComponent } from './marks entry/marks-entry-absent/marks-entry-absent.component';
+import { StudentMobileNumberChangeRequestComponent } from './student/student-mobile-number-change-request/student-mobile-number-change-request.component';
+import { SrcGeneratePdfComponent } from './student/src-generate-pdf/src-generate-pdf.component';
 
 const routes: Routes = [
   {
@@ -206,6 +208,11 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       {
+        path: 'student-mobile-number-change-request',
+        component: StudentMobileNumberChangeRequestComponent,
+        pathMatch: 'full',
+      },
+      {
         path: 'student-category-change',
         component: StudentCategoryChangeComponent,
         pathMatch: 'full',
@@ -228,6 +235,11 @@ const routes: Routes = [
       {
         path: 'src-esign',
         component: SrcEsignComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'src-generate-pdf',
+        component: SrcGeneratePdfComponent,
         pathMatch: 'full',
       },
       {
@@ -316,17 +328,17 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       // { path: 'student-corner', loadChildren: () => import('./student-corner/student-corner.module').then(m => m.StudentCornerModule) },
-       {
+      {
         path: 'marks-entry-practical',
         component: MarksEntryPracticalComponent,
         pathMatch: 'full',
       },
-        {
+      {
         path: 'marks-entry-internal-practical',
         component: MarksEntryInternalPracticalComponent,
         pathMatch: 'full',
       },
-       {
+      {
         path: 'marks-entry-absent',
         component: MarksEntryAbsentComponent,
         pathMatch: 'full',

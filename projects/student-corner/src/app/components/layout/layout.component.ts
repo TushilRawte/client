@@ -51,7 +51,7 @@ export class LayoutComponent {
       expanded: false,
       children: [
         { label: 'Registration Card', route: 'registration-card' },
-        { label: 'SRC', route: 'my-corner-dashboard' },
+        { label: 'SRC', route: 'src-report' },
    
       ]
     },
@@ -81,7 +81,7 @@ export class LayoutComponent {
       route: 'my-access',
       expanded: false,
       children: [
-        { label: 'Old Admit Card', route: 'permissions' },
+        { label: 'Old Admit Card', route: 'admit-card-report' },
         { label: 'Admit Card', route: 'admit-card' }
       ]
     }
