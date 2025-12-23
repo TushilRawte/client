@@ -72,6 +72,7 @@ import { UpdateCourseTypeComponent } from './course/update-course-type/update-co
 import { RevaluationCancelComponent } from './marks entry/revaluation-cancel/revaluation-cancel.component';
 import { SrcGeneratePdfComponent } from './student/src-generate-pdf/src-generate-pdf.component';
 import { StudentMobileNumberChangeRequestComponent } from './student/student-mobile-number-change-request/student-mobile-number-change-request.component';
+import { CorrigendumApplyAdminComponent } from './corrigendum/corrigendum-apply-admin/corrigendum-apply-admin.component';
 
 @NgModule({
   declarations: [
@@ -139,6 +140,7 @@ import { StudentMobileNumberChangeRequestComponent } from './student/student-mob
     RevaluationCancelComponent,
     SrcGeneratePdfComponent,
     StudentMobileNumberChangeRequestComponent,
+    CorrigendumApplyAdminComponent,
   ],
   imports: [
     SharedModule,
