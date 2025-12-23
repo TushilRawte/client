@@ -79,6 +79,8 @@ export class CourseAllotmentComponent {
    isEditModeDelete: boolean = false;
    hideUpdateButtonForalt:boolean = false;
    hideAllotButton:boolean = false;
+   editingRowIndex:any
+   isDirectDBUpdate: boolean = false;
 
   
 
@@ -266,34 +268,7 @@ addRowToTable() {
     });
   }
 
-  // onSubmit(): any {
-  //   const submitData = this.prepareSubmitData();
-  //   let apiUrl = '';
-  //   let finalPayload: any;
-  
-  //   // ✅ New condition: if showChildButton & hasSpecificProgramme are both true
-  //   if (this.showChildButton && this.hasSpecificProgramme) {
-  //     const colg_obj = this.childCollegeList;
-  //     finalPayload = {
-  //       acaddata: submitData,
-  //       colgdata: colg_obj
-  //     };
-  //     apiUrl = '/course/post/saveCourseAllotmentForMltiClg/';
-  //   } else {
-  //     finalPayload = submitData;
-  //     apiUrl = '/course/post/saveCourseAllotment/';
-  //   }
-  //   console.log('Final data to submit:', finalPayload);
-  
-  //   this.HTTP.postData(apiUrl, finalPayload, 'academic').subscribe(res => {
-  //     if (!res.body.error) {
-  //       this.alert.alertMessage("Record Inserted...!", "", "success");
-  //       this.clearCourseTable();
-  //     } else {
-  //       this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
-  //     }
-  //   });
-  // }
+
   
   resetForm(): void {
     this.courseAllotFormGroup.reset()
@@ -993,6 +968,9 @@ checkCourseYear(selectedCourseYearId:any) {
     this.allotment_type_for_flag = allotment_type
     this.checkAllotmentFinalize()
     this.isEditModeDelete = true;
+    this.isDirectDBUpdate = true; // Change this based on your requirement
+  
+    console.log('Edit mode set to:', this.isDirectDBUpdate ? 'Direct DB Update' : 'Temporary Array Update');
 
   }
 
@@ -1037,6 +1015,7 @@ checkCourseYear(selectedCourseYearId:any) {
     this.isAddMoreCourses = false
     this.highlightedIndex = i;
     this.isFilalizeThanHideDeleteButton = false
+    this.isDirectDBUpdate = false;
        const allotment_type = item?.allotment_type
     this.checkAllotmentType(allotment_type)
     this.openCourseGeneral(item)
@@ -1253,48 +1232,9 @@ checkCourseYear(selectedCourseYearId:any) {
 
   }
 
-// editRow(row: any, index: number) {
-//   this.editIndex = index;
 
-//   const course_id = row.get('course_id')?.value;
-//   const course_name = row.get('course_name')?.value;
-
-//   // ✅ Ensure missing course is added to the dropdown list BEFORE patch
-//   if (course_id && course_name && !this.courseList.some((c: { course_id: any; }) => c.course_id === course_id)) {
-//     this.allCourses = [
-//       ...this.allCourses,
-//       { course_id, course_name }
-//     ];
-//   }
-
-//   // ✅ Now patch values
-//   this.courseAllotFormGroup.patchValue({
-//     course_id: course_id || null,
-//     course_type_id: row.get('course_type_id')?.value,
-//     cou_allot_type_id: row.get('cou_allot_type_id')?.value,
-//     course_module_id: row.get('course_module_id')?.value,
-//     course_module_batch_group_id: row.get('course_module_batch_group_id')?.value,
-//     course_nature: row.get('course_nature')?.value,
-//     total_credit: row.get('total_credit')?.value,
-//     emp_id: (row.get('teacherRows')?.value || [])
-//       .map((t: any) => t.emp_id)
-//       .filter((id: number | null) => id !== null && id !== undefined)
-//   });
-
-//   // Store primary keys for backend update
-//   this.editingPrimaryKeys = {
-//     allotment_detail_id: row.get('allotment_detail_id')?.value,
-//     allotment_main_id: row.get('allotment_main_id')?.value,
-//     teacherRows: row.get('teacherRows')?.value
-//   };
-
-//   this.isEdit = true;
-//   this.isaddRow = false;
-
-//   console.log('Form after patch:', this.courseAllotFormGroup.value);
-// }
-
-editRow(row: any, index: number) {
+// old
+editRow1(row: any, index: number) {
   this.editIndex = index;
 
   const course_id = row.get('course_id')?.value;
@@ -1339,6 +1279,58 @@ editRow(row: any, index: number) {
   console.log('Form after patch:', this.courseAllotFormGroup.value);
 }
 
+
+
+editRow(row: any, index: number) {
+  this.editIndex = index;
+  this.editingRowIndex = index;
+
+  const course_id = row.get('course_id')?.value;
+  const course_name = row.get('course_name')?.value;
+  
+  // Check if course exists in either array
+  const inCourseList = this.courseList.some((c: { course_id: any }) => c.course_id === course_id);
+  const inAllCourses = this.allCourses.some((c: { course_id: any }) => c.course_id === course_id);
+  
+  // Set checkbox state
+  this.courseAllotFormGroup.patchValue({
+    isAllCourse: !inCourseList && inAllCourses
+  });
+
+  // Patch values to form
+  this.courseAllotFormGroup.patchValue({
+    course_id: course_id || null,
+    course_type_id: row.get('course_type_id')?.value,
+    cou_allot_type_id: row.get('cou_allot_type_id')?.value,
+    course_module_id: row.get('course_module_id')?.value,
+    course_module_batch_group_id: row.get('course_module_batch_group_id')?.value,
+    course_nature: row.get('course_nature')?.value,
+    total_credit: row.get('total_credit')?.value,
+    emp_id: (row.get('teacherRows')?.value || [])
+      .map((t: any) => t.emp_id)
+      .filter((id: number | null) => id !== null && id !== undefined)
+  });
+
+  // Store primary keys for both scenarios
+  this.editingPrimaryKeys = {
+    allotment_detail_id: row.get('allotment_detail_id')?.value,
+    allotment_main_id: row.get('allotment_main_id')?.value,
+    teacherRows: row.get('teacherRows')?.value,
+    rowIndex: index
+  };
+
+  this.isEdit = true;
+  this.isaddRow = false;
+  
+  console.log('Editing in mode:', this.isDirectDBUpdate ? 'Direct DB' : 'Temporary Array');
+}
+
+toggleEditMode() {
+  this.isDirectDBUpdate = !this.isDirectDBUpdate;
+  const mode = this.isDirectDBUpdate ? 'Direct Database Update' : 'Temporary Array Update';
+  this.snackBar.open(`Switched to ${mode} mode`, 'Close', { duration: 3000 });
+}
+
 checkAllotmentAction() {
   const formValue = this.courseAllotFormGroup.value;
 
@@ -1366,8 +1358,8 @@ checkAllotmentAction() {
   console.log('isAllowed:', this.isAllowed);
 }
 
-
-  submitUpdatedRow() {
+// old
+  submitUpdatedRow1() {
     if (!this.editingPrimaryKeys?.allotment_detail_id || !this.editingPrimaryKeys?.allotment_main_id) {
       console.error('Missing primary key data for update.');
       this.alert.alertMessage("Update failed", "Missing course identification data.", "warning");
@@ -1409,58 +1401,153 @@ checkAllotmentAction() {
     );
   }
 
+submitUpdatedRow() {
+  // Check which mode we're in using the flag
+  if (this.isDirectDBUpdate) {
+    console.log('Direct DB update mode...');
+    this.updateRowInDatabase();
+  } else {
+    console.log('Temporary array update mode...');
+    this.updateTemporaryRow();
+  }
+}
 
-// //old
-// onUpdateCouesNew(): any {
-//   const formValue = this.courseAllotFormGroup.value;
-//   const payload = this.courserows.value;
+updateTemporaryRow() {
+  const rowIndex = this.editingRowIndex;
+  if (rowIndex === null || rowIndex === undefined || rowIndex < 0 || rowIndex >= this.courserows.length) {
+    console.error('Invalid row index for update');
+    return;
+  }
 
-//   // 🔹 Filter out rows where eligible_course = 'N'
-//   const filteredPayload = payload.filter((row: any) => row.eligible_course !== 'N');
+  const formValue = this.courseAllotFormGroup.value;
+  const teachers = formValue.emp_id || [];
 
-//   // 🔹 Get common allotment_main_id from first row
-//   const commonAllotmentMainId = filteredPayload[0]?.allotment_main_id;
+  // Find selected course
+  let selectedCourse;
+  if (formValue.isAllCourse) {
+    selectedCourse = this.allCourses.find(
+      (course: { course_id: any }) => course.course_id === formValue.course_id
+    );
+  } else {
+    selectedCourse = this.courseList.find(
+      (course: { course_id: any }) => course.course_id === formValue.course_id
+    );
+  }
 
-//   // 🔹 Ensure every row has allotment_main_id
-//   const finalPayload = filteredPayload.map((row: any) => ({
-//     ...row,
-//     allotment_main_id: row.allotment_main_id || commonAllotmentMainId
-//   }));
+  // Get the existing row to preserve IDs
+  const existingRow = this.courserows.at(rowIndex);
+  const existingDetailId = existingRow.get('allotment_detail_id')?.value;
+  const existingMainId = existingRow.get('allotment_main_id')?.value;
 
-//   let apiUrl = '';
-//   let body: any = {};
+  // Check for duplicates (except the current row being edited)
+  const isDuplicate = this.courserows.controls.some(
+    (row, idx) =>
+      idx !== rowIndex &&
+      row.get('course_id')?.value === formValue.course_id &&
+      row.get('course_type_id')?.value === formValue.course_type_id
+  );
 
-//   if (this.isMasterCollege) {
-//     // ✅ Master college API
-//     apiUrl = '/course/update/updateAllotedCourseAndTeacherByCollegeId/';
-//     body = {
-//       academic_session_id: formValue.academic_session_id,
-//       college_id: formValue.college_id,
-//       degree_programme_id: formValue.degree_programme_id,
-//       course_year_id: formValue.courseYear?.course_year_id,
-//       semester_id: formValue.semester_id,
-//       dean_committee_id: formValue.deanCommittee?.dean_committee_id,
-//       courseList: finalPayload
-//     };
-//   } else {
-//     // ✅ Normal college API
-//     apiUrl = '/course/update/updateAllotedCourseAndTeacher/';
-//     body = finalPayload;
-//   }
+  if (isDuplicate) {
+    alert('This course with the selected type already exists in the table!');
+    return;
+  }
 
-//   console.log('Final data to submit:', body);
+  // Prepare teacher rows with existing IDs if available
+  const teacherFormArray = this.fb.array([]) as unknown as FormArray<FormGroup>;
+  teachers.forEach((teacherId: any) => {
+    // Try to find existing teacher record
+    const existingTeacher = this.editingPrimaryKeys.teacherRows?.find(
+      (t: any) => t.emp_id === teacherId
+    );
+    
+    teacherFormArray.push(this.fb.group({
+      emp_id: [teacherId],
+      course_allotment_teacher_main_id: [existingTeacher?.course_allotment_teacher_main_id || null]
+    }));
+  });
 
-//   // 🔹 API call
-//   this.HTTP.putData(apiUrl, body, 'academic').subscribe(res => {
-//     if (!res.body.error) {
-//       this.alert.alertMessage("Record Updated...!", "", "success");
-//       this.getCourseforUpdate();
-//       this.resetCourseAllotForms();
-//     } else {
-//       this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
-//     }
-//   });
-// }
+  // Create the updated form group
+  const updatedRow = this.fb.group({
+    allotment_detail_id: [existingDetailId],
+    allotment_main_id: [existingMainId],
+    course_id: [formValue.course_id, Validators.required],
+    course_name: [selectedCourse?.course_name],
+    course_nature: [selectedCourse?.course_nature || formValue.course_nature],
+    total_credit: [selectedCourse?.credit || formValue.total_credit],
+    course_type_id: [formValue.course_type_id, Validators.required],
+    cou_allot_type_id: [formValue.cou_allot_type_id, Validators.required],
+    course_module_id: [formValue.course_module_id],
+    course_module_batch_group_id: [formValue.course_module_batch_group_id],
+    eligible_course: [existingRow.get('eligible_course')?.value || 'Y'],
+    teacherRows: teacherFormArray
+  });
+
+  // Replace the row in the form array
+  this.courserows.setControl(rowIndex, updatedRow);
+
+  console.log('Updated row in temporary array:', updatedRow.value);
+  
+  // Reset form and state
+  this.resetCourseAllotmentFields();
+  this.isEdit = false;
+  this.isaddRow = true;
+  this.editingRowIndex = null;
+  this.editingPrimaryKeys = null;
+  
+  this.snackBar.open('Row updated in table successfully', 'Close', { duration: 3000 });
+}
+
+// Keep your existing DB update function (renamed)
+updateRowInDatabase() {
+  if (!this.editingPrimaryKeys?.allotment_detail_id || !this.editingPrimaryKeys?.allotment_main_id) {
+    console.error('Missing primary key data for database update.');
+    this.alert.alertMessage("Update failed", "Missing course identification data.", "warning");
+    return;
+  }
+
+  const formValue = this.courseAllotFormGroup.value;
+
+  const payload = {
+    allotment_detail_id: this.editingPrimaryKeys.allotment_detail_id,
+    allotment_main_id: this.editingPrimaryKeys.allotment_main_id,
+    course_id: formValue.course_id,
+    course_type_id: formValue.course_type_id,
+    cou_allot_type_id: formValue.cou_allot_type_id,
+    course_nature: formValue.course_nature,
+    total_credit: formValue.total_credit,
+    teacherRows: (formValue.emp_id || []).map((empId: any) => {
+      const oldTeacher = this.editingPrimaryKeys.teacherRows.find((t: any) => t.emp_id === empId);
+      return {
+        emp_id: empId,
+        course_allotment_teacher_main_id: oldTeacher?.course_allotment_teacher_main_id || null
+      };
+    })
+  };
+
+  console.log('Sending payload to update API:', payload);
+
+  this.HTTP.putData('/course/update/updateCourseAllotment/', payload, 'academic').subscribe(
+    (res: any) => {
+      if (!res.body.error) {
+        this.alert.alertMessage("Record Updated in Database...!", "", "success");
+        this.getCourseforUpdate(); // Refresh data from DB
+        this.resetCourseAllotmentFields();
+        this.isEdit = false;
+      } else {
+        this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
+      }
+    }
+  );
+}
+
+cancelEdit() {
+  this.isEdit = false;
+  this.editingRowIndex = null;
+  this.editingPrimaryKeys = null;
+  this.resetCourseAllotmentFields();
+  this.isaddRow = true;
+}
+
 
 onUpdateCouesNew(): any {
   const formValue = this.courseAllotFormGroup.value;
@@ -1554,35 +1641,6 @@ onUpdateCouesNew(): any {
     this.courserows.clear(); 
   }
   
-  // this delete particular direct data base
-//   deleteParticularCourse(row: any, index: number): void {
-//   const allotment_detail_id = row.get('allotment_detail_id')?.value;
-//   console.log('Deleting row with allotment_detail_id:', allotment_detail_id);
-
-//   // 🔔 Confirmation before deleting
-//   if (!confirm('⚠️ Are you sure you want to delete this course?')) {
-//     return; // ❌ User cancelled, do nothing
-//   }
-
-//   if (allotment_detail_id) {
-//     const queryParams = `?allotment_detail_id=${allotment_detail_id}`;
-
-//     this.HTTP.deleteData(`/course/delete/deletePartucularCourse/${queryParams}`, {}, 'academic').subscribe({
-//       next: (res) => {
-//         console.log('Deleted successfully:', res);
-//         alert('✅ Course deleted successfully!');
-//         this.courserows.removeAt(index);
-//       },
-//       error: (err) => {
-//         console.error('Error deleting:', err);
-//         alert('❌ Failed to delete course. Please try again.');
-//       }
-//     });
-//   } else {
-//     // If no ID, it's just a UI-only row, remove from form array
-//     this.courserows.removeAt(index);
-//   }
-// }
 
 deleteParticularCourse(row: any, index: number): void {
   const allotment_detail_id = row.get('allotment_detail_id')?.value;

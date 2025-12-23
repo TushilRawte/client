@@ -58,7 +58,6 @@ import { StudentAddressChangeRequestPopupComponent } from './student/student-add
 import { StudentBasicDetailsUpdateComponent } from './student/student-basic-details-update/student-basic-details-update.component';
 import { StudentBasicDetailsUpdatePopupComponent } from './student/student-basic-details-update-popup/student-basic-details-update-popup.component';
 import { RegistrationReportComponent } from './registration/registration-report/registration-report.component';
-import { CourseAttendanceFinalizeComponent } from './attendance/course-attendance-finalize/course-attendance-finalize.component';
 import { ExamTimeTableComponent } from './time-table/exam-time-table/exam-time-table.component';
 import { ExamTimeTableReportComponent } from './time-table/exam-time-table-report/exam-time-table-report.component';
 import { SrcReportByStudentComponent } from './student/src-report-by-student/src-report-by-student.component';
@@ -72,10 +71,12 @@ import { UpdateCourseTypeComponent } from './course/update-course-type/update-co
 import { RevaluationCancelComponent } from './marks entry/revaluation-cancel/revaluation-cancel.component';
 import { SrcGeneratePdfComponent } from './student/src-generate-pdf/src-generate-pdf.component';
 import { StudentMobileNumberChangeRequestComponent } from './student/student-mobile-number-change-request/student-mobile-number-change-request.component';
+import { CorrigendumApplyAdminComponent } from './corrigendum/corrigendum-apply-admin/corrigendum-apply-admin.component';
 import { UidnReportComponent } from './student-profile/uidn-report/uidn-report.component';
 import { StudentCourseRegistrationComponent } from './registration/student-course-registration/student-course-registration.component';
 import { StudentCourseRegistrationUnfinalizeComponent } from './registration/student-course-registration-unfinalize/student-course-registration-unfinalize.component';
 import { DegreeCompletedDataComponent } from './convocation/degree-completed-data/degree-completed-data.component';
+import { AttendanceUnfinalizeComponent } from './attendance/attendance-unfinalize/attendance-unfinalize.component';
 
 @NgModule({
   declarations: [
@@ -129,7 +130,6 @@ import { DegreeCompletedDataComponent } from './convocation/degree-completed-dat
     StudentBasicDetailsUpdateComponent,
     StudentBasicDetailsUpdatePopupComponent,
     RegistrationReportComponent,
-    CourseAttendanceFinalizeComponent,
     ExamTimeTableComponent,
     ExamTimeTableReportComponent,
     SrcReportByStudentComponent,
@@ -143,10 +143,12 @@ import { DegreeCompletedDataComponent } from './convocation/degree-completed-dat
     RevaluationCancelComponent,
     SrcGeneratePdfComponent,
     StudentMobileNumberChangeRequestComponent,
+    CorrigendumApplyAdminComponent,
     UidnReportComponent,
     StudentCourseRegistrationComponent,
     StudentCourseRegistrationUnfinalizeComponent,
     DegreeCompletedDataComponent,
+    AttendanceUnfinalizeComponent,
   ],
   imports: [
     SharedModule,

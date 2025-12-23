@@ -1,12 +1,21 @@
 .attendance-main mat-card-content form div table tbody tr td .button-custom {
-    padding: 0.3rem;
-    padding-left: 0.8rem;
-    border-radius: 50px;
+    width: 2.5rem; // Equal width
+    height: 2.5rem; // Equal height
+    padding: 0; // Remove internal padding
+    border-radius: 50%; // Perfect circle
+    display: flex; // Center content
+    align-items: center;
+    justify-content: center;
+    // background-color: #0d6efd; // or use Bootstrap's .bg-primary if class is not applied
+    color: white; // Ensures text is white
+    // cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.attendance-main mat-card-content form div table tbody tr td .button-custom mat-icon {
-    padding-top: 0.9rem;
-}
+// .attendance-main mat-card-content form div table tbody tr td .button-custom mat-icon {
+//     padding-top: 0.9rem;
+// }
 
 .attendance-detail-main {
     mat-card-content {
@@ -22,4 +31,98 @@
             }
         }
     }
+}
+
+
+.page-title {
+    color: rgb(3, 101, 69);
+}
+
+
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.table-scroll table {
+    white-space: wrap;
+}
+
+
+
+
+
+
+.color-legend-container {
+    background-color: #f8f9fa;
+    padding: 2px;
+    padding-left: 7px;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+}
+
+.legend-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    padding: 4px 0;
+}
+
+.color-box {
+    width: 15px;
+    height: 15px;
+    border-radius: 4px;
+    border: 1px solid #adb5bd;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.legend-label {
+    font-size: 14px;
+    color: #495057;
+}
+
+
+
+
+
+
+
+// Add this to your SCSS file
+.bg-green {
+    background-color: #d4edda !important;
+    transition: background-color 0.3s ease;
+}
+
+// Optional: Add hover effect
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+// Style for clickable spans/buttons
+.button-custom {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.button-custom:hover {
+    transform: scale(1.1);
+    opacity: 0.9;
 }

@@ -38,3 +38,14 @@
     color: rgb(3, 101, 69);
 }
 
+
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.table-scroll table {
+  white-space: wrap;
+}
+
