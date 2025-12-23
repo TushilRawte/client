@@ -59,8 +59,8 @@
                   <th class="imp">Year</th>
                   <th class="imp">Dean Committee</th>
                   <!-- <th class="imp">Batch</th> -->
-                  <th class="imp">Edit Course</th>
-                  <th class="imp">Course List</th>
+                  <th class="imp">Get Allotted Course</th>
+                  <th class="imp">Pre Year Course</th>
                   <th class="imp">Teacher Allotment</th>
                   <th class="imp">Course Allotement Status</th>
                   <th class="imp">Section Allotment</th>
@@ -210,12 +210,34 @@
                     </ng-select>
                   </div>
              </ng-container>
-                <div class="col-md-5 col-12 mt-2">
-                  <!-- <button *ngIf="isaddRow == true" type="button" class="btn btn-primary" (click)="addRowToTable()">+ Add Row</button> -->
+                <!-- <div class="col-md-5 col-12 mt-2">
                   <button  type="button" class="btn btn-primary" (click)="addRowToTable()">+ Add Row</button>
                   <button style="margin-left: 3px;" *ngIf="isEdit" class="btn btn-primary" (click)="submitUpdatedRow()">Update Selected Course & Teachers</button>
-                  <!-- <button  class="btn btn-primary" (click)="submitUpdatedRow()">Update</button>  -->
-                </div>
+                </div> -->
+                <!-- In the form buttons section -->
+<div class="col-md-5 col-12 mt-2">
+  <button *ngIf="!isEdit" type="button" class="btn btn-primary" (click)="addRowToTable()">
+    + Add Row
+  </button>
+  
+  <!-- Single button that changes behavior based on mode -->
+  <button *ngIf="isEdit" 
+          style="margin-left: 3px;" 
+          class="btn btn-primary" 
+          [class.btn-primary]="!isDirectDBUpdate"
+          [class.btn-success]="isDirectDBUpdate"
+          (click)="submitUpdatedRow()">
+    {{ isDirectDBUpdate ? 'Update ' : 'Update ' }}
+  </button>
+  
+  <!-- Cancel button -->
+  <button *ngIf="isEdit" 
+          style="margin-left: 3px;" 
+          class="btn btn-secondary" 
+          (click)="cancelEdit()">
+    Cancel Edit
+  </button>
+</div>
               </ng-container>
             
               </div>
