@@ -38,7 +38,6 @@ import { TranscriptEsignComponent } from './student/transcript-esign/transcript-
 import { TranscriptGenerateComponent } from './student/transcript-generate/transcript-generate.component';
 import { TranscriptReportComponent } from './student/transcript-report/transcript-report.component';
 import { TeacherAllotmentComponent } from './teacher-allotment/teacher-allotment.component';
-import { CourseAttendanceFinalizeComponent } from './attendance/course-attendance-finalize/course-attendance-finalize.component';
 import { ExamTimeTableComponent } from './time-table/exam-time-table/exam-time-table.component';
 import { ExamTimeTableReportComponent } from './time-table/exam-time-table-report/exam-time-table-report.component';
 import { SrcReportComponent } from './student/src-report/src-report.component';
@@ -57,6 +56,7 @@ import { MarksEntryAbsentComponent } from './marks entry/marks-entry-absent/mark
 import { StudentMobileNumberChangeRequestComponent } from './student/student-mobile-number-change-request/student-mobile-number-change-request.component';
 import { SrcGeneratePdfComponent } from './student/src-generate-pdf/src-generate-pdf.component';
 import { UidnReportComponent } from './student-profile/uidn-report/uidn-report.component';
+import { AttendanceUnfinalizeComponent } from './attendance/attendance-unfinalize/attendance-unfinalize.component';
 
 const routes: Routes = [
   {
@@ -114,8 +114,8 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       {
-        path: 'course-attendance-finalize',
-        component: CourseAttendanceFinalizeComponent,
+        path: 'course-attendance-unfinalize',
+        component: AttendanceUnfinalizeComponent,
         pathMatch: 'full',
       },
       {

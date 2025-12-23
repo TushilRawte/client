@@ -1,25 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ɵɵstoreLet } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject, take, takeUntil } from 'rxjs';
+import { take } from 'rxjs';
 import { AlertService, HttpService, PrintService } from 'shared';
 
-
 @Component({
-  selector: 'app-course-attendance',
+  selector: 'app-attendance-unfinalize',
   standalone: false,
-  templateUrl: './course-attendance.component.html',
-  styleUrl: './course-attendance.component.scss'
+  templateUrl: './attendance-unfinalize.component.html',
+  styleUrl: './attendance-unfinalize.component.scss'
 })
-export class CourseAttendanceComponent implements OnInit {
+export class AttendanceUnfinalizeComponent implements OnInit {
   state = {
     acadmcSesnList: [] as any[],
     semesterList: [] as any[],
     degreeProgrammeTypeList: [] as any[],
+    collegeList: [] as any[],
+    courseList: [] as any[],
   };
-
-  selectedCourseId: number | null = null;
-  selectedOperationType: string | null = null;
-  selectedRowData: any = null;
 
   attendanceOperation: any = {
     attendanceUpdate: false,
@@ -29,7 +26,6 @@ export class CourseAttendanceComponent implements OnInit {
 
   finalizeCourse: any = {}
   user: any = {
-    emp_id: 100001,
     designation_arr: [327],
   };
   showEmpIdField: boolean = false;
@@ -41,7 +37,6 @@ export class CourseAttendanceComponent implements OnInit {
   finalizeCourseAttendanceFormGroup!: FormGroup;
   globalAttendanceStatusId: number = 1; // Default global status
   groupedStudents: any[] = [];
-  private destroy$ = new Subject<void>();
 
   constructor(
     private HTTP: HttpService,
@@ -51,61 +46,50 @@ export class CourseAttendanceComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.initializeFilterForm(); // Initialize form FIRST
-
     this.showEmpIdField = this.hasAllowedDesignation([327, 342, 2423]);
     this.getAcademicSession();
-    this.getSemester();
-    this.getDegreeProgrammeTypeData();
-    this.getAttendanceStatus(); // Initialize attendance status
-
-    // Setup value change subscriptions
+    this.initializeFilterForm();
     this.setupFormValueChanges();
   }
 
-  private setupFormValueChanges(): void {
-    const fields = ['emp_id', 'academic_session_id', 'degree_programme_type_id', 'semester_id'];
-
-    fields.forEach(field => {
-      this.finalizeCourseFilterFormGroup.get(field)?.valueChanges
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(value => {
-          this.clearData();
-          // if (field === 'academic_session_id' && value) {
-          //   const semesterId = this.finalizeCourseFilterFormGroup.get('semester_id')?.value;
-          //   const degreeProgrammeTypeId = this.finalizeCourseFilterFormGroup.get('degree_programme_type_id')?.value;
-
-          //   if (semesterId && degreeProgrammeTypeId) {
-          //     this.getCourseData(value, semesterId, degreeProgrammeTypeId);
-          //   }
-          // }
-        });
-    });
-  }
-
-  private clearData(): void {
-    this.groupedStudents = [];
-    this.courseAttendanceList = [];
-    this.courseAttendanceStudentList = [];
-    if (this.finalizeCourseAttendanceFormGroup) {
-      this.finalizeCourseAttendanceFormGroup.reset();
-    }
-  }
-
-  ngOnDestroy(): void {
-    // Clean up subscriptions to prevent memory leaks
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-
   initializeFilterForm() {
     this.finalizeCourseFilterFormGroup = this.fb.group({
-      emp_id: [this.user.emp_id, Validators.required],
       academic_session_id: ['', Validators.required],
       degree_programme_type_id: ['', Validators.required],
       semester_id: ['', Validators.required],
-      attendance_status_id: ['']
+      college_id: ['', Validators.required],
+      course_id: ['', Validators.required]
+    });
+  }
+
+  setupFormValueChanges() {
+    this.finalizeCourseFilterFormGroup.get('academic_session_id')?.valueChanges.subscribe(academicSessionId => {
+      this.clearDependentFields(['semester_id', 'degree_programme_type_id', 'college_id', 'course_id']);
+      if (academicSessionId) {
+        this.getSemester();
+      }
+    });
+
+    this.finalizeCourseFilterFormGroup.get('semester_id')?.valueChanges.subscribe(semesterId => {
+      this.clearDependentFields(['degree_programme_type_id', 'college_id', 'course_id']);
+      if (semesterId) {
+        this.getDegreeProgrammeTypeData();
+      }
+    });
+
+    this.finalizeCourseFilterFormGroup.get('degree_programme_type_id')?.valueChanges.subscribe(degreeProgrammeTypeId => {
+      this.clearDependentFields(['college_id', 'course_id']);
+      if (degreeProgrammeTypeId) {
+        this.getCollegeData(degreeProgrammeTypeId);
+      }
+    });
+
+    this.finalizeCourseFilterFormGroup.get('college_id')?.valueChanges.subscribe(collegeId => {
+      this.clearDependentFields(['course_id']);
+      if (collegeId) {
+        const { academic_session_id, semester_id, degree_programme_type_id } = this.finalizeCourseFilterFormGroup.value;
+        this.getCourseData(academic_session_id, semester_id, degree_programme_type_id, collegeId);
+      }
     });
   }
 
@@ -123,41 +107,6 @@ export class CourseAttendanceComponent implements OnInit {
     this.getAttendanceStatus();
     this.initializeStudentsFormArray();
   }
-
-  // createStudentFormGroup(student: any): FormGroup {
-  //   // Determine if student should be selectable based on operation
-  //   let selectedDisabled = false;
-
-  //   if (this.attendanceOperation.attendanceUpdate) {
-  //     // For update: only allow if not finalized
-  //     selectedDisabled = student.attendance_finalize_yn === 'Y';
-  //   } else if (this.attendanceOperation.finalize) {
-  //     // For finalize: only allow if not already finalized
-  //     selectedDisabled = student.attendance_finalize_yn === 'Y';
-  //   } else if (this.attendanceOperation.unFinalize) {
-  //     // For unfinalize: only allow if already finalized
-  //     selectedDisabled = student.attendance_finalize_yn === 'N';
-  //   }
-
-  //   // Determine if attendance status should be editable
-  //   const attendanceStatusDisabled =
-  //     this.attendanceOperation.finalize ||
-  //     this.attendanceOperation.unFinalize ||
-  //     student.attendance_finalize_yn === 'Y';
-
-  //   return this.fb.group({
-  //     registration_id: [student.registration_id, Validators.required],
-  //     ue_id: [student.ue_id, Validators.required],
-  //     degree_programme_id: [student.degree_programme_id, Validators.required],
-  //     course_id: [this.finalizeCourse.course_id, Validators.required],
-  //     course_nature_id: [student.course_nature_id, Validators.required],
-  //     attendance_status_id: [{
-  //       value: student.attendance_status_id || this.globalAttendanceStatusId,
-  //       disabled: attendanceStatusDisabled
-  //     }, Validators.required],
-  //     selected: [{ value: false, disabled: selectedDisabled }],
-  //   });
-  // }
 
   createStudentFormGroup(student: any): FormGroup {
     // Determine if student should be selectable based on operation
@@ -180,18 +129,6 @@ export class CourseAttendanceComponent implements OnInit {
       this.attendanceOperation.unFinalize ||
       student.attendance_finalize_yn === 'Y';
 
-    // Handle null attendance_status_id - use global default
-    let attendanceStatusId = student.attendance_status_id;
-
-    // If attendance_status_id is null and student is not finalized, use global default
-    if (attendanceStatusId === null && student.attendance_finalize_yn !== 'Y') {
-      attendanceStatusId = this.globalAttendanceStatusId;
-    }
-    // If still null (for finalized students), use 1 as fallback
-    else if (attendanceStatusId === null) {
-      attendanceStatusId = 1; // or whatever your default status ID is
-    }
-
     return this.fb.group({
       registration_id: [student.registration_id, Validators.required],
       ue_id: [student.ue_id, Validators.required],
@@ -199,10 +136,11 @@ export class CourseAttendanceComponent implements OnInit {
       course_id: [this.finalizeCourse.course_id, Validators.required],
       course_nature_id: [student.course_nature_id, Validators.required],
       attendance_status_id: [{
-        value: attendanceStatusId,
+        value: student.attendance_status_id || this.globalAttendanceStatusId,
         disabled: attendanceStatusDisabled
       }, Validators.required],
       selected: [{ value: false, disabled: selectedDisabled }],
+      action_remark: [student.action_remark || '']
     });
   }
 
@@ -210,62 +148,25 @@ export class CourseAttendanceComponent implements OnInit {
     return this.finalizeCourseAttendanceFormGroup?.get('students') as FormArray;
   }
 
-  // initializeStudentsFormArray() {
-  //   if (!this.finalizeCourseAttendanceFormGroup) return;
-
-  //   const studentsArray = this.studentsFormArray;
-  //   studentsArray.clear();
-
-  //   this.courseAttendanceStudentList?.forEach((student: any) => {
-  //     studentsArray.push(this.createStudentFormGroup(student));
-  //   });
-
-  //   // Apply global status after initialization
-  //   this.onSelectAllAttendanceStatus(this.globalAttendanceStatusId);
-  // }
-
   initializeStudentsFormArray() {
     if (!this.finalizeCourseAttendanceFormGroup) return;
 
     const studentsArray = this.studentsFormArray;
     studentsArray.clear();
 
-    // Set globalAttendanceStatusId based on the operation
-    // For first-time attendance (null values), set to default "Present" status (assuming 1 = Present)
-    if (this.courseAttendanceStudentList?.some((s: any) => s.attendance_status_id === null)) {
-      this.globalAttendanceStatusId = 1; // Default to "Present" for new entries
-    }
-
     this.courseAttendanceStudentList?.forEach((student: any) => {
       studentsArray.push(this.createStudentFormGroup(student));
     });
+
+    // Apply global status after initialization
+    this.onSelectAllAttendanceStatus(this.globalAttendanceStatusId);
   }
-
-  // onSelectAllAttendanceStatus(selectedStatusId: number): void {
-  //   if (!this.studentsFormArray) return;
-
-  //   this.studentsFormArray.controls.forEach((studentGroup: AbstractControl) => {
-  //     if (!studentGroup.get('attendance_status_id')?.disabled) {
-  //       studentGroup.get('attendance_status_id')?.setValue(selectedStatusId);
-  //     }
-  //   });
-  // }
 
   onSelectAllAttendanceStatus(selectedStatusId: number): void {
     if (!this.studentsFormArray) return;
 
-    // Update the global status
-    this.globalAttendanceStatusId = selectedStatusId;
-
-    this.studentsFormArray.controls.forEach((studentGroup: AbstractControl, index: number) => {
-      const studentData = this.courseAttendanceStudentList[index];
-      const isDisabled = studentGroup.get('attendance_status_id')?.disabled;
-
-      // Only update if:
-      // 1. Control is not disabled
-      // 2. AND student is not finalized
-      // 3. OR if student has null attendance_status_id (first time)
-      if (!isDisabled && studentData.attendance_finalize_yn !== 'Y') {
+    this.studentsFormArray.controls.forEach((studentGroup: AbstractControl) => {
+      if (!studentGroup.get('attendance_status_id')?.disabled) {
         studentGroup.get('attendance_status_id')?.setValue(selectedStatusId);
       }
     });
@@ -309,7 +210,6 @@ export class CourseAttendanceComponent implements OnInit {
 
     const groupedMap = new Map<string, any>();
 
-    // First, group students by degree programme
     this.courseAttendanceStudentList.forEach((student: any, index: number) => {
       const key = student.degree_programme_name_e;
 
@@ -326,38 +226,7 @@ export class CourseAttendanceComponent implements OnInit {
       });
     });
 
-    // Convert map to array and sort groups if needed
     this.groupedStudents = Array.from(groupedMap.values());
-
-    // Sort groups by degree programme name
-    this.groupedStudents.sort((a, b) =>
-      a.degree_programme_name_e.localeCompare(b.degree_programme_name_e)
-    );
-
-    let globalIndex = 1;
-
-    // Sort records within each group and assign sequential index
-    this.groupedStudents = this.groupedStudents.map((group: any) => {
-      // Sort records: First by finalize status, then by student name
-      group.records.sort((a: any, b: any) => {
-        // If names are the same, sort by finalize status (Y before N)
-        if (a.attendance_finalize_yn !== b.attendance_finalize_yn) {
-          return a.attendance_finalize_yn === 'Y' ? 1 : -1; // 'N' comes before 'Y'
-        }
-        // then sort by student name alphabetically
-        const nameCompare = (a.student_name || '').localeCompare(b.student_name || '');
-        if (nameCompare !== 0) return nameCompare;
-
-        return 0;
-      });
-
-      // Assign sequential global index
-      group.records.forEach((student: any) => {
-        student.index = globalIndex++;
-      });
-
-      return group;
-    });
   }
 
   getAcademicSession() {
@@ -381,14 +250,38 @@ export class CourseAttendanceComponent implements OnInit {
       });
   }
 
+  getCollegeData(degree_programme_type_id: number) {
+    this.HTTP.getParam('/master/get/getCollege', { degree_programme_type_id }, 'academic')
+      .subscribe((result: any) => {
+        this.state.collegeList = result.body.data || [];
+      }, (error) => {
+        console.error('Error in collegeList:', error);
+        this.alert.alertMessage("Error", "Failed to load colleges", "error");
+      });
+  }
+
+  getCourseData(academic_session_id: number, semester_id: number,
+    degree_programme_type_id: number, college_id: number) {
+    this.HTTP.getParam('/course/get/getRegisteredCourseList', {
+      academic_session_id,
+      semester_id,
+      degree_programme_type_id,
+      college_id,
+      courseAttendaceReport: 1
+    }, 'academic')
+      .subscribe((result: any) => {
+        this.state.courseList = result.body.data || [];
+      }, (error) => {
+        console.error('Error in courseList:', error);
+        this.alert.alertMessage("Error", "Failed to load courses", "error");
+      });
+  }
+
   getCourseAttendanceList_Btn_click() {
     if (this.finalizeCourseFilterFormGroup.invalid) {
       this.alert.alertMessage("Required", "Please fill all required fields.", "warning");
       return;
     }
-
-    // Clear previous selection
-    this.clearSelection();
 
     const formValue = this.finalizeCourseFilterFormGroup.value;
     this.finalizeCourse = { ...formValue };
@@ -397,40 +290,32 @@ export class CourseAttendanceComponent implements OnInit {
       formValue.academic_session_id,
       formValue.semester_id,
       formValue.degree_programme_type_id,
-      1, // exam_type_id
-      formValue.emp_id,
-      1
+      formValue.college_id,
+      formValue.course_id,
+      1 // exam_type_id
     );
   }
 
-  getCourseWiseAttendance(
-    academic_session_id: number,
-    semester_id: number,
-    degree_programme_type_id: number,
-    exam_type_id: number,
-    emp_id: number,
-    course_registration_type_id: number) {
+  getCourseWiseAttendance(academic_session_id: number, semester_id: number,
+    degree_programme_type_id: number, college_id: number,
+    course_id: number, exam_type_id: number) {
     const params = {
       academic_session_id,
       semester_id,
       degree_programme_type_id,
+      college_id,
+      course_id,
       exam_type_id,
-      emp_id,
-      course_registration_type_id
     };
 
     this.HTTP.getParam('/attendance/get/getCourseWiseAttendance', params, 'academic')
       .subscribe((res: any) => {
         if (!res.body.error) {
           this.courseAttendanceList = res.body.data || [];
-          if (this.courseAttendanceList.length > 0) {
-            this.courseAttendanceStudentList = [];
-            this.groupedStudents = [];
-          } else {
-            this.alert.alertMessage("No Records Found There!", "", "warning");
-          }
+          this.courseAttendanceStudentList = [];
+          this.groupedStudents = [];
         } else {
-          this.alert.alertMessage(res.body?.error?.message || res.body?.error, "Failed to load course attendance", "warning");
+          this.alert.alertMessage("Error", res.body.error?.message || "Failed to load course attendance", "warning");
         }
       }, (error) => {
         console.error('Error in getCourseWiseAttendance:', error);
@@ -439,11 +324,6 @@ export class CourseAttendanceComponent implements OnInit {
   }
 
   onStatusClick(item: any, operation: string): void {
-    // Set selected row data
-    this.selectedCourseId = item.course_id;
-    this.selectedOperationType = operation;
-    this.selectedRowData = item;
-
     // Reset operation states
     this.attendanceOperation = {
       attendanceUpdate: operation === "attendanceUpdate",
@@ -458,33 +338,28 @@ export class CourseAttendanceComponent implements OnInit {
     };
 
     this.getStudentAttendanceList(
-      this.finalizeCourse.emp_id,
       this.finalizeCourse.academic_session_id,
       this.finalizeCourse.degree_programme_type_id,
       this.finalizeCourse.semester_id,
-      item.course_id,
-      // this.finalizeCourse.course_id,
-      1, // course_registration_type_id (you can make this configurable)
+      this.finalizeCourse.course_id,
+      1, // course_registration_type_id
       this.finalizeCourse.dean_committee_id,
+      this.finalizeCourse.college_id
     );
   }
 
-  getStudentAttendanceList(
-    emp_id: number,
-    academic_session_id: number,
-    degree_programme_type_id: number,
-    semester_id: number,
-    course_id: number,
-    course_registration_type_id: number,
-    dean_committee_id: number) {
+  getStudentAttendanceList(academic_session_id: number, degree_programme_type_id: number,
+    semester_id: number, course_id: number,
+    course_registration_type_id: number, dean_committee_id: number,
+    college_id: number) {
     let params: any = {
-      emp_id,
       academic_session_id,
-      degree_programme_type_id,
       semester_id,
+      degree_programme_type_id,
       course_id,
       course_registration_type_id,
       dean_committee_id,
+      college_id
     };
 
     // Add attendance_finalize_yn filter based on operation
@@ -501,17 +376,13 @@ export class CourseAttendanceComponent implements OnInit {
       .subscribe((res: any) => {
         if (!res.body.error) {
           this.courseAttendanceStudentList = res.body.data || [];
-          if (this.courseAttendanceStudentList.length > 0) {
-            this.initializeStudentForm();
-            this.prepareGroupedStudents();
+          this.initializeStudentForm();
+          this.prepareGroupedStudents();
 
-            // Auto-select all by default
-            this.onToggleSelectAll(true);
-          } else {
-            this.alert.alertMessage("No Records Found There!", "", "warning");
-          }
+          // Auto-select all by default
+          this.onToggleSelectAll(true);
         } else {
-          this.alert.alertMessage(res.body?.error?.message || res.body?.error, "Failed to load student list", "warning");
+          this.alert.alertMessage("Error", res.body.error?.message || "Failed to load student list", "warning");
         }
       }, (error) => {
         console.error('Error in getStudentAttendanceList:', error);
@@ -539,6 +410,7 @@ export class CourseAttendanceComponent implements OnInit {
         course_nature_id: student.course_nature_id,
         attendance_status_id: student.attendance_status_id,
         attendance_finalize_yn: this.getFinalizeStatus(),
+        action_remark: student.action_remark || ''
       }));
 
     if (selectedStudents.length === 0) {
@@ -609,15 +481,14 @@ export class CourseAttendanceComponent implements OnInit {
   refreshData() {
     // Refresh student list after action
     this.getStudentAttendanceList(
-      this.finalizeCourse.emp_id,
       this.finalizeCourse.academic_session_id,
       this.finalizeCourse.degree_programme_type_id,
       this.finalizeCourse.semester_id,
       this.finalizeCourse.course_id,
-      1, // course_registration_type_id (you can make this configurable)
+      1,
       this.finalizeCourse.dean_committee_id,
+      this.finalizeCourse.college_id
     );
-
 
     // Refresh course list
     this.getCourseAttendanceList_Btn_click();
@@ -629,15 +500,20 @@ export class CourseAttendanceComponent implements OnInit {
 
 
   getPdf(): void {
-    let { academic_session_id, degree_programme_type_id, semester_id, course_id } =
+    let { academic_session_id, college_id, degree_programme_type_id, semester_id, course_id } =
       this.finalizeCourseFilterFormGroup.value;
 
     const selectedAcademicSession = this.state.acadmcSesnList.find(
       (s: any) => s.academic_session_id === academic_session_id
     );
-
+    const selectedCollege = this.state.collegeList.find(
+      (c: any) => c.college_id === college_id
+    );
     let selectedDegreeProTy = this.state.degreeProgrammeTypeList
       .filter((degreeProT: any) => degreeProT.degree_programme_type_id === degree_programme_type_id);
+
+    let selectedCourse = this.state.courseList
+      .filter((cor: any) => cor.course_id === course_id);
 
     let selectedSemester = this.state.semesterList
       .filter((sem: any) => sem.semester_id === semester_id);
@@ -654,29 +530,11 @@ export class CourseAttendanceComponent implements OnInit {
       html,
       title: `${type} ${selectedAcademicSession?.academic_session_name_e}`,
       academic_session_name_e: selectedAcademicSession?.academic_session_name_e,
+      college_name_e: selectedCollege?.college_name_e,
       degree_programme_type_name_e: selectedDegreeProTy[0]?.degree_programme_type_name_e,
+      course_title_e: selectedCourse[0]?.course_name,
       semester_name_e: selectedSemester[0]?.semester_name_e
       // orientation: 'landscape'
     }, "Attendance_Status_Report", "common").pipe(take(1)).subscribe(() => console.log("PDF Generated"));
   }
-
-
-  hasNullAttendanceStatus(): boolean {
-    return this.courseAttendanceStudentList?.some((student: any) =>
-      student.attendance_status_id === null && student.attendance_finalize_yn !== 'Y'
-    );
-  }
-
-  isRowSelected(item: any): boolean {
-    return this.selectedCourseId === item.course_id &&
-      this.selectedOperationType !== null;
-  }
-
-
-  clearSelection(): void {
-    this.selectedCourseId = null;
-    this.selectedOperationType = null;
-    this.selectedRowData = null;
-  }
-
 }

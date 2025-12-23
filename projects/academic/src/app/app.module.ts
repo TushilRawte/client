@@ -58,7 +58,6 @@ import { StudentAddressChangeRequestPopupComponent } from './student/student-add
 import { StudentBasicDetailsUpdateComponent } from './student/student-basic-details-update/student-basic-details-update.component';
 import { StudentBasicDetailsUpdatePopupComponent } from './student/student-basic-details-update-popup/student-basic-details-update-popup.component';
 import { RegistrationReportComponent } from './registration/registration-report/registration-report.component';
-import { CourseAttendanceFinalizeComponent } from './attendance/course-attendance-finalize/course-attendance-finalize.component';
 import { ExamTimeTableComponent } from './time-table/exam-time-table/exam-time-table.component';
 import { ExamTimeTableReportComponent } from './time-table/exam-time-table-report/exam-time-table-report.component';
 import { SrcReportByStudentComponent } from './student/src-report-by-student/src-report-by-student.component';
@@ -73,6 +72,7 @@ import { RevaluationCancelComponent } from './marks entry/revaluation-cancel/rev
 import { SrcGeneratePdfComponent } from './student/src-generate-pdf/src-generate-pdf.component';
 import { StudentMobileNumberChangeRequestComponent } from './student/student-mobile-number-change-request/student-mobile-number-change-request.component';
 import { UidnReportComponent } from './student-profile/uidn-report/uidn-report.component';
+import { AttendanceUnfinalizeComponent } from './attendance/attendance-unfinalize/attendance-unfinalize.component';
 
 @NgModule({
   declarations: [
@@ -126,7 +126,6 @@ import { UidnReportComponent } from './student-profile/uidn-report/uidn-report.c
     StudentBasicDetailsUpdateComponent,
     StudentBasicDetailsUpdatePopupComponent,
     RegistrationReportComponent,
-    CourseAttendanceFinalizeComponent,
     ExamTimeTableComponent,
     ExamTimeTableReportComponent,
     SrcReportByStudentComponent,
@@ -141,6 +140,7 @@ import { UidnReportComponent } from './student-profile/uidn-report/uidn-report.c
     SrcGeneratePdfComponent,
     StudentMobileNumberChangeRequestComponent,
     UidnReportComponent,
+    AttendanceUnfinalizeComponent,
   ],
   imports: [
     SharedModule,
