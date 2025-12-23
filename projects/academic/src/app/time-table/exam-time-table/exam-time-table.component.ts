@@ -63,7 +63,9 @@ export class ExamTimeTableComponent {
     public print: PrintService,
     private snackBar: MatSnackBar,
     private loaderService: LoaderService
-  ) { }
+  ) {
+  }
+
   ngOnInit() {
     this.getExamTypeData();
     this.mainforfun();
@@ -431,9 +433,10 @@ export class ExamTimeTableComponent {
 
     return `${year}-${month}-${day}`;
   };
+
   // optimize..
   onSubmitFields() {
-    this.loaderService.show();
+    this.loaderService.showLoader();
     this.examShiftTimeData();
 
     const rawData = this.TimeTableFiledFormGroup.value;
@@ -480,7 +483,7 @@ export class ExamTimeTableComponent {
         this.loadTableData(apidata);
         // console.timeEnd("⏱️ Build Rows Loop");
       });
-    this.loaderService.hide();
+    this.loaderService.hideLoader();
   }
 
   loadTableData(apidata: any[]) {
@@ -548,7 +551,7 @@ export class ExamTimeTableComponent {
     } else if (fieldName.trim() === 'Academic Session') {
       this.getDegreeProgramTypeData(); //* step 3
     } else if (fieldName.trim() === 'Degree Program') {
-      this.getCourseYearData(); //* step 5
+      this.getCourseYearData(event?.value); //* step 5
     } else if (fieldName.trim() === 'Exam Type') {
       this.getAcademicSession(); //* step 2
     } else if (fieldName.trim() === 'Exam Paper Type') {
@@ -623,13 +626,25 @@ export class ExamTimeTableComponent {
   }
 
   // * step 5
-  getCourseYearData() {
+  getCourseYearData(degree_programme_id: number) {
     this.HTTP.getParam('/master/get/getCourseYear', {}, 'academic').subscribe((result: any) => {
-      // console.log(result);
-      this.courseYearList = (result.body.data || []).map((item: any) => ({
-        id: item.course_year_id,
-        name: item.course_year_name_e
-      }));
+      let temp = this.TimeTableFiledFormGroup.value
+      // ⭐ CONDITION: if type_id is 2 or 3 -> allow only year 1,2,3
+      if (temp['3'] == 2 ||
+        temp['3'] == 3) {
+        this.courseYearList = result?.body?.data?.filter(
+          (obj: any) => [1, 2, 3].includes(obj.course_year_id)
+        ).map((item: any) => ({
+          id: item.course_year_id,
+          name: item.course_year_name_e
+        }));
+      } else {
+        // otherwise show all
+        this.courseYearList = this.courseYearList = (result.body.data || []).map((item: any) => ({
+          id: item.course_year_id,
+          name: item.course_year_name_e
+        }));
+      }
     },
       (error) => {
         console.error('Error in courseYearList:', error);
