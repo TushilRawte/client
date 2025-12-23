@@ -18,7 +18,6 @@ import { MarksEntryUnfinalizeComponent } from './marks entry/marks-entry-unfinal
 import { ResultNotificationComponent } from './marks entry/result-notification/result-notification.component';
 import { PaymentSettlementComponent } from './payment-settlement/payment-settlement.component';
 import { AutomaticRegistrationComponent } from './registration/automatic-registration/automatic-registration.component';
-import { CourseRegistrationComponent } from './registration/course-registration/course-registration.component';
 import { FacultyListComponent } from './registration/faculty-list/faculty-list.component';
 import { RegistrationReportComponent } from './registration/registration-report/registration-report.component';
 import { SrcGenerateComponent } from './semester-report-card/src-generate/src-generate.component';
@@ -39,7 +38,6 @@ import { TranscriptEsignComponent } from './student/transcript-esign/transcript-
 import { TranscriptGenerateComponent } from './student/transcript-generate/transcript-generate.component';
 import { TranscriptReportComponent } from './student/transcript-report/transcript-report.component';
 import { TeacherAllotmentComponent } from './teacher-allotment/teacher-allotment.component';
-import { CourseAttendanceFinalizeComponent } from './attendance/course-attendance-finalize/course-attendance-finalize.component';
 import { ExamTimeTableComponent } from './time-table/exam-time-table/exam-time-table.component';
 import { ExamTimeTableReportComponent } from './time-table/exam-time-table-report/exam-time-table-report.component';
 import { SrcReportComponent } from './student/src-report/src-report.component';
@@ -48,6 +46,7 @@ import { SrcEsignComponent } from './student/src-esign/src-esign.component';
 import { AppliedListComponent } from './student/transfer-certificate/applied-list/applied-list.component';
 import { CollegeTransferComponent } from './student/college-transfer/college-transfer.component';
 import { CollegeTransferReportComponent } from './student/college-transfer-report/college-transfer-report.component';
+import { MigrationCertificateComponent } from './student/migration-certificate/migration-certificate.component';
 import { AppliedStudentsDashboardComponent } from './marks entry/applied-students-dashboard/applied-students-dashboard.component';
 import { UpdateCourseTypeComponent } from './course/update-course-type/update-course-type.component';
 import { RevaluationCancelComponent } from './marks entry/revaluation-cancel/revaluation-cancel.component';
@@ -56,6 +55,8 @@ import { MarksEntryInternalPracticalComponent } from './marks entry/marks-entry-
 import { MarksEntryAbsentComponent } from './marks entry/marks-entry-absent/marks-entry-absent.component';
 import { StudentMobileNumberChangeRequestComponent } from './student/student-mobile-number-change-request/student-mobile-number-change-request.component';
 import { SrcGeneratePdfComponent } from './student/src-generate-pdf/src-generate-pdf.component';
+import { UidnReportComponent } from './student-profile/uidn-report/uidn-report.component';
+import { AttendanceUnfinalizeComponent } from './attendance/attendance-unfinalize/attendance-unfinalize.component';
 
 const routes: Routes = [
   {
@@ -93,11 +94,6 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       {
-        path: 'course-registration',
-        component: CourseRegistrationComponent,
-        // pathMatch: 'full',
-      },
-      {
         path: 'course-registration-unfinalize',
         component: CourseRegistrationUnfinlizeComponent,
         // pathMatch: 'full',
@@ -118,8 +114,8 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       {
-        path: 'course-attendance-finalize',
-        component: CourseAttendanceFinalizeComponent,
+        path: 'course-attendance-unfinalize',
+        component: AttendanceUnfinalizeComponent,
         pathMatch: 'full',
       },
       {
@@ -165,6 +161,11 @@ const routes: Routes = [
       {
         path: 'approve-uidn',
         component: ApproveUidnComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'approved-uidn-report',
+        component: UidnReportComponent,
         pathMatch: 'full',
       },
       {
@@ -300,6 +301,11 @@ const routes: Routes = [
       {
         path: 'transfer-applied-list',
         component: AppliedListComponent,
+        pathMatch: 'full',
+      },
+       {
+        path: 'migration-applied',
+        component: MigrationCertificateComponent,
         pathMatch: 'full',
       },
       {

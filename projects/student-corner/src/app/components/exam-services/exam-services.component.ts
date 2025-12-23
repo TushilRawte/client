@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HttpService, AlertService } from 'shared';
+import { HttpService, AlertService, AuthService } from 'shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -13,7 +13,7 @@ import { SharedExamService } from '../../../../services/shared-exam.service';
 })
 export class ExamServicesComponent {
   studentData: any = null;
-  sessionData: any = {};
+  public userData: any = {};
   selectedCourses: any[] = [];
   coursesListAndMarks: any[] = [];
   appliedCoursesListAndMarks: any[] = [];
@@ -24,8 +24,9 @@ export class ExamServicesComponent {
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private sharedExamService: SharedExamService
-  ) {}
+    private sharedExamService: SharedExamService,
+    private auth: AuthService
+  ) {this.userData = this.auth.getSession()}
 
   tableOptions: any = {
     is_read: true,
@@ -36,24 +37,16 @@ export class ExamServicesComponent {
   };
 
   ngOnInit() {
-    const storedData = sessionStorage.getItem('studentData');
-    if (storedData) {
-      const studentData = JSON.parse(storedData);
-      this.sessionData = studentData;
-      this.getStudentDetails();
-    } else {
-      this.router.navigateByUrl('/dashboard');
-    }
+    this.getStudentDetails()
   }
 
   getStudentDetails() {
-    // ^ this data will get from login session
-    const academic_session_id = this.sessionData?.academic_session_id;
-    const course_year_id = this.sessionData?.course_year_id;
-    const semester_id = this.sessionData?.semester_id;
-    const college_id = this.sessionData?.college_id;
-    const degree_programme_id = this.sessionData?.degree_programme_id;
-    const ue_id = this.sessionData?.ue_id;
+    const academic_session_id = this.userData?.academic_session_id;
+    const course_year_id = this.userData?.course_year_id;
+    const semester_id = this.userData?.semester_id;
+    const college_id = this.userData?.college_id;
+    const degree_programme_id = this.userData?.degree_programme_id;
+    const ue_id = this.userData?.user_id;
 
     const params = {
       academic_session_id: academic_session_id,

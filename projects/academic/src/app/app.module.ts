@@ -14,7 +14,6 @@ import { CourseAllotmentComponent } from './course-allotment/course-allotment.co
 import { CourseDashboardComponent } from './course-dashboard/course-dashboard.component';
 import { CourseFinalizeComponent } from './course-finalize/course-finalize.component';
 import { CourseallotDashboardComponent } from './courseallot-dashboard/courseallot-dashboard.component';
-import { CourseRegistrationComponent } from './registration/course-registration/course-registration.component';
 import { CourseRegistrationUnfinlizeComponent } from './course-registration-unfinlize/course-registration-unfinlize.component';
 import { TeacherSectionAllotmentComponent } from './teacher-section-allotment/teacher-section-allotment.component';
 import { StudentSectionAllotmentComponent } from './student-section-allotment/student-section-allotment.component';
@@ -59,7 +58,6 @@ import { StudentAddressChangeRequestPopupComponent } from './student/student-add
 import { StudentBasicDetailsUpdateComponent } from './student/student-basic-details-update/student-basic-details-update.component';
 import { StudentBasicDetailsUpdatePopupComponent } from './student/student-basic-details-update-popup/student-basic-details-update-popup.component';
 import { RegistrationReportComponent } from './registration/registration-report/registration-report.component';
-import { CourseAttendanceFinalizeComponent } from './attendance/course-attendance-finalize/course-attendance-finalize.component';
 import { ExamTimeTableComponent } from './time-table/exam-time-table/exam-time-table.component';
 import { ExamTimeTableReportComponent } from './time-table/exam-time-table-report/exam-time-table-report.component';
 import { SrcReportByStudentComponent } from './student/src-report-by-student/src-report-by-student.component';
@@ -67,12 +65,15 @@ import { SrcEsignComponent } from './student/src-esign/src-esign.component';
 import { GeneratedListComponent } from './student/transfer-certificate/applied-list/generated-list/generated-list.component';
 import { CollegeTransferComponent } from './student/college-transfer/college-transfer.component';
 import { CollegeTransferReportComponent } from './student/college-transfer-report/college-transfer-report.component';
+import { MigrationCertificateComponent } from './student/migration-certificate/migration-certificate.component';
 import { AppliedStudentsDashboardComponent } from './marks entry/applied-students-dashboard/applied-students-dashboard.component';
 import { UpdateCourseTypeComponent } from './course/update-course-type/update-course-type.component';
 import { RevaluationCancelComponent } from './marks entry/revaluation-cancel/revaluation-cancel.component';
 import { SrcGeneratePdfComponent } from './student/src-generate-pdf/src-generate-pdf.component';
 import { StudentMobileNumberChangeRequestComponent } from './student/student-mobile-number-change-request/student-mobile-number-change-request.component';
 import { CorrigendumApplyAdminComponent } from './corrigendum/corrigendum-apply-admin/corrigendum-apply-admin.component';
+import { UidnReportComponent } from './student-profile/uidn-report/uidn-report.component';
+import { AttendanceUnfinalizeComponent } from './attendance/attendance-unfinalize/attendance-unfinalize.component';
 
 @NgModule({
   declarations: [
@@ -83,7 +84,6 @@ import { CorrigendumApplyAdminComponent } from './corrigendum/corrigendum-apply-
     CourseallotDashboardComponent,
     CourseFinalizeComponent,
     TeacherAllotmentComponent,
-    CourseRegistrationComponent,
     CourseRegistrationUnfinlizeComponent,
     TeacherSectionAllotmentComponent,
     StudentSectionAllotmentComponent,
@@ -127,7 +127,6 @@ import { CorrigendumApplyAdminComponent } from './corrigendum/corrigendum-apply-
     StudentBasicDetailsUpdateComponent,
     StudentBasicDetailsUpdatePopupComponent,
     RegistrationReportComponent,
-    CourseAttendanceFinalizeComponent,
     ExamTimeTableComponent,
     ExamTimeTableReportComponent,
     SrcReportByStudentComponent,
@@ -135,12 +134,15 @@ import { CorrigendumApplyAdminComponent } from './corrigendum/corrigendum-apply-
     GeneratedListComponent,
     CollegeTransferComponent,
     CollegeTransferReportComponent,
+    MigrationCertificateComponent,
     AppliedStudentsDashboardComponent,
     UpdateCourseTypeComponent,
     RevaluationCancelComponent,
     SrcGeneratePdfComponent,
     StudentMobileNumberChangeRequestComponent,
     CorrigendumApplyAdminComponent,
+    UidnReportComponent,
+    AttendanceUnfinalizeComponent,
   ],
   imports: [
     SharedModule,

@@ -15,12 +15,54 @@ export class AuthService {
   constructor(private cookie: CookieService, private http: HttpService, private router: Router, private es: EncryptionService) {
   }
 
+  private readonly SESSION_KEY = 'studentSession';
+
   logout() {
     this.http.getData('/security/logout', 'common').subscribe(() => {
       this.cookie.deleteAll('/');
       window.open(moduleMapping.loginModule, '_self')
     })
   }
+
+  studentLogout() {
+    this.http.getData('/security/stdlogout', 'common').subscribe(() => {
+      this.cookie.deleteAll('/');
+      window.open(moduleMapping.studentCornerModule, '_self')
+    })
+  }
+
+    /* ========================= */
+  setSession(data: any): void {
+    const jsonString = JSON.stringify(data);
+    const encrypted = this.es.encrypt(jsonString);
+    sessionStorage.setItem(this.SESSION_KEY, encrypted);
+  
+  }
+
+  /* =========================
+     GET SESSION (WRAPPED)
+     ========================= */
+  getSession(): any | null {
+    const encrypted = sessionStorage.getItem(this.SESSION_KEY);
+    if (!encrypted) return null;
+    const decrypted = this.es.decrypt(encrypted);
+    try {
+      return typeof decrypted === 'string'
+        ? JSON.parse(decrypted)
+        : decrypted;
+    } catch {
+      return null;
+    }
+  }
+
+  /* =========================
+     CLEAR SESSION
+     ========================= */
+  clearSession(): void {
+    sessionStorage.removeItem(this.SESSION_KEY);
+  }
+
+
 
   isLoggedIn(): boolean {
     const cookie = this.cookie.get('session')

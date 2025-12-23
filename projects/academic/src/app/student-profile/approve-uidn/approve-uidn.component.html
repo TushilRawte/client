@@ -19,10 +19,10 @@
         </div>
         <div class="col-md-4 col-6">
           <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Degree Programme</mat-label>
-            <mat-select placeholder="Degree Programme" (selectionChange)="onDegreeProgrammeChange($event.value)">
-              <mat-option *ngFor="let server of degreeProgramme" [value]="server.degree_programme_id">
-                {{ server.degree_programme_name_e }}
+            <mat-label>Degree</mat-label>
+            <mat-select placeholder="Degree" (selectionChange)="onDegreeChange($event.value)">
+              <mat-option *ngFor="let server of degreeList" [value]="server.degree_id">
+                {{ server.degree_name_e }}
               </mat-option>
             </mat-select>
           </mat-form-field>

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {AuthService} from 'shared';
 
 @Component({
   selector: 'app-root',
@@ -8,4 +9,13 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'student-corner';
+ constructor(private auth: AuthService) {
+  }
+
+  ngOnInit() {
+    if (this.auth.isLoggedIn()) {
+
+    }
+  }
 }
+

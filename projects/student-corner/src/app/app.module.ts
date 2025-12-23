@@ -25,6 +25,7 @@ import { CertificateApplyComponent } from './components/certificate-apply/certif
 import { AddressUpdatePopupComponent } from './components/profile-update-popup/address-update-popup/address-update-popup.component';
 import { MobileNumberUpdatePopupComponent } from './components/profile-update-popup/mobile-number-update-popup/mobile-number-update-popup.component';
 import { NameUpdatePopupComponent } from './components/profile-update-popup/name-update-popup/name-update-popup.component';
+import { StdloginComponent } from './components/stdlogin/stdlogin.component';
 import { AdmitCardReportComponent } from './components/report/admit-card-report/admit-card-report.component';
 import { SrcReportComponent } from './components/report/src-report/src-report.component';
 
@@ -48,6 +49,7 @@ import { SrcReportComponent } from './components/report/src-report/src-report.co
     AddressUpdatePopupComponent,
     MobileNumberUpdatePopupComponent,
     NameUpdatePopupComponent,
+    StdloginComponent,
     AdmitCardReportComponent,
     SrcReportComponent
 

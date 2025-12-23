@@ -3,6 +3,12 @@
         <h3 class="fw-bold mb-6 page-title">Course Attendance Un-Finalize</h3>
         <form [formGroup]="finalizeCourseFilterFormGroup">
             <div class="row">
+                <!-- <div class="col-md-2 col-6" *ngIf="showEmpIdField">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Employee Id</mat-label>
+                        <input matInput placeholder="Ex. 10072" formControlName="emp_id">
+                    </mat-form-field>
+                </div> -->
                 <div class="col-md-2 col-6">
                     <mat-form-field appearance="outline" class="w-100">
                         <mat-label>Session</mat-label>
@@ -64,9 +70,9 @@
                         </button>
                     </div>
                 </div>
-
             </div>
-            <div class="row mt-3">
+
+            <div class="row mt-3 table-scroll">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -92,22 +98,21 @@
 
                             <!-- Clickable Student Count -->
                             <td>
-                                <span class="button-custom bg-success">
+                                <span class="button-custom bg-success"
+                                    (click)="onStatusClick(item, 'attendanceUpdate')">
                                     {{ item.student_count }}
-                                    <!-- {{ item.finalize }} -->
                                 </span>
                             </td>
 
                             <td>
-                                <span class="button-custom bg-secondary">
+                                <span class="button-custom bg-secondary" (click)="onStatusClick(item, 'finalize')">
                                     {{ item.student_count - item.finalize }}
-                                    <!-- {{ item.student_count - item.attendance_updated }} -->
                                 </span>
                             </td>
 
                             <td>
                                 <button class="badge btn btn-warning text-dark fs-6"
-                                    (click)="onStatusClick(item, 'finalize')">
+                                    (click)="onStatusClick(item, 'unFinalize')">
                                     Finalize
                                     = {{ item.finalize }}
                                 </button>
@@ -131,8 +136,8 @@
 <ng-container *ngIf="!courseAttendanceStudentList || courseAttendanceStudentList.length > 0">
     <mat-card class="attendance-detail-main mt-lg-4 mt-4">
         <mat-card-content>
-            <!-- Global Attendance Status Selector -->
-            <div class="row mb-3" *ngIf="attendanceOperation.attendanceUpdate">
+            <!-- Global Attendance Status Selector *ngIf="attendanceOperation.attendanceUpdate" -->
+            <div class="row mb-3"  *ngIf="!attendanceOperation?.finalize && !attendanceOperation?.attendanceUpdate">
                 <div class="col-md-4 col-6">
                     <ng-select placeholder="Attendance Status" appearance="outline"
                         [(ngModel)]="globalAttendanceStatusId" (ngModelChange)="onSelectAllAttendanceStatus($event)">
@@ -146,7 +151,7 @@
             </div>
 
             <form [formGroup]="finalizeCourseAttendanceFormGroup">
-                <div class="row">
+                <div id="print-section" class="row table-scroll">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -156,18 +161,18 @@
                                 <th>Student Name</th>
                                 <th>Course Type</th>
                                 <th>Attendance Status</th>
-                                <th>
+                                <th class="d-print-none" *ngIf="!attendanceOperation?.finalize && !attendanceOperation?.attendanceUpdate">
                                     Remark
                                 </th>
-                                <th>
+                                <th class="d-print-none" *ngIf="!attendanceOperation?.finalize && !attendanceOperation?.attendanceUpdate">
                                     <mat-checkbox [ngModel]="selectAll" (ngModelChange)="onToggleSelectAll($event)"
                                         [ngModelOptions]="{ standalone: true }">
                                         {{
                                         attendanceOperation?.attendanceUpdate
                                         ? 'Select All'
                                         : (attendanceOperation?.finalize
-                                        ? 'Un-Finalize All'
-                                        : 'Finalize All')
+                                        ? 'Finalize All'
+                                        : 'Un-Finalize All')
                                         }}
                                     </mat-checkbox>
                                 </th>
@@ -201,17 +206,18 @@
                                                 </option>
                                             </select>
                                         </td>
-                                        <td>
+                                        <td class="d-print-none" *ngIf="!attendanceOperation?.finalize && !attendanceOperation?.attendanceUpdate">
                                             <div class="col-md-12 col-12">
                                                 <!-- <mat-form-field appearance="outline">
                                                     <mat-label>Remark</mat-label>
                                                     <input matInput placeholder="Ex. All Day Absent"
                                                         formControlName="action_remark">
                                                 </mat-form-field> -->
-                                                <input  type="text" placeholder="Ex. All Day Absent" formControlName="action_remark">
+                                                <input type="text" placeholder="Ex. All Day Absent"
+                                                    formControlName="action_remark">
                                             </div>
                                         </td>
-                                        <td [style]="getClassForFinalizeStudents(rec)">
+                                        <td [style]="getClassForFinalizeStudents(rec)" class="d-print-none" *ngIf="!attendanceOperation?.finalize && !attendanceOperation?.attendanceUpdate">
                                             <input type="checkbox" formControlName="selected" />
                                         </td>
                                     </tr>
@@ -228,17 +234,27 @@
                     <p class="text-danger" *ngIf="!courseAttendanceStudentList || !courseAttendanceStudentList.length">
                         No Student Attendance list available...</p>
                 </div>
-                <button mat-raised-button color="primary" class="btn btn-primary" (click)="handleAttendanceAction()"
-                    [disabled]="!courseAttendanceStudentList?.length">
-                    {{
-                    attendanceOperation?.attendanceUpdate
-                    ? 'Update'
-                    : attendanceOperation?.finalize
-                    ? 'Un-Finalize'
-                    : 'Finalize'
-                    }}
-                </button>
-
+                <div>
+                    <button mat-raised-button color="primary" style="margin-right: 10px;" type="button"
+                        (click)="getPdf()">
+                        <mat-icon>print</mat-icon>
+                    </button>
+                    <!-- <button mat-raised-button color="primary" class="btn btn-primary" (click)="handleAttendanceAction()"
+                        [disabled]="!courseAttendanceStudentList?.length">
+                        {{
+                        attendanceOperation?.attendanceUpdate
+                        ? 'Update'
+                        : attendanceOperation?.finalize
+                        ? 'Finalize'
+                        : 'Un-Finalize'
+                        }}
+                    </button> -->
+                    <button *ngIf="!attendanceOperation?.finalize && !attendanceOperation?.attendanceUpdate" mat-raised-button color="primary"
+                        class="btn btn-primary" (click)="handleAttendanceAction()"
+                        [disabled]="!courseAttendanceStudentList?.length">
+                        <span>Un-Finalize</span>
+                    </button>
+                </div>
             </div>
         </mat-card-content>
     </mat-card>

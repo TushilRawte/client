@@ -1,6 +1,6 @@
 <mat-card class="attendance-main">
   <mat-card-content>
-    <h3 class="fw-bold mb-6">Course Attendance UG/ PG / PhD Program</h3>
+    <h3 class="fw-bold mb-6 page-title">Course Attendance</h3>
     <form [formGroup]="finalizeCourseFilterFormGroup">
       <div class="row">
         <!-- Show only if user has permission -->
@@ -12,14 +12,14 @@
         </div>
         <div class="col-md-2 col-6">
           <!-- <ng-select placeholder="Session" formControlName="academic_session_id" appearance="outline">
-            <ng-container *ngFor="let server of acadmcSesnList">
+            <ng-container *ngFor="let server of state.acadmcSesnList">
               <ng-option [value]="server.academic_session_id">{{ server.academic_session_name_e }}</ng-option>
             </ng-container>
           </ng-select> -->
           <mat-form-field appearance="outline" class="w-100">
             <mat-label>Session</mat-label>
             <mat-select placeholder="Session" formControlName="academic_session_id">
-              <mat-option *ngFor="let server of acadmcSesnList" [value]="server.academic_session_id">
+              <mat-option *ngFor="let server of state.acadmcSesnList" [value]="server.academic_session_id">
                 {{ server.academic_session_name_e }}
               </mat-option>
             </mat-select>
@@ -35,7 +35,7 @@
           <mat-form-field appearance="outline" class="w-100">
             <mat-label>Semester</mat-label>
             <mat-select placeholder="Semester" formControlName="semester_id">
-              <mat-option *ngFor="let server of semesterList" [value]="server.semester_id">
+              <mat-option *ngFor="let server of state.semesterList" [value]="server.semester_id">
                 {{ server.semester_name_e }}
               </mat-option>
             </mat-select>
@@ -54,7 +54,8 @@
           <mat-form-field appearance="outline" class="w-100">
             <mat-label>Degree Programme Type</mat-label>
             <mat-select placeholder="Degree Programme Type" formControlName="degree_programme_type_id">
-              <mat-option *ngFor="let server of degreeProgrammeTypeList" [value]="server.degree_programme_type_id">
+              <mat-option *ngFor="let server of state.degreeProgrammeTypeList"
+                [value]="server.degree_programme_type_id">
                 {{ server.degree_programme_type_name_e }}
               </mat-option>
             </mat-select>
@@ -69,9 +70,9 @@
             </button>
           </div>
         </div>
-
       </div>
-      <div class="row mt-3">
+
+      <div class="row mt-3 table-scroll" *ngIf="courseAttendanceList?.length > 0">
         <table class="table table-bordered">
           <thead>
             <tr>
@@ -81,63 +82,61 @@
               <th>Dean Commeettee</th>
               <!-- <th>Batch</th> -->
               <th>Course Year</th>
-              <th>Student Count</th>
+              <th>Total Student</th>
+              <th>Not Finalize</th>
               <th>Attendance Status</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let item of courseAttendanceList">
-              <td>{{ item.course_title_e }}</td>
-              <td>{{ item.course_code }}</td>
+              <td [ngClass]="{'bg-green': isRowSelected(item)}">{{ item.course_title_e }}</td>
+              <td [ngClass]="{'bg-green': isRowSelected(item)}">{{ item.course_code }}</td>
               <!-- <td>{{ item.degree_programme_type_name_e }}</td> -->
-              <td>{{ item.dean_committee_name_e }}</td>
+              <td [ngClass]="{'bg-green': isRowSelected(item)}">{{ item.dean_committee_name_e }}</td>
               <!-- <td>{{ item.batch_name }}</td> -->
-              <td>{{ item.course_year_name_e }}</td>
+              <td [ngClass]="{'bg-green': isRowSelected(item)}">{{ item.course_year_name_e }}</td>
 
               <!-- Clickable Student Count -->
-              <td>
-                <span class="bg-primary text-white cursor-pointer button-custom" mat-icon-button role="button"
-                  (click)="onStatusClick(item)">
-                  <span class="fs-5">{{ item.student_count }}</span>
-                  <mat-icon class="fs-6">edit</mat-icon>
+              <td [ngClass]="{'bg-green': isRowSelected(item)}">
+                <span class="button-custom bg-success" (click)="onStatusClick(item, 'attendanceUpdate')">
+                  {{ item.student_count }}
                 </span>
               </td>
 
-              <!-- Status with Bootstrap color badges -->
-              <!-- <td>
-                <span class="badge rounded-pill p-3" [ngClass]="{
-          'bg-info': item.status === 'D',
-          'bg-warning text-dark': item.status === 'P',
-          'bg-success': item.status === 'F'
-        }">
-                  {{ item.status === 'D' ? 'Done' : item.status === 'P' ? 'Pending' : 'Finalize' }}
+              <td [ngClass]="{'bg-green': isRowSelected(item)}">
+                <span class="button-custom bg-secondary" (click)="onStatusClick(item, 'finalize')">
+                  {{ item.student_count - item.finalize }}
                 </span>
-              </td> -->
-              <td>
-                <span [innerHTML]="getAttendanceStatusLabel(item)"></span>
+              </td>
+
+              <td [ngClass]="{'bg-green': isRowSelected(item)}">
+                <button class="badge btn btn-warning text-dark fs-6" (click)="onStatusClick(item, 'unFinalize')">
+                  Finalize
+                  = {{ item.finalize }}
+                </button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+
     </form>
   </mat-card-content>
   <!-- Loading Fallback -->
-  <div *ngIf="!courseAttendanceList || !courseAttendanceList.length" class="text-center">
+  <!-- <div *ngIf="courseAttendanceList?.length > 0" class="text-center">
     <p class="text-danger">No courses Attendance available...</p>
-  </div>
+  </div> -->
 </mat-card>
 
 
 
 
-
-
+<!-- second part refresh -->
 <ng-container *ngIf="!courseAttendanceStudentList || courseAttendanceStudentList.length > 0">
   <mat-card class="attendance-detail-main mt-lg-4 mt-4">
     <mat-card-content>
-      <!-- Global Attendance Status Selector -->
-      <div class="row mb-3">
+      <!-- Global Attendance Status Selector *ngIf="attendanceOperation.attendanceUpdate" -->
+      <div class="row mb-3" *ngIf="!attendanceOperation?.unFinalize">
         <div class="col-md-4 col-6">
           <ng-select placeholder="Attendance Status" appearance="outline" [(ngModel)]="globalAttendanceStatusId"
             (ngModelChange)="onSelectAllAttendanceStatus($event)">
@@ -148,63 +147,107 @@
             </ng-container>
           </ng-select>
         </div>
+
+
+
+        <div class="col-md-8 col-6">
+          <div class="color-legend-container">
+            <p class="legend-title mb-1">Color Indicators:</p>
+            <div class="d-flex flex-wrap gap-3">
+              <div class="legend-item">
+                <span class="color-box" style="background-color: #BDF9C2;"></span>
+                <span class="legend-label">Attendance Updated</span>
+              </div>
+              <div class="legend-item">
+                <span class="color-box" style="background-color: #D3D3D3;"></span>
+                <span class="legend-label">Attendance Finalized</span>
+              </div>
+              <div class="legend-item">
+                <span class="color-box" style="background-color: #fff;"></span>
+                <span class="legend-label">Attendance Not-Update</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
       </div>
 
-
-
-      <!-- <app-reporttable [options]="attendanceTableOptions"> -->
       <form [formGroup]="finalizeCourseAttendanceFormGroup">
-        <div class="row">
+        <div id="print-section" class="row table-scroll">
           <table class="table table-bordered">
             <thead>
-              <!-- <ng-template #headerTemplate> -->
               <tr>
-                <th>Subject Name</th>
-                <th>Student ID</th>
+                <th>S.No.</th>
+                <th>Degree Programme</th>
+                <th>University ID/ Student ID</th>
                 <th>Student Name</th>
                 <th>Course Type</th>
                 <th>Attendance Status</th>
-                <th>
-                  <mat-checkbox [ngModel]="selectAllUnfinalized" (ngModelChange)="onToggleSelectAll($event)"
+                <th class="d-print-none" *ngIf="!attendanceOperation?.unFinalize">
+                  <mat-checkbox [ngModel]="selectAll" (ngModelChange)="onToggleSelectAll($event)"
                     [ngModelOptions]="{ standalone: true }">
-                    Select All
+                    {{
+                    attendanceOperation?.attendanceUpdate
+                    ? 'Select All'
+                    : (attendanceOperation?.finalize
+                    ? 'Finalize All'
+                    : 'Un-Finalize All')
+                    }}
                   </mat-checkbox>
                 </th>
               </tr>
-              <!-- </ng-template> -->
             </thead>
             <tbody formArrayName="students">
-              <!-- <ng-template #rowTemplate > -->
               <ng-container *ngFor="let group of groupedStudents">
                 <ng-container *ngFor="let rec of group.records; let i = index">
                   <tr [formGroupName]="rec.formIndex">
-                    <td *ngIf="i === 0" [attr.rowspan]="group.records.length"
-                      [style]="getClassForFinalizeStudents(rec)">
-                      {{ group.subject_name_e || 'No Subject' }}
+                    <td>
+                      {{rec.index}}
                     </td>
-                    <td [style]="getClassForFinalizeStudents(rec)">{{ rec.registration_id }}</td>
-                    <td [style]="getClassForFinalizeStudents(rec)">{{ rec.student_name }}</td>
-                    <td [style]="getClassForFinalizeStudents(rec)">{{ rec.course_nature_name_e }}</td>
+                    <td *ngIf="i === 0" [attr.rowspan]="group.records.length" style="vertical-align: top !important;">
+                      {{ group.degree_programme_name_e }}
+                    </td>
                     <td [style]="getClassForFinalizeStudents(rec)">
+                      {{ rec.ue_id +' / '+ rec.registration_id}}
+                    </td>
+                    <td [style]="getClassForFinalizeStudents(rec)">
+                      {{ rec.student_name }}
+                    </td>
+                    <td [style]="getClassForFinalizeStudents(rec)">
+                      {{ rec.course_nature_name_e }}
+                    </td>
+                    <!-- <td [style]="getClassForFinalizeStudents(rec)">
                       <select class="form-control" formControlName="attendance_status_id">
                         <option *ngFor="let status of attendanceStatusList" [value]="status.attendance_status_id">
                           {{ status.attendance_status_name }}
                         </option>
                       </select>
-                    </td>
+                    </td> -->
+
                     <td [style]="getClassForFinalizeStudents(rec)">
+                      <!-- Debug: Current status: {{ rec.attendance_status_id }} -->
+                      <select class="form-control" formControlName="attendance_status_id">
+                        <option value="">-- Select Status --</option>
+                        <option *ngFor="let status of attendanceStatusList" [value]="status.attendance_status_id"
+                          [selected]="status.attendance_status_id === rec.attendance_status_id">
+                          {{ status.attendance_status_name }}
+                        </option>
+                      </select>
+                    </td>
+
+                    <td [style]="getClassForFinalizeStudents(rec)" class="d-print-none"
+                      *ngIf="!attendanceOperation?.unFinalize">
                       <input type="checkbox" formControlName="selected" />
                     </td>
                   </tr>
                 </ng-container>
               </ng-container>
-              <!-- </ng-template> -->
             </tbody>
 
           </table>
         </div>
       </form>
-      <!-- </app-reporttable> -->
 
       <div class="d-flex justify-content-between">
         <div>
@@ -212,12 +255,23 @@
           <p class="text-danger" *ngIf="!courseAttendanceStudentList || !courseAttendanceStudentList.length">
             No Student Attendance list available...</p>
         </div>
-        <button mat-raised-button color="primary" class="btn btn-primary" (click)="onUpdate()"
-          [disabled]="!courseAttendanceStudentList || !courseAttendanceStudentList.length">
-          <!-- Submit Button -->
-          Update
-        </button>
+        <div>
+          <button mat-raised-button color="primary" style="margin-right: 10px;" type="button" (click)="getPdf()">
+            <mat-icon>print</mat-icon>
+          </button>
+          <button *ngIf="!attendanceOperation?.unFinalize" mat-raised-button color="primary" class="btn btn-primary"
+            (click)="handleAttendanceAction()" [disabled]="!courseAttendanceStudentList?.length">
+            {{
+            attendanceOperation?.attendanceUpdate
+            ? 'Update'
+            : attendanceOperation?.finalize
+            ? 'Finalize'
+            : 'Un-Finalize'
+            }}
+          </button>
+        </div>
       </div>
+
     </mat-card-content>
   </mat-card>
 </ng-container>

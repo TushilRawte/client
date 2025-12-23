@@ -1,0 +1,97 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title class="page-title">UIDN Report</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+        <form [formGroup]="generateUIDNFormGroup">
+            <div class="row">
+                <div class="col-md-2 col-6">
+                    <ng-select placeholder="Session" formControlName="academic_session_id" appearance="outline">
+                        <ng-container *ngFor="let server of acadmcSesnList">
+                            <ng-option [value]="server.academic_session_id">{{ server.academic_session_name_e
+                                }}</ng-option>
+                        </ng-container>
+                    </ng-select>
+                </div>
+                <div class="col-md-5 col-6">
+                    <ng-select placeholder="College" formControlName="college_id" (change)="onCollegeChange($event)"
+                        appearance="outline">
+                        <ng-container *ngFor="let server of collegeList">
+                            <ng-option [value]="server.college_id">{{ server.college_name_e }}</ng-option>
+                        </ng-container>
+                    </ng-select>
+                </div>
+                <div class="col-md-3 col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Degree</mat-label>
+                        <mat-select placeholder="Degree" formControlName="degree_id">
+                            <mat-option *ngFor="let degree of degreeList" [value]="degree.degree_id">
+                                {{ degree.degree_name_e }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-2 mt-2">
+                    <button type="button" class="btn btn-primary" (click)="getUIDNReportList()">
+                        Get Report List
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-3" *ngIf="reportList.length > 0">
+                <div formArrayName="approvedList">
+                    <app-reporttable [options]="uidnReportListOptions">
+                        <ng-template #headerTemplate>
+                            <tr>
+                                <th>SNO.</th>
+                                <th class="d-print-none">
+                                    <input type="checkbox" [checked]="selectAll" (change)="toggleSelectAll($event)" />
+                                </th>
+                                <th>List NO.</th>
+                                <th>Report E-Signed</th>
+                                <th>Singed Date</th>
+                                <th>Download</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template #rowTemplate let-row let-i="index">
+                            <tr [formGroupName]="i">
+                                <td>{{ i+1 }}</td>
+                                <td class="d-print-none">
+                                    <input type="checkbox" formControlName="selected" (change)="onRowCheckboxChange()">
+                                </td>
+                                <td>{{row.approval_round}}</td>
+                                <td [style.color]="row.is_certificate_signed === 'N' ? 'red' : 'green'">
+                                    {{row.is_certificate_signed === 'N' ? 'Not-Singned' : 'Signed Done'}}
+                                </td>
+                                <td>{{formatDate(row.signed_date)}}</td>
+                                <td class="d-print-none cursor-pointer">
+                                    <a [href]="file_prefix + row.file_path" target="_blank">
+                                        <mat-icon class="text-danger">
+                                            picture_as_pdf
+                                        </mat-icon>
+                                    </a>
+                                </td>
+
+                            </tr>
+                        </ng-template>
+                    </app-reporttable>
+
+                    <div class="row">
+                        <div class="col-md-2 mt-4">
+                            <button class="btn btn-success" type="button"
+                                (click)="submitSelectedForEsign()">E-Sing</button>
+                        </div>
+
+                        <div class="col-md-3 mt-4">
+                            <button mat-raised-button color="primary" (click)="downloadAllReport()">
+                                <span class="m-2">Download All</span>
+                                <mat-icon>arrow_downward</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

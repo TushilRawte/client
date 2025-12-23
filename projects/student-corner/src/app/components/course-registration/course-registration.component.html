@@ -74,7 +74,7 @@
             [class.failed-course-row]="isFailedCourse(row) || row?.course_registration_type_id == 2">
             <td>{{i+1}}</td>
             <td>{{ row?.course_name }}</td>
-            <td>{{ row?.emp_names }}</td>
+            <td>{{ row?.emp_names || 'No Data'  }}</td>
             <td>{{ row?.course_type_name_e }}</td>
             <td>{{ row?.credit }}</td>
             <td> {{ row?.cou_allot_type_name_e === 'Complusory' ? 'C' : (row?.cou_allot_type_name_e ===
@@ -134,8 +134,8 @@
         <div class="col-sm-3">
           @if (studentData?.registration_status_id == 2) {
           <button type="button" (click)="onSubmit()" class="btn btn-primary btn-sm">Register courses</button>
-          } @else {
-          <button type="button" (click)="onUpdate()" class="btn btn-primary btn-sm">Update courses</button>
+          } @else  {
+          <button type="button" *ngIf="studentData?.is_finalize_yn !=='Y'" (click)="onUpdate()" class="btn btn-primary btn-sm">Update courses</button>
           }
         </div>
       </mat-card-content>

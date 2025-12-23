@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
-import { PrintService,PrintreportService } from 'shared';
+import { AuthService, PrintreportService } from 'shared';
+import { Router } from '@angular/router';
+import { take } from 'rxjs';
+import { AlertService, HttpService, PrintService } from 'shared';
+
 
 @Component({
   selector: 'app-registration-card',
@@ -8,92 +12,114 @@ import { PrintService,PrintreportService } from 'shared';
   styleUrl: './registration-card.component.scss'
 })
 export class RegistrationCardComponent {
- 
-  constructor(public print: PrintService,public print1 :PrintreportService) {}
 
-   registrationData = [
-  {
-    academicYear: '2017-18',
-    year: 'IV Year',
-    semester: 'II Semester',
-    status: 'Regular',
-    studentType: 'Continuing Student',
-    registrationStatus: 'Registered',
-    downloadLink: '#'
-  },
-  {
-    academicYear: '2017-18',
-    year: 'IV Year',
-    semester: 'I Semester',
-    status: 'Regular',
-    studentType: 'Continuing Student',
-    registrationStatus: 'Registered',
-    downloadLink: '#'
-  },
-  {
-    academicYear: '2016-17',
-    year: 'III Year',
-    semester: 'II Semester',
-    status: 'Academic Probation',
-    studentType: 'Continuing Student',
-    registrationStatus: 'Registered',
-    downloadLink: '#'
-  },
-  {
-    academicYear: '2016-17',
-    year: 'III Year',
-    semester: 'I Semester',
-    status: 'Academic Probation',
-    studentType: 'Continuing Student',
-    registrationStatus: 'Registered',
-    downloadLink: '#'
-  }
-  ];
+  userData: any = {};
+  studentData: any = null;
+  stdRegistrationList: any[] = [];
+  constructor(public print: PrintService, public print1: PrintreportService, private router: Router, private HTTP: HttpService, private alert: AlertService,private auth: AuthService) {this.userData = this.auth.getSession() }
 
-   studentData = {
-    registrationNo: "240744",
-    studentName: "MANGEE",
-    phoneNo: "6268480118",
-    registrationSession: "2022-23",
-    yearClass: "III Year",
-    cumulativeSemesterNo: "6",
-    studentUBId: "21012021821",
-    semester: "II Semester",
-    academicSession: "2024-25"
+
+  tableOptions: any = {
+    is_read: true,
+    listLength: 0,
+    dataSource: [],
+    button: [],
   };
 
-  feesData = [
-    {
-      fee: "Semester Examination Fee",
-      feeReceiptNo: "243",
-      feePaidDate: "",
-      transactionNo: "1724100",
-      paidAmount: "",
-      feePaidCollege: "College of Forestry, Sankra Patan"
-    }
-  ];
-
-  courseData = [
-    { sNo: 1, courseNo: "FNR-321", courseType: "None", titleOfCourse: "FOREST LAWS LEGISLATION AND POLICIES", credit: "2(2+0)" },
-    { sNo: 2, courseNo: "FNR-322", courseType: "None", titleOfCourse: "BIOMETRICS", credit: "3(1+2)" },
-    { sNo: 3, courseNo: "FNR-323", courseType: "None", titleOfCourse: "BIO-GENETICS & URBAN FORESTRY", credit: "3(1+1)" },
-    { sNo: 4, courseNo: "FNR-324", courseType: "None", titleOfCourse: "RESTORATION ECOLOGY", credit: "3(1+1)" },
-    { sNo: 5, courseNo: "FWL-321", courseType: "None", titleOfCourse: "WILDLIFE BIOLOGY", credit: "3(1+1)" },
-    { sNo: 6, courseNo: "FFL-321", courseType: "None", titleOfCourse: "NON- TIMBER FOREST PRODUCTS", credit: "3(2+1)" },
-    { sNo: 7, courseNo: "FFL-322", courseType: "None", titleOfCourse: "CERTIFICATION OF FOREST PRODUCTS", credit: "3(2+1)" },
-    { sNo: 8, courseNo: "FSA-321", courseType: "None", titleOfCourse: "PLANTATION FORESTRY", credit: "3(2+1)" }
-  ];
-
-
-    printData() {
-    const content = document.getElementById('print-section')?.innerHTML;
-    if (content) {
-      this.print.printHTML(content);
-    } else {
-      console.error('Printable section not found');
-    }
+ ngOnInit(): void {
+    this.getStudentDetails();
+    console.log('user data',this.userData);
+    
   }
 
 
+  getStudentDetails() {
+    // ^ this data will get from login session
+    const academic_session_id = this.userData.academic_session_id;
+    const course_year_id = this.userData.course_year_id;
+    const semester_id = this.userData.semester_id;
+    const college_id = this.userData.college_id;
+    const degree_programme_id = this.userData.degree_programme_id;
+    const ue_id = this.userData.user_id;
+
+    const params = {
+      academic_session_id: academic_session_id,
+      course_year_id: course_year_id,
+      semester_id: semester_id,
+      college_id: college_id,
+      degree_programme_id: degree_programme_id,
+      ue_id: ue_id,
+      payment: true
+    };
+    this.HTTP.getParam(
+      '/course/get/getStudentList/',
+      params,
+      'academic'
+    ).subscribe((result: any) => {
+      this.studentData = !result.body.error ? result.body.data[0] : [];
+      if (!this.studentData.entrance_exam_type_code) {
+      } else {
+        this.getListofRegByDegProg()
+      }
+    });
+  }
+
+  getListofRegByDegProg() {
+    const college_id = this.userData.college_id;
+    const degree_programme_id = this.userData.degree_programme_id;
+    const ue_id = this.userData.user_id;
+
+    const params = {
+      college_id: college_id,
+      degree_programme_id: degree_programme_id,
+      ue_id: ue_id,
+    };
+    this.HTTP.getParam(
+      '/master/get/getListofRegByDegProg/',
+      params,
+      'academic'
+    ).subscribe((result: any) => {
+      this.stdRegistrationList = !result.body.error ? result.body.data : [];
+
+      this.tableOptions.dataSource = this.stdRegistrationList;
+      this.tableOptions.listLength = this.stdRegistrationList.length;
+    });
+  }
+
+  getRegistrationCard(row: any) {
+    console.log(row);
+    console.log(this.userData);
+    
+
+    let regCardTitle = `Registration_Card_${row.ue_id}`
+    this.HTTP.postBlob(`/file/post/registrationCardSheetPdf`, {
+      // orientation: 'landscape'
+      academic_session_id: row.academic_session_id,
+      course_year_id: row.course_year_id,
+      semester_id: row.semester_id,
+      college_id: row.college_id,
+      degree_programme_id: row.degree_programme_id,
+      ue_id: row.ue_id,
+      payee_id: this.userData.payee_id,
+      appliedsession: 22,
+      appliedsemesterid: 2
+    }, regCardTitle, "academic").pipe(take(1))
+      .subscribe(
+        (response) => {
+          // console.log("response :=> ", response.body);
+          const blob = response.body;
+          if (blob) {
+            // 
+          } else {
+            this.alert.alertMessage("No Records Found!", "Failed to download report.", "error");
+            return
+          }
+        },
+        (error) => {
+          console.error('Error downloading PDF:', error);
+          this.alert.alertMessage("Something went wrong!", "Failed to download report. Please try again later.", "error");
+        }
+      );
+  }
 
 }
