@@ -1,0 +1,588 @@
+<div class="min-h-screen bg-gray-100 p-8">
+  <!-- ===========================
+       PAGE TITLE
+  ============================ -->
+  <div
+    class="mb-10 px-6 py-2 border-l-4 border-r-4 border-blue-900 border-t border-b border-blue-200 rounded-lg text-center"
+  >
+    <h4 class="text-3xl font-bold text-gray-900 tracking-tight">
+      Student Course Registration
+    </h4>
+    <p class="text-sm text-gray-600 mt-1">
+      Manage student enrolments, course selections and registrations
+    </p>
+  </div>
+
+  <!-- ===========================
+       SEARCH STUDENT
+  ============================ -->
+  <div class="bg-white border border-gray-300 p-6 mb-10 rounded-lg">
+    <div
+      class="px-4 py-2 bg-blue-100 border-l-4 border-blue-900 mb-6 rounded-md"
+    >
+      <h5 class="text-lg font-semibold text-blue-900 flex items-center gap-2">
+        <svg
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          class="text-blue-900"
+        >
+          <circle cx="9" cy="9" r="7"></circle>
+          <line x1="15" y1="15" x2="21" y2="21"></line>
+        </svg>
+        Search Student
+      </h5>
+    </div>
+
+    <div class="flex flex-col md:flex-row items-end justify-center gap-4">
+      <div class="w-full md:w-1/3">
+        <label class="text-sm font-medium text-gray-700">UE ID *</label>
+        <input
+          type="text"
+          [(ngModel)]="studentUEID"
+          (keydown.enter)="getStudentDetails()"
+          placeholder="Enter UE ID…"
+          class="mt-1 w-full border border-gray-300 p-1.5 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-900 transition"
+        />
+      </div>
+
+      <button
+        (click)="getStudentDetails()"
+        class="px-6 py-1.5 bg-blue-900 text-white font-medium text-sm !rounded-md shadow-md hover:bg-blue-700 transition flex items-center gap-2 justify-center"
+      >
+        <svg
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="7" cy="7" r="5"></circle>
+          <line x1="11" y1="11" x2="15" y2="15"></line>
+        </svg>
+        Show
+      </button>
+    </div>
+  </div>
+  <!-- ===========================
+       STUDENT DETAILS
+  ============================ -->
+  <div class="bg-white border border-gray-300 p-6 mb-10 rounded-lg">
+    <div
+      class="px-4 py-2 bg-blue-100 border-l-4 border-blue-900 mb-4 rounded-md"
+    >
+      <h5 class="text-lg font-semibold text-blue-900">Student Details</h5>
+    </div>
+    <div class="overflow-x-auto">
+      <table
+        class="w-full text-sm border border-gray-300 rounded-lg overflow-hidden"
+      >
+        <thead>
+          <tr class="bg-blue-900 text-white font-semibold text-sm">
+            <th class="border border-blue-500 px-4 py-2 text-left">S.No</th>
+            <th class="border border-blue-500 px-4 py-2 text-left">
+              Admission Session
+            </th>
+            <th class="border border-blue-500 px-4 py-2 text-left">
+              Degree Programme
+            </th>
+            <th class="border border-blue-500 px-4 py-2 text-left">Name</th>
+            <th class="border border-blue-500 px-4 py-2 text-left">UE Id</th>
+            <th class="border border-blue-500 px-4 py-2 text-center">Action</th>
+          </tr>
+        </thead>
+
+        <tbody class="text-gray-800"></tbody>
+        <tbody class="text-gray-800">
+          <tr
+            *ngFor="let sd of studentDetails; let i = index"
+            class="hover:bg-blue-100 transition cursor-pointer"
+            (click)="getRegistrationList(sd)"
+            [class.bg-green-100]="
+              selectedStudent?.degree_programme_id === sd.degree_programme_id &&
+              selectedStudent?.admission_session_id === sd.admission_session_id
+            "
+          >
+            <td class="border px-4 py-2">{{ i + 1 }}</td>
+
+            <td class="border px-4 py-2">{{ sd.academic_session_name_e }}</td>
+            <td class="border px-4 py-2">{{ sd.degree_programme_name_e }}</td>
+            <td class="border px-4 py-2 font-medium">{{ sd.name }}</td>
+            <td class="border px-4 py-2 font-semibold">{{ sd.ue_id }}</td>
+
+            <td class="border px-4 py-2 text-center">
+              <button
+                class="px-4 py-1 text-xs font-semibold bg-blue-900 text-white rounded"
+                (click)="$event.stopPropagation(); getRegistrationList(sd)"
+              >
+                Get Details
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="studentDetails === null">
+            <td colspan="5" class="text-center text-gray-500 py-3">
+              No student data found
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===========================
+       LIST OF REGISTRATIONS
+  ============================ -->
+  <div class="bg-white border border-gray-300 p-6 mb-10 rounded-lg">
+    <div
+      class="px-4 py-2 bg-blue-100 border-l-4 border-blue-900 mb-6 rounded-md"
+    >
+      <h5 class="text-lg font-semibold text-blue-900">List of Registrations</h5>
+    </div>
+    <div class="overflow-x-auto">
+      <table
+        class="w-full text-sm border border-gray-300 rounded-lg overflow-hidden"
+      >
+        <thead>
+          <tr class="bg-blue-900 text-white font-semibold text-sm">
+            <th class="border px-4 py-2 text-left">S.No</th>
+            <th class="border px-4 py-2 text-left">UE Id</th>
+            <th class="border px-4 py-2 text-left">
+              Academic Status / Exam Type
+            </th>
+            <th class="border px-4 py-2 text-left">Admission Session</th>
+            <th class="border px-4 py-2 text-left">Study Status</th>
+            <th class="border px-4 py-2 text-center">Action</th>
+          </tr>
+        </thead>
+
+        <tbody class="text-gray-800">
+          <tr
+            *ngFor="let reg of registrationList; let i = index"
+            (click)="onSelectRegistration(reg)"
+            class="hover:bg-blue-100 transition cursor-pointer"
+            [class.bg-green-100]="
+              selectedRegistration?.academic_session_id ===
+                reg.academic_session_id &&
+              selectedRegistration?.semester_name_e === reg.semester_name_e &&
+              selectedRegistration?.degree_programme_id ===
+                reg.degree_programme_id &&
+              selectedRegistration?.stu_study_status_name_e ===
+                reg.stu_study_status_name_e &&
+              selectedRegistration?.course_year_id == reg.course_year_id
+            "
+          >
+            <td class="border px-4 py-2 font-semibold">{{ i + 1 }}</td>
+
+            <td class="border px-4 py-2 font-semibold">{{ reg.ue_id }}</td>
+
+            <td class="border px-4 py-2">
+              <div
+                class="bg-yellow-100 border border-yellow-300 px-2 py-1 text-sm font-semibold w-fit"
+              >
+                {{ reg.academic_session_name_e }}
+              </div>
+              <div class="mt-1 text-sm text-gray-700">
+                <span class="font-semibold">{{ reg.exam_type_name_e }}</span>
+                ({{ reg.course_year_name_e }}, {{ reg.semester_name_e }})
+              </div>
+            </td>
+
+            <td class="border px-4 py-2">{{ reg.academic_session_name_e }}</td>
+
+            <td class="border px-4 py-2 font-semibold">
+              {{ reg.stu_study_status_name_e }}
+            </td>
+
+            <td class="border px-4 py-2 text-center">
+              <button
+                class="px-4 py-1 text-xs font-semibold bg-blue-900 text-white rounded"
+                (click)="onSelectRegistration(reg)"
+              >
+                Get Details
+              </button>
+
+              <button
+                class="!ml-2 px-4 py-1 bg-red-700 text-white text-xs !rounded-lg shadow hover:bg-red-800 transition"
+                (click)="$event.stopPropagation(); deleteRegistration(reg)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="registrationList.length === 0">
+            <td colspan="5" class="text-center py-4 text-gray-500">
+              No registration records found
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- ===========================
+         REGISTRATION FORM
+    ============================ -->
+
+    <div class="mt-8 bg-white border border-gray-300 p-6 rounded-lg shadow-sm">
+      <div class="flex justify-center my-6">
+        <label
+          class="flex items-center gap-3 px-3 py-2 bg-blue-50 border border-blue-200 rounded-md"
+        >
+          <span
+            class="text-sm font-semibold text-blue-900 leading-none select-none"
+          >
+            Insert Registration
+          </span>
+        </label>
+      </div>
+      <div class="flex justify-center mb-6">
+        <div class="w-full border-t border-gray-600"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div>
+          <label class="text-sm font-medium text-gray-700">Course Year *</label>
+          <select
+            class="mt-1 w-full border border-gray-300 rounded-md p-1 text-sm focus:ring-2 focus:ring-blue-900"
+            [(ngModel)]="registrationForm.course_year_id"
+          >
+            <option value="">Select Course Year</option>
+            <option *ngFor="let cy of courseYears" [value]="cy.course_year_id">
+              {{ cy.course_year_name_e }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium text-gray-700">Semester *</label>
+          <select
+            class="mt-1 w-full border border-gray-300 rounded-md p-1 text-sm focus:ring-2 focus:ring-blue-900"
+            [(ngModel)]="registrationForm.semester_id"
+          >
+            <option value="">Select Semester</option>
+            <option *ngFor="let s of semesterList" [value]="s.semester_id">
+              {{ s.semester_name_e }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium text-gray-700"
+            >Academic Status *</label
+          >
+          <select
+            class="mt-1 w-full border border-gray-300 rounded-md p-1 text-sm focus:ring-2 focus:ring-blue-900"
+            [(ngModel)]="registrationForm.stu_acad_status_id"
+          >
+            <option value="">Select Academic Status</option>
+            <option
+              *ngFor="let s of academicStatusList"
+              [value]="s.stu_acad_status_id"
+            >
+              {{ s.stu_acad_status_short_name_e }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium text-gray-700"
+            >Study Status *</label
+          >
+          <select
+            class="mt-1 w-full border border-gray-300 rounded-md p-1 text-sm focus:ring-2 focus:ring-blue-900"
+            [(ngModel)]="registrationForm.stu_study_status_id"
+          >
+            <option value="">Select Study Status</option>
+            <option
+              *ngFor="let ss of studyStatusList"
+              [value]="ss.stu_study_status_id"
+            >
+              {{ ss.stu_study_status_name_e }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium text-gray-700">Exam Type *</label>
+          <select
+            class="mt-1 w-full border border-gray-300 rounded-md p-1 text-sm focus:ring-2 focus:ring-blue-900"
+            [(ngModel)]="registrationForm.exam_type_id"
+          >
+            <option value="">Select Exam Type</option>
+            <option *ngFor="let et of examTypeList" [value]="et.exam_type_id">
+              {{ et.exam_type_name_e }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium text-gray-700">Remark</label>
+          <input
+            type="text"
+            class="mt-1 w-full border border-gray-300 rounded-md p-1 text-sm focus:ring-2 focus:ring-blue-900"
+            [(ngModel)]="registrationForm.remark"
+          />
+        </div>
+      </div>
+
+      <div class="mt-6 flex items-center justify-between">
+        <label
+          class="flex items-center gap-3 px-3 py-2 bg-blue-50 border border-blue-200 rounded-md cursor-pointer hover:bg-blue-100 transition"
+        >
+          <input
+            type="checkbox"
+            class="h-4 w-4 shrink-0 accent-blue-900 cursor-pointer"
+            [(ngModel)]="registrationForm.current_update_YN"
+          />
+          <span
+            class="text-sm font-semibold text-blue-900 leading-none select-none"
+          >
+            Update in master
+          </span>
+        </label>
+
+        <button
+          class="px-6 py-1 bg-blue-900 text-white font-medium text-sm !rounded-md shadow hover:bg-blue-700 transition"
+          (click)="submitRegistration()"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+
+    <!-- END FORM -->
+  </div>
+  <!-- END REGISTRATION LIST -->
+
+  <!-- ===========================
+     LIST REGISTERED COURSES
+=========================== -->
+  <div class="bg-white border border-gray-300 p-6 mb-10 rounded-lg">
+    <div
+      class="px-4 py-2 bg-blue-100 border-l-4 border-blue-900 mb-6 rounded-md"
+    >
+      <h5 class="text-lg font-semibold text-blue-900">
+        List Registered Courses
+      </h5>
+    </div>
+    <div class="overflow-x-auto">
+      <table
+        class="w-full text-sm border border-gray-300 rounded-lg overflow-hidden"
+      >
+        <thead class="bg-blue-900 text-white">
+          <tr>
+            <th class="border px-3 py-2 text-left">SN</th>
+            <th class="border px-3 py-2 text-left">Course</th>
+            <th class="border px-3 py-2 text-left">Reg Type</th>
+            <th class="border px-3 py-2 text-left">Course Type</th>
+            <th class="border px-3 py-2 text-left">Year/Sem</th>
+            <th class="border px-3 py-2 text-left">Nature</th>
+            <th class="border px-3 py-2 text-center">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr
+            *ngFor="let c of registeredCourseList; let i = index"
+            class="hover:bg-blue-100 transition"
+          >
+            <td class="border px-3 py-2 align-top">{{ i + 1 }}</td>
+
+            <td class="border px-3 py-2 align-top">
+              <div class="font-bold text-gray-700">{{ c.course_code }}</div>
+              <div class="text-xs text-gray-600 mt-0.5">
+                {{ c.course_title_e }}
+              </div>
+            </td>
+
+            <td class="border px-3 py-2 align-top">
+              {{ c.course_reg_type_name_e }}
+            </td>
+            <td class="border px-3 py-2 align-top">
+              {{ c.course_type_name_e }}
+            </td>
+            <td class="border px-3 py-2 align-top">
+              {{ c.course_year_name_e }} / {{ c.semester_name_e }}
+            </td>
+            <td class="border px-3 py-2 align-top">
+              {{ c.course_nature_name_e }}
+            </td>
+            <td class="border px-3 py-2 text-center align-top">
+              <button
+                class="px-4 py-1 bg-red-700 text-white text-xs !rounded-md shadow hover:bg-red-800 transition"
+                (click)="deleteCourse(c)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="registeredCourseList.length === 0">
+            <td colspan="7" class="text-center py-3 text-gray-500">
+              No registered courses found
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-8 bg-white border border-gray-300 p-6 rounded-lg shadow-sm">
+      <div class="flex justify-center my-6">
+        <label
+          class="flex items-center gap-3 px-3 py-2 bg-blue-50 border border-blue-200 rounded-md"
+        >
+          <span
+            class="text-sm font-semibold text-blue-900 leading-none select-none"
+          >
+            Insert Course
+          </span>
+        </label>
+      </div>
+      <div class="flex justify-center mb-6">
+        <div class="w-full border-t border-gray-600"></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div class="relative" #dropdownRef (click)="$event.stopPropagation()">
+          <label class="text-sm font-medium text-gray-700">Course *</label>
+
+          <div
+            (click)="toggleCourseDropdown()"
+            class="mt-1 w-full border rounded-md p-1.5 text-sm cursor-pointer bg-white flex items-center justify-between transition border-gray-300 hover:border-blue-400"
+            [class.ring-2]="courseDropdownOpen"
+            [class.ring-blue-900]="courseDropdownOpen"
+          >
+            <span class="truncate">
+              {{ selectedCourse?.course_name || "Select Course" }}
+            </span>
+
+            <svg
+              class="w-4 h-4 text-gray-600 transition-transform"
+              [class.rotate-180]="courseDropdownOpen"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M6 9l6 6 6-6"></path>
+            </svg>
+          </div>
+
+          <div
+            *ngIf="courseDropdownOpen"
+            class="absolute mt-1 w-full z-50 bg-white border rounded-md shadow-lg max-h-60 overflow-y-auto"
+          >
+            <div class="p-1.5 border-b bg-gray-50">
+              <input
+                type="text"
+                [(ngModel)]="courseSearch"
+                (input)="filterCourses()"
+                placeholder="Search course…"
+                class="w-full p-2 text-sm border rounded-md outline-none focus:ring-2 focus:ring-blue-900"
+              />
+            </div>
+
+            <div
+              *ngFor="let c of filteredCourseList"
+              (click)="selectCourse(c)"
+              class="p-1.5 text-sm cursor-pointer hover:bg-blue-100 border-b border-gray-50"
+            >
+              <div class="font-medium text-gray-800">{{ c.course_name }}</div>
+            </div>
+
+            <div
+              *ngIf="filteredCourseList.length === 0"
+              class="p-3 text-gray-500 text-sm text-center"
+            >
+              No course found
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium text-gray-700">Reg Type *</label>
+          <select
+            class="mt-1 w-full border border-gray-300 rounded-md p-1 text-sm"
+            [(ngModel)]="insertCourseForm.reg_type_id"
+          >
+            <option value="">Select Reg Type</option>
+            <option
+              *ngFor="let rt of regTypeList"
+              [value]="rt.course_reg_type_id"
+            >
+              {{ rt.course_reg_type_name_e }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium text-gray-700">Nature *</label>
+          <select
+            class="mt-1 w-full border border-gray-300 rounded-md p-1 text-sm"
+            [(ngModel)]="insertCourseForm.nature_id"
+          >
+            <option value="">Select Nature</option>
+            <option
+              *ngFor="let n of courseNatureList"
+              [value]="n.course_nature_id"
+            >
+              {{ n.course_nature_name_e }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium text-gray-700">Course Type *</label>
+          <select
+            class="mt-1 w-full border border-gray-300 rounded-md p-1 text-sm"
+            [(ngModel)]="insertCourseForm.course_type_id"
+          >
+            <option value="">Select Course Type</option>
+            <option
+              *ngFor="let ct of courseTypeList"
+              [value]="ct.course_type_id"
+            >
+              {{ ct.course_type_name_e }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium text-gray-700">Course Year *</label>
+          <select
+            class="mt-1 w-full border border-gray-300 rounded-md p-1 text-sm"
+            [(ngModel)]="insertCourseForm.course_year_id"
+            (change)="getCourseForRegistration()"
+          >
+            <option value="">Select Course Year</option>
+            <option *ngFor="let cy of courseYears" [value]="cy.course_year_id">
+              {{ cy.course_year_name_e }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium text-gray-700">Semester *</label>
+          <select
+            class="mt-1 w-full border border-gray-300 rounded-md p-1 text-sm"
+            [(ngModel)]="insertCourseForm.semester_id"
+            (change)="getCourseForRegistration()"
+          >
+            <option value="">Select Semester</option>
+            <option *ngFor="let s of semesterList" [value]="s.semester_id">
+              {{ s.semester_name_e }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button
+          class="px-8 py-1 bg-blue-900 text-white text-sm font-semibold rounded shadow hover:bg-blue-800 transition"
+          (click)="insertCourse()"
+        >
+          Insert Course
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -73,6 +73,9 @@ import { SrcGeneratePdfComponent } from './student/src-generate-pdf/src-generate
 import { StudentMobileNumberChangeRequestComponent } from './student/student-mobile-number-change-request/student-mobile-number-change-request.component';
 import { CorrigendumApplyAdminComponent } from './corrigendum/corrigendum-apply-admin/corrigendum-apply-admin.component';
 import { UidnReportComponent } from './student-profile/uidn-report/uidn-report.component';
+import { StudentCourseRegistrationComponent } from './registration/student-course-registration/student-course-registration.component';
+import { StudentCourseRegistrationUnfinalizeComponent } from './registration/student-course-registration-unfinalize/student-course-registration-unfinalize.component';
+import { DegreeCompletedDataComponent } from './convocation/degree-completed-data/degree-completed-data.component';
 import { AttendanceUnfinalizeComponent } from './attendance/attendance-unfinalize/attendance-unfinalize.component';
 
 @NgModule({
@@ -142,6 +145,9 @@ import { AttendanceUnfinalizeComponent } from './attendance/attendance-unfinaliz
     StudentMobileNumberChangeRequestComponent,
     CorrigendumApplyAdminComponent,
     UidnReportComponent,
+    StudentCourseRegistrationComponent,
+    StudentCourseRegistrationUnfinalizeComponent,
+    DegreeCompletedDataComponent,
     AttendanceUnfinalizeComponent,
   ],
   imports: [

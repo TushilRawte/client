@@ -22,6 +22,7 @@ const routes: Routes = [
 {
         path: '',
         component: NewLayoutComponent,
+        canActivate: [StudentAuthGuard],
         children:[
             {path: '', redirectTo: 'dashboard',  pathMatch: 'full'},
             {path: 'dashboard', component:DashboardComponent} ,
@@ -35,8 +36,8 @@ const routes: Routes = [
             {path: 'exam-services', component: ExamServicesComponent},
             {path: 'payment/:type', component: PaymentComponent},
             {path: 'certificate-apply', component: CertificateApplyComponent},
-             { path: 'src-report', component: SrcReportComponent },
-      { path: 'admit-card-report', component: AdmitCardReportComponent },
+            { path: 'src-report', component: SrcReportComponent },
+            { path: 'admit-card-report', component: AdmitCardReportComponent },
             
         ],
       },
@@ -44,6 +45,7 @@ const routes: Routes = [
         path:'old',
         component:LayoutComponent
       },
+       { path: 'student-login', component: StdloginComponent },
        {
           path: 'update',
           component: UpdateRoutesComponent

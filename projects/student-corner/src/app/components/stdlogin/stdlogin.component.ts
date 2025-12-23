@@ -97,8 +97,7 @@ export class StdloginComponent {
       captcha: this.loginForm.value.captcha,
     };
 
-    this.httpService
-      .postData('/security/stdlogin', payload, 'common')
+this.httpService.postData('/security/stdlogin', payload, 'common')
       .subscribe({
         next: (response: any) => {
           if (response.body && !response.body.error) {

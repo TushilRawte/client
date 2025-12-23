@@ -69,6 +69,12 @@ export class AuthService {
     return !!cookie;
   }
 
+
+  isStdLoggedIn(): boolean {
+    const cookie = this.cookie.get('session')
+    return !!cookie;
+  }
+
   decryptCookie(cookie: string) {
     try {
       const bytes = CryptoJS.AES.decrypt(cookie, 'UFP_secret_key');

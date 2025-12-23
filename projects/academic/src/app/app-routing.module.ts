@@ -56,6 +56,9 @@ import { MarksEntryAbsentComponent } from './marks entry/marks-entry-absent/mark
 import { StudentMobileNumberChangeRequestComponent } from './student/student-mobile-number-change-request/student-mobile-number-change-request.component';
 import { SrcGeneratePdfComponent } from './student/src-generate-pdf/src-generate-pdf.component';
 import { UidnReportComponent } from './student-profile/uidn-report/uidn-report.component';
+import { StudentCourseRegistrationComponent } from './registration/student-course-registration/student-course-registration.component';
+import { StudentCourseRegistrationUnfinalizeComponent } from './registration/student-course-registration-unfinalize/student-course-registration-unfinalize.component';
+import { DegreeCompletedDataComponent } from './convocation/degree-completed-data/degree-completed-data.component';
 import { AttendanceUnfinalizeComponent } from './attendance/attendance-unfinalize/attendance-unfinalize.component';
 
 const routes: Routes = [
@@ -179,6 +182,16 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       {
+        path: 'student-course-registration',
+        component: StudentCourseRegistrationComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'student-course-registration-unfinalize',
+        component: StudentCourseRegistrationUnfinalizeComponent,
+        pathMatch: 'full',
+      },
+      {
         path: 'automatic-registration',
         component: AutomaticRegistrationComponent,
         pathMatch: 'full',
@@ -186,6 +199,11 @@ const routes: Routes = [
       {
         path: 'faculty-list',
         component: FacultyListComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'degree-completed-data',
+        component: DegreeCompletedDataComponent,
         pathMatch: 'full',
       },
       {
