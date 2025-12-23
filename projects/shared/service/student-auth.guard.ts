@@ -18,7 +18,7 @@ export class StudentAuthGuard implements CanActivate {
   ): boolean {
 
     // 1️⃣ Student logged in or not
-    if (!this.auth.isLoggedIn()) {
+    if (!this.auth.isStdLoggedIn()) {
       this.router.navigate(['/student-login']);
       return false;
     }

@@ -1,0 +1,248 @@
+<div class="min-h-screen bg-gray-100 p-8">
+  <div
+    class="mb-10 px-6 py-2 border-l-4 border-r-4 border-blue-900 border-t border-b border-blue-200 rounded-lg text-center"
+  >
+    <h4 class="text-3xl font-bold text-gray-900 tracking-tight">
+      Degree Complete Data
+    </h4>
+    <p class="text-sm text-gray-600 mt-1">
+      View students whose degree is completed
+    </p>
+  </div>
+
+  <div class="bg-white border border-gray-300 p-6 mb-10 rounded-lg">
+    <div
+      class="px-4 py-2 bg-blue-100 border-l-4 border-blue-900 mb-6 rounded-md"
+    >
+      <h5 class="text-lg font-semibold text-blue-900">
+        Degree Completion Filters
+      </h5>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label class="text-sm font-medium text-gray-700"
+          >Academic Session <span class="text-red-600">*</span></label
+        >
+        <select
+          class="mt-1 w-full border border-gray-300 rounded-md p-0.5 text-sm focus:ring-2 focus:ring-blue-900"
+          [(ngModel)]="selectedAcademicSessionId"
+        >
+          <option value="">Select Academic Session</option>
+          <option
+            *ngFor="let session of academicSessionList"
+            [value]="session.academic_session_id"
+          >
+            {{ session.academic_session_name_e }}
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <label class="text-sm font-medium text-gray-700"
+          >Degree Programme Type <span class="text-red-600">*</span></label
+        >
+        <select
+          class="mt-1 w-full border border-gray-300 rounded-md p-0.5 text-sm focus:ring-2 focus:ring-blue-900"
+          [(ngModel)]="selectedDegreeProgramTypeId"
+        >
+          <option value="">Select Degree Programme Type</option>
+          <option
+            *ngFor="let degreeType of degreeProgramTypeList"
+            [value]="degreeType.degree_programme_type_id"
+          >
+            {{ degreeType.degree_programme_type_name_e }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mt-8 flex justify-center">
+      <button
+        class="px-10 py-2 bg-blue-900 text-white text-sm font-semibold !rounded-md shadow hover:bg-blue-700 transition"
+        (click)="getStudentList()"
+      >
+        Show Student List
+      </button>
+    </div>
+  </div>
+
+  <div class="bg-white border border-gray-300 p-6 rounded-lg">
+    <div
+      class="px-4 py-2 bg-blue-100 border-l-4 border-blue-900 mb-6 rounded-md flex flex-col md:flex-row justify-between items-center gap-4"
+    >
+      <h5 class="text-lg font-semibold text-blue-900 whitespace-nowrap">
+        Degree Completed Student List
+      </h5>
+
+      <div class="flex w-full md:w-auto gap-2 items-center">
+        <div class="relative w-full md:w-64">
+          <!-- <input
+            type="text"
+            placeholder="Search by UE ID, Name..."
+            class="w-full pl-10 pr-4 py-1.5 border border-gray-400 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-900 bg-white"
+            [(ngModel)]="searchText"
+            (input)="applyFilter()"
+          /> -->
+          <div
+            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+          >
+            <svg
+              class="h-4 w-4 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <button
+          (click)="exportToExcel()"
+          class="flex items-center gap-2 px-4 py-1.5 bg-green-600 text-white text-sm font-medium !rounded-md shadow hover:bg-green-700 transition whitespace-nowrap"
+          title="Download Excel"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.54a.5.5 0 0 0 .768-.641L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219l-2.116-2.54z"
+            />
+            <path
+              d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"
+            />
+          </svg>
+          Excel
+        </button>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <div
+        class="flex flex-col md:flex-row justify-between items-center mb-4 gap-3"
+      >
+        <div class="flex items-center gap-2 text-sm">
+          <label class="font-medium text-gray-700">Rows per page:</label>
+          <select
+            class="border border-gray-300 rounded px-2 py-1 text-sm outline-none focus:border-blue-500"
+            [(ngModel)]="pageSize"
+            (change)="onPageSizeChange()"
+          >
+            <option *ngFor="let size of pageSizeOptions" [ngValue]="size">
+              {{ size }}
+            </option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2 text-sm">
+          <span class="text-gray-600 mr-2"
+            >Total Records:
+            <strong>{{ filteredStudentList.length }}</strong></span
+          >
+          <button
+            class="px-3 py-1 border rounded hover:bg-gray-50 disabled:opacity-50"
+            [disabled]="currentPage === 1"
+            (click)="prevPage()"
+          >
+            Prev
+          </button>
+          <span class="font-semibold mx-2"
+            >{{ currentPage }} / {{ totalPages }}</span
+          >
+          <button
+            class="px-3 py-1 border rounded hover:bg-gray-50 disabled:opacity-50"
+            [disabled]="currentPage === totalPages"
+            (click)="nextPage()"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+
+      <table
+        class="w-full text-sm border border-gray-300 rounded-lg overflow-hidden"
+      >
+        <thead>
+          <tr class="bg-blue-900 text-white font-semibold text-sm">
+            <th class="border px-3 py-2 text-center">S.No.</th>
+            <th class="border px-3 py-2 text-left">UE ID</th>
+            <th class="border px-3 py-2 text-left">Student Name (E)</th>
+            <th class="border px-3 py-2 text-left">Student Name (H)</th>
+            <th class="border px-3 py-2 text-left">College Name</th>
+            <th class="border px-3 py-2 text-left">Notification Date</th>
+          </tr>
+        </thead>
+        <tbody class="text-gray-800">
+          <tr
+            *ngFor="let std of paginatedStudentList; let i = index"
+            class="hover:bg-blue-100 transition"
+          >
+            <td class="border px-3 py-2 text-center font-semibold">
+              {{ (currentPage - 1) * pageSize + i + 1 }}
+            </td>
+            <td class="border px-3 py-2">{{ std.ue_id }}</td>
+            <td class="border px-3 py-2 font-medium">
+              {{ std.student_name_e }}
+            </td>
+            <td class="border px-3 py-2 font-hindi">
+              {{ std.student_name_h }}
+            </td>
+            <td class="border px-3 py-2">{{ std.college_name }}</td>
+            <td class="border px-3 py-2">
+              {{ std.date_of_notification || "-" }}
+            </td>
+          </tr>
+          <tr *ngIf="filteredStudentList.length === 0">
+            <td colspan="6" class="text-center py-8 text-gray-500">
+              <div class="flex flex-col items-center justify-center">
+                <span class="text-lg font-medium">No records found</span>
+                <span class="text-sm mt-1" *ngIf="searchText"
+                  >Try adjusting your search criteria</span
+                >
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="flex justify-end w-full">
+        <div class="flex items-center gap-2 text-sm">
+          <span class="text-gray-600 mr-2">
+            Total Records:
+            <strong>{{ filteredStudentList.length }}</strong>
+          </span>
+
+          <button
+            class="px-3 py-1 border rounded hover:bg-gray-50 disabled:opacity-50"
+            [disabled]="currentPage === 1"
+            (click)="prevPage()"
+          >
+            Prev
+          </button>
+
+          <span class="font-semibold mx-2">
+            {{ currentPage }} / {{ totalPages }}
+          </span>
+
+          <button
+            class="px-3 py-1 border rounded hover:bg-gray-50 disabled:opacity-50"
+            [disabled]="currentPage === totalPages"
+            (click)="nextPage()"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

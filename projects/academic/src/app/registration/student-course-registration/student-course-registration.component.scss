@@ -1,0 +1,42 @@
+/* ===============================
+   FORCE TABLE STYLES (IMPORTANT)
+================================ */
+
+table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-size: 0.875rem !important;
+}
+
+table th,
+table td {
+  border: 1px solid #d1d5db !important; /* gray-300 */
+  padding: 0.5rem 1rem !important;
+  vertical-align: middle !important;
+}
+
+table thead th {
+  background-color: #1e3a8a !important; /* blue-900 */
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+}
+
+table tbody tr {
+  background-color: #ffffff !important;
+}
+
+table tbody tr:hover {
+  background-color: #dbeafe !important; /* blue-100 */
+  cursor: pointer !important;
+}
+
+table tbody tr.bg-green-100 {
+  background-color: #dcfce7 !important;
+}
+
+table td button {
+  padding: 0.25rem 0.75rem !important;
+  font-size: 0.75rem !important;
+  border-radius: 0.375rem !important;
+}
