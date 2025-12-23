@@ -62,7 +62,7 @@ export class AppliedListComponent {
 
   getAcademicSession() {
     this.HTTP.getParam(
-      '/master/get/getAcademicSession1',
+      '/master/get/getAcademicSession',
       {},
       'academic'
     ).subscribe((res: any) => {
@@ -72,7 +72,7 @@ export class AppliedListComponent {
 
   getDegreeProgramme() {
     this.HTTP.getParam(
-      '/master/get/getDegreePrograamList',
+      '/master/get/getDegreeProgramme',
       {},
       'academic'
     ).subscribe((res: any) => {
@@ -81,7 +81,7 @@ export class AppliedListComponent {
   }
 
   getCollege() {
-    this.HTTP.getParam('/master/get/getCollegeList1', {}, 'academic').subscribe(
+    this.HTTP.getParam('/master/get/getCollegeList', {}, 'academic').subscribe(
       (res: any) => {
         this.college = res?.body?.data || [];
       }

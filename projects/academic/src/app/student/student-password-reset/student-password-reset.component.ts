@@ -65,7 +65,7 @@ export class StudentPasswordResetComponent  implements OnInit {
   }
 
   getAcademicSession() {
-    this.http.getParam('/master/get/getAcademicSession1', {}, 'academic')
+    this.http.getParam('/master/get/getAcademicSession', {}, 'academic')
       .subscribe(
         (result: any) => {
           this.state.academicSessionList = result.body.data;

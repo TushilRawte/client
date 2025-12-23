@@ -49,7 +49,7 @@ export class AppliedStudentsDashboardComponent implements OnInit {
   }
 
   getAcademicSession() {
-    this.http.getParam('/master/get/getAcademicSession1/', {}, 'academic')
+    this.http.getParam('/master/get/getAcademicSession/', {}, 'academic')
       .subscribe((res: any) => {
         this.academicSessions = res?.body?.data || [];
         console.log(res);

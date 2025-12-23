@@ -341,7 +341,7 @@ export class CourseAttendanceFinalizeComponent implements OnInit {
   // ~ ng init load academic session
   getAcademicSession() {
     this.HTTP.getParam(
-      '/master/get/getAcademicSession1/',
+      '/master/get/getAcademicSession/',
       {},
       'academic'
     ).subscribe((result: any) => {

@@ -50,7 +50,7 @@ get students(): FormArray {
 
     // ✅ Dropdown API calls (using your same HTTP pattern)
     getAcademicSession(){
-      this.HTTP.getParam('/master/get/getAcademicSession1/', {}, 'academic').subscribe((result: any) => {
+      this.HTTP.getParam('/master/get/getAcademicSession/', {}, 'academic').subscribe((result: any) => {
       // console.log('session', result);
       this.acadmcSesnList = result.body.data;
     });
@@ -76,7 +76,7 @@ get students(): FormArray {
   }
 
   getDegreeProgramme() {
-  this.HTTP.getParam('/master/get/getDegreePrograamList/', {}, 'academic')
+  this.HTTP.getParam('/master/get/getDegreeProgramme/', {}, 'academic')
     .subscribe((result: any) => {
       this.degreeProgramme = result.body.data;
     });

@@ -56,13 +56,13 @@ ngOnInit(): void {
 
   // ✅ Dropdown API calls (using your same HTTP pattern)
     getAcademicSession(){
-      this.HTTP.getParam('/master/get/getAcademicSession1/', {}, 'academic').subscribe((result: any) => {
+      this.HTTP.getParam('/master/get/getAcademicSession/', {}, 'academic').subscribe((result: any) => {
       // console.log('session', result);
       this.acadmcSesnList = result.body.data;
     });
   }
     getCollegeData() {
-    this.HTTP.getParam('/master/get/getCollegeList1/',{} ,'academic').subscribe((result:any) => {
+    this.HTTP.getParam('/master/get/getCollegeList/',{} ,'academic').subscribe((result:any) => {
       // console.log(result);
       this.collegeList = result.body.data;
     })
@@ -73,7 +73,7 @@ ngOnInit(): void {
     this.collegeChange.emit(college_id); // optional for parent
 
     // fetch degree programmes for this college
-    this.HTTP.getParam('/master/get/getDegreePrograamList/', { college_id }, 'academic')
+    this.HTTP.getParam('/master/get/getDegreeProgramme/', { college_id }, 'academic')
       .subscribe((res: any) => {
         this.degreeProgrammeList = res.body.data || [];
 
@@ -132,7 +132,7 @@ ngOnInit(): void {
      getDegreeProgrammeSingle() {
 
     // fetch degree programmes for this college
-    this.HTTP.getParam('/master/get/getDegreePrograamList/', {}, 'academic')
+    this.HTTP.getParam('/master/get/getDegreeProgramme/', {}, 'academic')
       .subscribe((res: any) => {
         this.singleDegreeProgrammeList = res.body.data || [];
         // Add extra hardcoded programmes for college_id = 5

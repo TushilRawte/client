@@ -38,7 +38,7 @@ export class RevaluationCancelComponent implements OnInit {
   getAcademicSession() {
    
 
-    this.HTTP.getParam('/master/get/getAcademicSession1/', {}, 'academic')
+    this.HTTP.getParam('/master/get/getAcademicSession/', {}, 'academic')
       .subscribe((result: any) => {
         this.academicSessions = result.body?.data || [];
  console.log("result",result);

@@ -58,7 +58,7 @@ export class FacultyListComponent {
 
   getAcademicSession() {
     this.HTTP.getParam(
-      '/master/get/getAcademicSession1',
+      '/master/get/getAcademicSession',
       {},
       'academic'
     ).subscribe((result: any) => {
@@ -76,7 +76,7 @@ export class FacultyListComponent {
 
   getDegreeProgramme() {``
     this.HTTP.getParam(
-      '/master/get/getDegreePrograamList',
+      '/master/get/getDegreeProgramme',
       {},
       'academic'
     ).subscribe((result: any) => {
@@ -86,7 +86,7 @@ export class FacultyListComponent {
 
   getCollegeData() {
     this.HTTP.getParam(
-      '/master/get/getCollegeList1',
+      '/master/get/getCollegeList',
       {},
       'academic'
     ).subscribe((result: any) => {

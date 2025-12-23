@@ -63,7 +63,7 @@ export class MigrationCertificateComponent {
 
   getAcademicSession() {
     this.HTTP.getParam(
-      '/master/get/getAcademicSession1',
+      '/master/get/getAcademicSession',
       {},
       'academic'
     ).subscribe((res: any) => {
@@ -73,7 +73,7 @@ export class MigrationCertificateComponent {
 
   getDegreeProgramme() {
     this.HTTP.getParam(
-      '/master/get/getDegreePrograamList',
+      '/master/get/getDegreeProgramme',
       {},
       'academic'
     ).subscribe((res: any) => {
@@ -82,7 +82,7 @@ export class MigrationCertificateComponent {
   }
 
   getCollege() {
-    this.HTTP.getParam('/master/get/getCollegeList1', {}, 'academic').subscribe(
+    this.HTTP.getParam('/master/get/getCollegeList', {}, 'academic').subscribe(
       (res: any) => {
         this.college = res?.body?.data || [];
       }

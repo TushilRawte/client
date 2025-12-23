@@ -576,7 +576,7 @@ export class ExamTimeTableComponent {
 
   // * step 2
   getAcademicSession() {
-    this.HTTP.getParam('/master/get/getAcademicSession1', {}, 'academic')
+    this.HTTP.getParam('/master/get/getAcademicSession', {}, 'academic')
       .subscribe((result: any) => {
         this.academicSessionList = (result.body.data || []).map((item: any) => ({
           id: item.academic_session_id,

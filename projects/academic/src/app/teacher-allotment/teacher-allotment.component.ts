@@ -86,7 +86,7 @@ getTeacherArray(row: AbstractControl): any[] {
 
   getAcademicSession() {
     this.HTTP.getParam(
-      '/master/get/getAcademicSession1/',
+      '/master/get/getAcademicSession/',
       {},
       'academic'
     ).subscribe((result: any) => {
@@ -97,7 +97,7 @@ getTeacherArray(row: AbstractControl): any[] {
 
   getCollegeData() {
     this.HTTP.getParam(
-      '/master/get/getCollegeList1/',
+      '/master/get/getCollegeList/',
       {},
       'academic'
     ).subscribe((result: any) => {
@@ -113,7 +113,7 @@ getTeacherArray(row: AbstractControl): any[] {
 
   getDegreeProgramme(college_id: number) {
     this.HTTP.getParam(
-      '/master/get/getDegreePrograamList/',
+      '/master/get/getDegreeProgramme/',
       { college_id },
       'academic'
     ).subscribe((result: any) => {

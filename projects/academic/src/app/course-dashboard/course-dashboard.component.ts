@@ -37,7 +37,7 @@ export class CourseDashboardComponent  {
     })
   }
   getCollegeData() {
-    this.HTTP.getParam('/master/get/getCollegeList1/',{} ,'academic').subscribe((res:any) => {
+    this.HTTP.getParam('/master/get/getCollegeList/',{} ,'academic').subscribe((res:any) => {
       console.log(res);
       //this.collegeList = result.body.data;
     })
