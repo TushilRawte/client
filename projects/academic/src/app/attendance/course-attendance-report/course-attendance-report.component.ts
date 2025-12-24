@@ -209,7 +209,7 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
   };
 
   getCollegeData(degree_programme_type_id: number) {
-    this.http.getParam('/master/get/getCollege',
+    this.http.getParam('/master/get/getCollegeList',
       { degree_programme_type_id },
       'academic')
       .subscribe(

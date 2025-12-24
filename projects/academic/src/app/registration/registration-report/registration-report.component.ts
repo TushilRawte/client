@@ -466,7 +466,7 @@ export class RegistrationReportComponent implements OnInit, OnDestroy {
 
   //* step: 4
   getCollegeData(degree_programme_type_id: number) {
-    this.http.getParam('/master/get/getCollege',
+    this.http.getParam('/master/get/getCollegeList',
       { degree_programme_type_id },
       'academic')
       .subscribe(

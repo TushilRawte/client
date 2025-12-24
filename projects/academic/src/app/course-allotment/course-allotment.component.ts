@@ -81,6 +81,9 @@ export class CourseAllotmentComponent {
    hideAllotButton:boolean = false;
    editingRowIndex:any
    isDirectDBUpdate: boolean = false;
+   isDisabledOtherCourseCheck: boolean = false;
+   isCourseFinalized: boolean = false;
+   allCourseTypeList:any = [];
 
   
 
@@ -432,6 +435,23 @@ isAllotButtonValid(){
   }
 }
 
+isOtherCourseDisabled() {
+  const ctrl = this.courseAllotFormGroup.get('isAllCourse');
+
+  if (this.selectedDegreeProgrammeTypeId === 1) {
+    this.isDisabledOtherCourseCheck = true;
+    ctrl?.disable();   // ✅ THIS is required
+  } else if(this.selectedDegreeProgrammeTypeId === 3 || this.selectedDegreeProgrammeTypeId === 2) {
+    this.isDisabledOtherCourseCheck = false;
+    ctrl?.enable();    // ✅ re-enable
+  }
+   else {
+    this.isDisabledOtherCourseCheck = false;
+    ctrl?.enable();    // ✅ re-enable
+  }
+}
+
+
 getDegreeProgramme(college_id: number) {
   this.HTTP.getParam('/master/get/getDegreeProgramme/', { college_id }, 'academic')
     .subscribe((result: any) => {
@@ -479,17 +499,21 @@ getDegreeProgramme(college_id: number) {
       // alert('Please fill all required fields ...');
       return;
     }
-   const  otherDeptWise= 'true'
     const params = {
-      semester_id: formValue.semester_id,
-      dean_committee_id: this.selectedDnCmt,
-       degree_id: this.selectedDegree,
-      // course_subject_id: this.selectedSubject,
-      otherDeptWise: otherDeptWise
       
-      // course_year_id: this.selectedCourseYearId
+      dean_committee_id: this.selectedDnCmt,
+      semester_id: formValue.semester_id,
+      course_year_id: this.selectedCourseYearId,
+      degree_programme_id: formValue.degree_programme_id,
+      degree_programme_type_id1: this.selectedDegreeProgrammeTypeId,
+      degree_programme_type_id2: this.selectedDegreeProgrammeTypeId,
+      degree_programme_type_id3: this.selectedDegreeProgrammeTypeId,
+
+      // course_subject_id: this.selectedSubject,
+      
+      
     };
-    this.HTTP.getParam('/master/get/getCourseForAllot/',params,'academic').subscribe((result:any) => {
+    this.HTTP.getParam('/course/get/getOtherDeptCourseForAllot/',params,'academic').subscribe((result:any) => {
       // console.log(result);
       this.allCourses = result.body.data;
     })
@@ -512,6 +536,9 @@ getDegreeProgramme(college_id: number) {
     this.selectedDegree = degree_id
     this.selectedSubject = subject_id;
     this.selectedDegreeProgrammeTypeId = degree_programme_type_id;
+        this.isOtherCourseDisabled()
+        this.filterCourseTypeList()
+
     // ✅ Check if selected degree_programme_id is 1, 2, or 3
   this.hasSpecificProgramme = [1, 2, 3].includes(degree_programme_id);
   // console.log('hasSpecificProgramme:', this.hasSpecificProgramme);
@@ -596,13 +623,12 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     }
    const  syllabusWise= 'true'
     const params = {
-      semester_id: formValue.semester_id,
-      dean_committee_id: this.selectedDnCmt,
-      degree_id: this.selectedDegree,
-      course_subject_id: this.selectedSubject,
-      syllabusWise: syllabusWise
       
-      // course_year_id: this.selectedCourseYearId
+      dean_committee_id: this.selectedDnCmt,
+      course_year_id: this.selectedCourseYearId,
+      degree_programme_id: formValue.degree_programme_id,
+        semester_id: formValue.semester_id,
+      syllabusWise: syllabusWise
     };
     this.HTTP.getParam('/master/get/getCourseForAllot/',params ,'academic').subscribe((result:any) => {
       // console.log(result);
@@ -672,8 +698,26 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     this.HTTP.getParam('/master/get/getCourseTypeList/',{} ,'academic').subscribe((result:any) => {
       // console.log(result);
       this.courseTypeList = result.body.data;
+      this.courseTypeList = [...this.allCourseTypeList];
     })
   }
+
+  filterCourseTypeList() {
+  if (this.selectedDegreeProgrammeTypeId === 1) {
+    console.log('i am called');
+    console.log('before filter', this.courseTypeList);
+    
+    // For UG (type id 1), show only specific course type (e.g., index 6)
+    this.courseTypeList = this.allCourseTypeList.filter((type: any) => 
+      type.course_type_id === 1 // or whatever specific ID you need
+    );
+    console.log('after filter', this.courseTypeList);
+    
+  } else {
+    // For other programme types, show all
+    this.courseTypeList = [...this.allCourseTypeList];
+  }
+}
 
   getCourseAllotType() {
     this.HTTP.getParam('/master/get/getCourseAllotmentTypeList/',{} ,'academic').subscribe((result:any) => {
@@ -951,6 +995,7 @@ checkCourseYear(selectedCourseYearId:any) {
     this.getCourseforUpdate()
     this.resetCourseAllotmentFields()
     this.isButtonValid()
+    // this.isOtherCourseDisabled()
     this.isaddRow = false
     this.isShowbutton = true
     this.previousYearaltBtn = false
@@ -1007,7 +1052,7 @@ checkCourseYear(selectedCourseYearId:any) {
   openCourseGeneralforDilog(item:any,i:any){
      this.openDilog(item)
   }
-
+ 
   getPreviousYearAllotment(item: any, i:number) {
      this.ifShowContainer = true
      this.isShowUpdateButton = false
@@ -1020,6 +1065,7 @@ checkCourseYear(selectedCourseYearId:any) {
     this.checkAllotmentType(allotment_type)
     this.openCourseGeneral(item)
     this.isAllotButtonValid()
+    // this.isOtherCourseDisabled()
     const formValue = this.courseAllotFormGroup.value;
     if (
       !formValue.academic_session_id ||
@@ -1184,9 +1230,17 @@ checkCourseYear(selectedCourseYearId:any) {
               this.HTTP.getParam('/master/get/checkCourseFinalizeStatus', params, 'academic')
           .subscribe((response: any) => {
             const finalizeYN = response?.body?.data[0].finalize_yn;
-            if(finalizeYN === 'Y'){
-              this.isFilalizeThanHideDeleteButton = true
-            }
+            // if(finalizeYN === 'Y'){
+            //   this.isFilalizeThanHideDeleteButton = true
+            // }
+             // Update the flag
+      this.isCourseFinalized = finalizeYN === 'Y';
+      
+      if (this.isCourseFinalized) {
+        this.isFilalizeThanHideDeleteButton = true;
+      } else {
+        this.isFilalizeThanHideDeleteButton = false;
+      }
             // this.courseYearList[index].finalizeStatus = finalizeYN; 
           });
   }
@@ -1770,7 +1824,7 @@ finalizeCourse() {
         this.HTTP.putData('/course/update/updateFinalizeStatus/', payload, 'academic')
           .subscribe((res: any) => {
             if (!res.body?.error) {
-                this.alert.alertMessage("Course Unfinalized.....!", "", "success");
+                this.alert.alertMessage("Course Finalized.....!", "", "success");
             } else {
                 this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
             }

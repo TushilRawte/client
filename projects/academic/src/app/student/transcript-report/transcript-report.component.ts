@@ -177,7 +177,7 @@ export class TranscriptReportComponent  implements OnInit {
   };
 
   getCollegeData() {
-    this.http.getParam('/master/get/getCollege',
+    this.http.getParam('/master/get/getCollegeList',
       {},
       'academic')
       .subscribe(

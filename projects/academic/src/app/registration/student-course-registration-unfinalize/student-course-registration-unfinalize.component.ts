@@ -87,7 +87,7 @@ export class StudentCourseRegistrationUnfinalizeComponent {
     if (typeId) {
       const params = { degree_programme_type_id: typeId };
       this.http
-        .getParam('/master/get/getCollege', params, 'academic')
+        .getParam('/master/get/getCollegeList', params, 'academic')
         .subscribe((res: any) => {
           if (res?.body?.data) this.collegeList = res.body.data;
         });
