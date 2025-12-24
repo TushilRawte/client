@@ -60,6 +60,7 @@ import { StudentCourseRegistrationComponent } from './registration/student-cours
 import { StudentCourseRegistrationUnfinalizeComponent } from './registration/student-course-registration-unfinalize/student-course-registration-unfinalize.component';
 import { DegreeCompletedDataComponent } from './convocation/degree-completed-data/degree-completed-data.component';
 import { AttendanceUnfinalizeComponent } from './attendance/attendance-unfinalize/attendance-unfinalize.component';
+import { StudentProfileComponent } from './student/student-profile/student-profile.component';
 
 const routes: Routes = [
   {
@@ -174,7 +175,7 @@ const routes: Routes = [
       {
         path: 'src-generate',
         component: SrcGenerateComponent,
-
+        pathMatch: 'full',
       },
       {
         path: 'result-notification',
@@ -239,6 +240,11 @@ const routes: Routes = [
       {
         path: 'student-name-correction',
         component: StudentNameCorrectionComponent,
+        pathMatch: 'full',
+      },
+      {
+        path: 'student-profile',
+        component: StudentProfileComponent,
         pathMatch: 'full',
       },
       {
@@ -321,7 +327,7 @@ const routes: Routes = [
         component: AppliedListComponent,
         pathMatch: 'full',
       },
-       {
+      {
         path: 'migration-applied',
         component: MigrationCertificateComponent,
         pathMatch: 'full',

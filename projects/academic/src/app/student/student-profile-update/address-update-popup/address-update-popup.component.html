@@ -1,0 +1,192 @@
+<div class="container-fluid py-3">
+    <!-- Header -->
+    <h5 class="mb-3 text-center fw-bold text-primary">
+        Update Address
+    </h5>
+
+    <form [formGroup]="addressUpdateForm">
+        <div class="card shadow-lg border-0 mb-3">
+            <mat-card class="mt-3">
+                <mat-card-content>
+                    <h4 class="fw-bold mb-6 page-title-p">Permanent Address</h4>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="permanent_address1" class="form-label">Street Name / Locality / Area</label>
+                            <!-- <input type="text" class="form-control" id="permanent_address1"
+                                formControlName="permanent_address1" /> -->
+                            <textarea class="form-control" rows="2" id="permanent_address1"
+                                formControlName="permanent_address1"></textarea>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="permanent_address2" class="form-label">Landmark</label>
+                            <!-- <input type="text" class="form-control" id="permanent_address2"
+                                formControlName="permanent_address2" /> -->
+                            <textarea class="form-control" rows="2" id="permanent_address2"
+                                formControlName="permanent_address2"></textarea>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="permanent_address3" class="form-label">Village/Town/City</label>
+                            <!-- <input type="text" class="form-control" id="permanent_address3"
+                                formControlName="permanent_address3" /> -->
+                            <textarea class="form-control" rows="2" id="permanent_address3"
+                                formControlName="permanent_address3"></textarea>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="permanent_country_id" class="form-label">Parnmanent Country</label>
+                            <select class="form-select" id="permanent_country_id"
+                                formControlName="permanent_country_id">
+                                <option *ngFor="let country of countries" [value]="country.country_id">
+                                    {{country.country_name}}
+                                </option>
+                            </select>
+                        </div>
+                        <!--   <div class="col-md-3 mb-3">
+                            <label for="permanent_state_id" class="form-label">Parnmanent State</label>
+                            <select class="form-select" id="permanent_state_id" formControlName="permanent_state_id">
+                                <option *ngFor="let state of states" [value]="state.state_code">{{state.state_name_e}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="permanent_district_id" class="form-label">Parnmanent District</label>
+                            <select class="form-select" id="permanent_district_id"
+                                formControlName="permanent_district_id">
+                                <option *ngFor="let district of districts" [value]="district.district_code">
+                                    {{district.district_name_e}}</option>
+                            </select>
+                        </div> -->
+                        <div class="col-md-3 mb-3">
+                            <label for="permanent_state_id" class="form-label">Parnmanent State</label>
+                            <select class="form-select" id="permanent_state_id" formControlName="permanent_state_id">
+                                <!-- <option *ngFor="let state of states" [value]="state.state_code">{{state.state_name_e}}</option> -->
+                                <option *ngFor="let state of states" [value]="state.state_id">{{state.name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="permanent_district_id" class="form-label">Parnmanent District</label>
+                            <select class="form-select" id="permanent_district_id"
+                                formControlName="permanent_district_id">
+                                <!-- <option *ngFor="let district of districts" [value]="district.district_code">
+                            {{district.district_name_e}}</option> -->
+                                <option *ngFor="let district of districts" [value]="district.district_id">
+                                    {{district.district_name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="permanent_pin_code" class="form-label">Parnmanent Pincode</label>
+                            <input type="number" class="form-control" id="permanent_pin_code"
+                                formControlName="permanent_pin_code" />
+                        </div>
+                    </div>
+                    <hr>
+                    <h4 class="fw-bold mb-6 page-title-c">Current Address</h4>
+
+                    <div class="row">
+
+                        <div class="col-md-4 mb-3">
+                            <label for="current_address1" class="form-label">Street Name / Locality / Area</label>
+                            <!-- <input type="text" class="form-control" id="current_address1"
+                                formControlName="current_address1" /> -->
+                            <textarea class="form-control" rows="2" id="current_address1"
+                                formControlName="current_address1"></textarea>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="current_address2" class="form-label">Landmark</label>
+                            <!-- <input type="text" class="form-control" id="current_address2"
+                                formControlName="current_address2" /> -->
+                            <textarea class="form-control" rows="2" id="current_address2"
+                                formControlName="current_address2"></textarea>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="current_address3" class="form-label">Village/Town/City</label>
+                            <!-- <input type="text" class="form-control" id="current_address3"
+                                formControlName="current_address3" /> -->
+                            <textarea class="form-control" rows="2" id="current_address3"
+                                formControlName="current_address3"></textarea>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="current_country_id" class="form-label">Current Country</label>
+                            <select class="form-select" id="current_country_id" formControlName="current_country_id">
+                                <option *ngFor="let country of countries" [value]="country.country_id">
+                                    {{country.country_name}}
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- <div class="col-md-3 mb-3">
+                            <label for="current_state_id" class="form-label">Current State</label>
+                            <select class="form-select" id="current_state_id" formControlName="current_state_id">
+                                <option *ngFor="let state of states" [value]="state.state_code">{{state.state_name_e}}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="current_district_id" class="form-label">Current District</label>
+                            <select class="form-select" id="current_district_id" formControlName="current_district_id">
+                                <option value="">Select District</option>
+                                <option *ngFor="let district of districts" [value]="district.district_code">
+                                    {{district.district_name_e}}
+                                </option>
+                            </select>
+                        </div> -->
+                        <div class="col-md-3 mb-3">
+                            <label for="current_state_id" class="form-label">Current State</label>
+                            <select class="form-select" id="current_state_id" formControlName="current_state_id">
+                                <!-- <option *ngFor="let state of states" [value]="state.state_code">{{state.state_name_e}}</option> -->
+                                <option *ngFor="let state of states" [value]="state.state_id">{{state.name}}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="current_district_id" class="form-label">Current District</label>
+                            <select class="form-select" id="current_district_id" formControlName="current_district_id">
+                                <option value="">Select District</option>
+                                <!-- <option *ngFor="let district of districts" [value]="district.district_code">
+                            {{district.district_name_e}}
+                        </option> -->
+                                <option *ngFor="let district of districts" [value]="district.district_id">
+                                    {{district.district_name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="current_pin_code" class="form-label">Current Pincode</label>
+                            <input type="number" class="form-control" id="current_pin_code"
+                                formControlName="current_pin_code" />
+                        </div>
+                        <hr>
+                        <!-- <div class="col-md-6 mb-3">
+                            <label for="address_proof" class="form-label">Address Proof</label>
+                            <input type="file" class="form-control" id="address_proof"
+                                formControlName="address_proof" />
+                        </div> -->
+                        <div class="col-md-6 col-12">
+                            <!-- <mat-label>Upload Order Copy</mat-label> -->
+                            <app-fileupload formControlName="address_proof">Address Proof</app-fileupload>
+                            <div class="text-danger" *ngIf="f['address_proof'].touched && f['address_proof'].hasError('required')">
+                                Document for Address Proof is require for changes
+                            </div>
+                            eg. Upload Aadhar, Driving License, Voter Id etc.
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <div class="card shadow-sm border-0">
+        </div>
+
+        <div class="text-end mt-3">
+            <button class="btn btn-secondary m-3" (click)="closeDialog()">
+                Close
+            </button>
+
+            <button class="btn btn-info" (click)="onUpdateAddress()">
+                Update
+            </button>
+        </div>
+    </form>
+</div>
