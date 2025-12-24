@@ -10,7 +10,7 @@ import { AlertService, HttpService, PrintService } from 'shared';
   styleUrl: './course-attendance-report.component.scss'
 })
 export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
-  state = {
+ state = {
     matrixList: [] as any[],
     acadmcSesnList: [] as any[],
     degreeProgrammeTypeList: [] as any[],
@@ -23,65 +23,59 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
 
   @Input() options: any; // PDF or Print options
   @ViewChild('print_content') print_content!: ElementRef;
+  @ViewChild('courseListSection') courseListSection!: ElementRef; // ~ step 1 (scroll) then set id in target div
 
   selectedRowData: any = null;
   selectedCourseId: any = null;
 
   ngOnInit(): void {
     this.getAcademicSession();
+    this.getSemesterData();
+    this.getDegreeProgrammeTypeData();
 
     this.courseAttendanceReportFormGroup.get('selection.academic_session_id')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(academicSessionId => {
-        this.clearState(['semesterList', 'degreeProgrammeTypeList', 'collegeList', 'courseList', 'matrixList', 'courseList']);
+        this.clearState(['courseList', 'matrixList']);
         this.resetFormFields([
-          'selection.semester_id',
-          'selection.degree_programme_type_id',
-          'selection.college_id',
           'courseDetail.course_nature_id',
           'courseDetail.exam_type_id',
           'courseDetail.dean_committee_id',
           'courseDetail.course_year_id',
           'courseDetail.course_id'
         ]);
-
-        if (academicSessionId) {
-          this.getSemesterData();
-        }
+        this.clearSelection();
+        this.clearSelectionCourse();
       });
 
     this.courseAttendanceReportFormGroup.get('selection.semester_id')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(semesterId => {
-        this.clearState(['degreeProgrammeTypeList', 'collegeList', 'courseList', 'matrixList', 'courseList']);
+        this.clearState(['courseList', 'matrixList']);
         this.resetFormFields([
-          'selection.degree_programme_type_id',
-          'selection.college_id',
           'courseDetail.course_nature_id',
           'courseDetail.exam_type_id',
           'courseDetail.dean_committee_id',
           'courseDetail.course_year_id',
           'courseDetail.course_id'
         ]);
-
-        if (semesterId) {
-          this.getDegreeProgrammeTypeData();
-        }
+        this.clearSelection();
+        this.clearSelectionCourse();
       });
 
     this.courseAttendanceReportFormGroup.get('selection.degree_programme_type_id')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(degreeProgrammeTypeId => {
-        this.clearState(['collegeList', 'courseList', 'matrixList', 'courseList']);
+        this.clearState(['collegeList', 'courseList', 'matrixList']);
         this.resetFormFields([
-          'selection.college_id',
           'courseDetail.course_nature_id',
           'courseDetail.exam_type_id',
           'courseDetail.dean_committee_id',
           'courseDetail.course_year_id',
           'courseDetail.course_id'
         ]);
-
+        this.clearSelection();
+        this.clearSelectionCourse();
         if (degreeProgrammeTypeId) {
           this.getCollegeData(degreeProgrammeTypeId);
         }
@@ -90,7 +84,7 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
     this.courseAttendanceReportFormGroup.get('selection.college_id')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(degreeProgrammeTypeId => {
-        this.clearState(['courseList', 'matrixList', 'courseList']);
+        this.clearState(['courseList', 'matrixList']);
         this.resetFormFields([
           'courseDetail.course_nature_id',
           'courseDetail.exam_type_id',
@@ -98,6 +92,8 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
           'courseDetail.course_year_id',
           'courseDetail.course_id'
         ]);
+        this.clearSelection();
+        this.clearSelectionCourse();
       });
   }
 
@@ -123,7 +119,7 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
     private http: HttpService,
     private fb: FormBuilder,
     private alert: AlertService,
-    public print: PrintService,
+    public print: PrintService
   ) {
     this.courseAttendanceReportFormGroup = this.fb.group({
       selection: this.fb.group({
@@ -161,7 +157,7 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
     is_read: true,
     orientation: 'p',
     listLength: 0,
-    is_pagination: true,
+    is_pagination: false,
     is_server_pagination: false,
     is_filter: true,
     dataSource: [],
@@ -233,7 +229,8 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
     course_nature_id: number,
     exam_type_id: number,
     course_year_id: number,
-    semester_id: number
+    semester_id: number,
+    dean_committee_id: number
   ) {
     this.http.getParam(`/course/get/getRegisteredCourseList`, {
       academic_session_id,
@@ -243,7 +240,8 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
       exam_type_id,
       course_year_id,
       semester_id,
-      courseAttendaceReport: 1
+      courseAttendaceReport: 1,
+      dean_committee_id
     }, 'academic')
       .subscribe(
         (result: any) => {
@@ -257,6 +255,12 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
             this.state.courseList = uniqueCourses;
             this.courseListOption.dataSource = uniqueCourses;
             this.courseListOption.listLength = uniqueCourses.length;
+
+            // ~ step 2 (scroll)
+            // ⬇️ WAIT FOR DOM TO RENDER, THEN SCROLL
+            setTimeout(() => {
+              this.scrollToCourseList();
+            }, 150);
           } else {
             this.alert.alertMessage("No Course Available!", "", "error");
           }
@@ -268,6 +272,8 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
   };
 
   getDetails_click() {
+    this.clearSelection();
+    this.clearSelectionCourse();
     let {
       academic_session_id,
       semester_id,
@@ -295,6 +301,7 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
     semester_id: number,
     degree_programme_type_id: number
   ) {
+    this.clearSelectionCourse();
     this.http.getParam('/course/get/getRunningCourseYear', {
       college_id,
       academic_session_id,
@@ -305,29 +312,33 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
         (result: any) => {
           let data = result?.body?.data || [];
 
-          // Sanitize data types if needed
-          data.forEach((item: any) => {
-            item.dean_committee_id = +item.dean_committee_id;
-            item.exam_type_id = +item.exam_type_id;
-          });
+          if (data.length > 0) {
+            // Sanitize data types if needed
+            data.forEach((item: any) => {
+              item.dean_committee_id = +item.dean_committee_id;
+              item.exam_type_id = +item.exam_type_id;
+            });
 
-          // Correct multi-level sort
-          let sorted = data.sort((a: any, b: any) => {
-            if (a.dean_committee_id !== b.dean_committee_id) {
-              return a.dean_committee_id - b.dean_committee_id;
-            } else if (a.exam_type_id !== b.exam_type_id) {
-              return a.exam_type_id - b.exam_type_id;
-            } else if (a.course_year_id !== b.course_year_id) {
-              return a.course_year_id - b.course_year_id;
-            } else {
-              return a.course_nature_id - b.course_nature_id;
-            }
-          });
+            // Correct multi-level sort
+            let sorted = data.sort((a: any, b: any) => {
+              if (a.dean_committee_id !== b.dean_committee_id) {
+                return a.dean_committee_id - b.dean_committee_id;
+              } else if (a.exam_type_id !== b.exam_type_id) {
+                return a.exam_type_id - b.exam_type_id;
+              } else if (a.course_year_id !== b.course_year_id) {
+                return a.course_year_id - b.course_year_id;
+              } else {
+                return a.course_nature_id - b.course_nature_id;
+              }
+            });
 
-          this.state.matrixList = sorted;
-          this.matrixTableOptions.dataSource = this.state.matrixList;
-          this.matrixTableOptions.listLength = this.state.matrixList.length
-          // console.log("Sorted matrixList:===> ", this.state);
+            this.state.matrixList = sorted;
+            this.matrixTableOptions.dataSource = this.state.matrixList;
+            this.matrixTableOptions.listLength = this.state.matrixList.length
+            // console.log("Sorted matrixList:===> ", this.state);
+          } else {
+            this.alert.alertMessage("No Records Found", "", "warning");
+          }
         },
         (error) => {
           console.error('Error in matrixList:', error);
@@ -345,8 +356,10 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
       degree_programme_type_id,
       college_id
     } = this.courseAttendanceReportFormGroup.get('selection')?.value;
+
     // Set course_nature_id in the form group
     this.courseAttendanceReportFormGroup.get('courseDetail.course_nature_id')?.setValue(item.course_nature_id);
+
     this.getCourseData(
       academic_session_id,
       degree_programme_type_id,
@@ -355,33 +368,9 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
       item.exam_type_id,
       item.course_year_id,
       semester_id,
-    )
+      item.dean_committee_id
+    );
   }
-
-  // downloadAttendanceReport(fileName: string, payload: any) {
-  //   const url = this.http.baseUrl("academic") + `/file/post/studentAttendanceReportPdf`;
-
-  //   const form = document.createElement('form');
-  //   form.action = url;
-  //   form.method = 'POST';
-  //   form.target = '_blank';
-
-  //   // 🔑 if you need auth headers (Bearer token, designation id),
-  //   // you cannot add them here — instead, pass them via hidden inputs or query params.
-  //   for (const key in payload) {
-  //     if (payload.hasOwnProperty(key)) {
-  //       const input = document.createElement('input');
-  //       input.type = 'hidden';
-  //       input.name = key;
-  //       input.value = payload[key];
-  //       form.appendChild(input);
-  //     }
-  //   }
-
-  //   document.body.appendChild(form);
-  //   form.submit();
-  //   document.body.removeChild(form);
-  // }
 
   getPdfReport_btn(course: any) {
     // console.log("course: ", course);
@@ -467,5 +456,25 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
   clearSelection(): void {
     this.selectedRowData = null;
   }
+
+  clearSelectionCourse(): void {
+    this.selectedCourseId = null
+  }
+
+  // ~ step 4 (scroll)
+  scrollToCourseList() {
+    const el = document.getElementById('courseListSection');
+    if (!el) return;
+
+    const headerHeight = 64; // mat-toolbar height
+    const rect = el.getBoundingClientRect();
+    const absoluteTop = rect.top + window.pageYOffset - headerHeight;
+
+    window.scrollTo({
+      top: absoluteTop,
+      behavior: 'smooth'
+    });
+  }
+
 
 }
