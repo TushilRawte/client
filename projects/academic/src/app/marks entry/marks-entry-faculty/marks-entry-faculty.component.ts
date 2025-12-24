@@ -164,7 +164,7 @@ updateTotal(studentForm: FormGroup) {
 
 
     getAcademicSession(){
-      this.HTTP.getParam('/master/get/getAcademicSession1/', {}, 'academic').subscribe((result: any) => {
+      this.HTTP.getParam('/master/get/getAcademicSession/', {}, 'academic').subscribe((result: any) => {
       // console.log('session', result);
       this.acadmcSesnList = result.body.data;
     });

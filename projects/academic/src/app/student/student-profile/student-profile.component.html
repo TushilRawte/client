@@ -1,0 +1,459 @@
+<form [formGroup]="profileFormGroup">
+
+    <mat-card class="mb-3">
+        <mat-card-content>
+            <div formGroupName="input_data" class="row">
+                <div class="col-md-4 col-6">
+                    <mat-form-field appearance="outline">
+                        <mat-label>UE ID / Student ID</mat-label>
+                        <input matInput placeholder="Ex. 20202595" formControlName="ue_id">
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-4 col-4">
+                    <div class="d-flex align-items-end gap-4 mt-3">
+                        <button mat-raised-button color="primary" (click)="getStudentDetails_Btn_click('show')">
+                            Show
+                        </button>
+
+                        <button mat-raised-button color="secondary" (click)="getStudentDetails_Btn_click('refresh')">
+                            Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div *ngIf="getDegreeDetailsOptions.listLength > 0">
+                <app-reporttable [options]="getDegreeDetailsOptions">
+                    <ng-template #headerTemplate>
+                        <tr>
+                            <th>UE ID</th>
+                            <th>Name</th>
+                            <th>Addmission Session</th>
+                            <th>Degree Programme</th>
+                            <th>College Name</th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template #rowTemplate let-row let-i="index">
+                        <tr>
+                            <td [ngClass]="{'bg-green': isRowSelected(row)}">{{row?.ue_id}}</td>
+                            <td [ngClass]="{'bg-green': isRowSelected(row)}">{{row?.name}}</td>
+                            <td [ngClass]="{'bg-green': isRowSelected(row)}">{{ row?.academic_session_name_e }}</td>
+                            <td [ngClass]="{'bg-green': isRowSelected(row)}">{{ row?.degree_programme_name_e }}</td>
+                            <td [ngClass]="{'bg-green': isRowSelected(row)}">{{row?.college_name_e}}</td>
+                            <td class="d-print-none cursor-pointer" [ngClass]="{'bg-green': isRowSelected(row)}">
+                                <button mat-raised-button color="primary" (click)="getStudentProfileData(row)">
+                                    Get Details
+                                </button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </app-reporttable>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+
+    <div formGroupName="student_info" *ngIf="getDegreeDetailsOptions.listLength > 0 && student.ue_id">
+        <mat-card>
+            <mat-card-content>
+                <div class="card-header-custom">
+                    <mat-card-title>Basic Detail</mat-card-title>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="correct">
+                            <button mat-stroked-button color="primary" (click)="onNameUpdate()">
+                                <mat-icon>settings_b_roll</mat-icon> Correction Required
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <!-- Your existing form fields remain the same -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="student_name" class="form-label">Student Name</label>
+                                    <input type="text" class="form-control" id="student_name"
+                                        formControlName="student_name" placeholder="Enter student name" />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="fatherName" class="form-label">Father's Name</label>
+                                    <input type="text" class="form-control" id="fatherName"
+                                        formControlName="father_name" placeholder="Enter father's name" />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="motherName" class="form-label">Mother's Name</label>
+                                    <input type="text" class="form-control" id="motherName"
+                                        formControlName="mother_name" placeholder="Enter mother's name" />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="category" class="form-label">Basic Category</label>
+                                    <select class="form-select" id="category" formControlName="category_name_e">
+                                        <option selected disabled>Choose...</option>
+                                        <option value="General">General</option>
+                                        <option value="OBC">OBC</option>
+                                        <option value="SC">SC</option>
+                                        <option value="ST">ST</option>
+                                        <option value="OC">OC</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="gender" class="form-label">Gender</label>
+                                    <select class="form-select" id="gender" formControlName="sex">
+                                        <option selected disabled>Choose...</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="dob" class="form-label">Date of Birth</label>
+                                    <input type="date" class="form-control" id="dob" formControlName="dob" />
+                                    <span style="font-size: 11px;">Age:
+                                        <span style="color: blueviolet;">{{student.age}}</span>
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Image Upload Section -->
+                        <div class="col-md-6">
+                            <div class="row">
+                                <!-- Hidden file inputs -->
+                                <input #profileInput type="file" accept="image/*" (change)="onProfileSelected($event)"
+                                    style="display: none;">
+                                <input #signatureInput type="file" accept="image/*"
+                                    (change)="onSignatureSelected($event)" style="display: none;">
+
+                                <!-- Profile Image Container -->
+                                <div class="col-md-6 mb-3">
+                                    <div
+                                        class="img-container me-2 d-flex justify-content-center align-items-center position-relative">
+                                        <!-- Show preview if selected, otherwise show existing image -->
+                                        <img [src]="profileImagePreview ? profileImagePreview : (file_prefix + (student?.student_photo_path || ''))"
+                                            alt="Profile" class="profile-img rounded border"
+                                            style="width: 87px; height: 100px; object-fit: cover;" />
+
+                                        <!-- Uploading spinner -->
+                                        <div *ngIf="isProfileUploading"
+                                            class="position-absolute top-50 start-50 translate-middle">
+                                            <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                                <span class="visually-hidden">Uploading...</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- File size badge during preview -->
+                                        <div *ngIf="profileImagePreview && profileImageFile"
+                                            class="position-absolute top-0 start-0 badge bg-info text-white"
+                                            style="font-size: 9px; transform: translate(-5px, -5px);">
+                                            {{formatFileSize(profileImageFile.size)}}
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-1">
+                                        <small class="text-muted">
+                                            Profile Image<br>
+                                            Size: {{PROFILE_MIN_SIZE_KB}}KB - {{PROFILE_MAX_SIZE_KB}}KB<br>
+                                            Formats: JPG, PNG
+                                        </small>
+
+                                        <!-- Action buttons when preview is shown -->
+                                        <div *ngIf="profileImagePreview"
+                                            class="mt-1 d-flex justify-content-center gap-1">
+                                            <button mat-button color="primary" size="small"
+                                                (click)="uploadProfileImage()" [disabled]="isProfileUploading"
+                                                style="font-size: 11px;">
+                                                <mat-icon style="font-size: 16px;">upload</mat-icon>
+                                                {{isProfileUploading ? 'Uploading...' : 'Upload'}}
+                                            </button>
+                                            <button mat-button color="warn" size="small" (click)="cancelProfileUpload()"
+                                                [disabled]="isProfileUploading" style="font-size: 11px;">
+                                                <mat-icon style="font-size: 16px;">cancel</mat-icon> Cancel
+                                            </button>
+                                        </div>
+
+                                        <!-- Edit button when no preview -->
+                                        <div *ngIf="!profileImagePreview" class="mt-1">
+                                            <button mat-button color="primary" size="small"
+                                                (click)="triggerProfileUpload()" style="font-size: 11px;">
+                                                <mat-icon style="font-size: 16px;">edit</mat-icon> Edit Photo
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Signature Image Container -->
+                                <div class="col-md-6 sign-container mb-3">
+                                    <div class="d-flex justify-content-center align-items-center position-relative">
+                                        <!-- Show preview if selected, otherwise show existing image -->
+                                        <img [src]="signatureImagePreview ? signatureImagePreview : (file_prefix + (student?.student_signature_path || ''))"
+                                            alt="signature" class="signature-img"
+                                            style="width: 100px; height: 40px; object-fit: fill; border: 1px solid #bebebe;" />
+
+                                        <!-- Uploading spinner -->
+                                        <div *ngIf="isSignatureUploading"
+                                            class="position-absolute top-50 start-50 translate-middle">
+                                            <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                                <span class="visually-hidden">Uploading...</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- File size badge during preview -->
+                                        <div *ngIf="signatureImagePreview && signatureImageFile"
+                                            class="position-absolute top-0 start-0 badge bg-info text-white"
+                                            style="font-size: 9px; transform: translate(-5px, -5px);">
+                                            {{formatFileSize(signatureImageFile.size)}}
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-1">
+                                        <small class="text-muted">
+                                            Signature Image<br>
+                                            Size: {{SIGNATURE_MIN_SIZE_KB}}KB - {{SIGNATURE_MAX_SIZE_KB}}KB<br>
+                                            Formats: JPG, PNG
+                                        </small>
+
+                                        <!-- Action buttons when preview is shown -->
+                                        <div *ngIf="signatureImagePreview"
+                                            class="mt-1 d-flex justify-content-center gap-1">
+                                            <button mat-button color="primary" size="small"
+                                                (click)="uploadSignatureImage()" [disabled]="isSignatureUploading"
+                                                style="font-size: 11px;">
+                                                <mat-icon style="font-size: 16px;">upload</mat-icon>
+                                                {{isSignatureUploading ? 'Uploading...' : 'Upload'}}
+                                            </button>
+                                            <button mat-button color="warn" size="small"
+                                                (click)="cancelSignatureUpload()" [disabled]="isSignatureUploading"
+                                                style="font-size: 11px;">
+                                                <mat-icon style="font-size: 16px;">cancel</mat-icon> Cancel
+                                            </button>
+                                        </div>
+
+                                        <!-- Edit button when no preview -->
+                                        <div *ngIf="!signatureImagePreview" class="mt-1">
+                                            <button mat-button color="primary" size="small"
+                                                (click)="triggerSignatureUpload()" style="font-size: 11px;">
+                                                <mat-icon style="font-size: 16px;">edit</mat-icon> Edit Signature
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="mt-3">
+            <mat-card-content>
+                <div class="card-header-custom">
+                    <mat-card-title>Admission Details</mat-card-title>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="counseling_adm_id" class="form-label">Admission Id</label>
+                        <input type="text" class="form-control" id="counseling_adm_id" placeholder="Admission Id"
+                            formControlName="counseling_adm_id" />
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="entrance_exam_type_name" class="form-label">Entrance Type</label>
+                        <input type="text" class="form-control" id="entrance_exam_type_name"
+                            placeholder="Enter Entrance Type" formControlName="entrance_exam_type_name" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="Admission Quota" class="form-label">Admission Quota</label>
+                        <input type="text" class="form-control" id="Admission Quota"
+                            formControlName="admsn_quota_type" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="Faculty" class="form-label">Faculty</label>
+                        <input type="text" class="form-control" id="Faculty" formControlName="faculty_name" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="Degree" class="form-label">Degree Programme</label>
+                        <input type="text" class="form-control" id="Degree" formControlName="degree_programme_name_e" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="Subject" class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="Subject" formControlName="subject_name" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="Category" class="form-label">Category</label>
+                        <input type="text" class="form-control" id="Category" formControlName="admitted_category" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="Admitted Class" class="form-label">Admitted Class</label>
+                        <input type="text" class="form-control" id="Admitted Class" />
+                    </div>
+                    <div class="col-md-9 mb-3">
+                        <label for="Admitted College" class="form-label">Admitted College</label>
+                        <input type="text" class="form-control" id="Admitted College"
+                            formControlName="college_name_e" />
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="mt-3">
+            <mat-card-content>
+                <div class="card-header-custom">
+                    <mat-card-title>Academic Details</mat-card-title>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="Student_Id" class="form-label">Student Id</label>
+                        <input type="text" class="form-control" id="Student_Id" placeholder="Student Id"
+                            formControlName="student_id" />
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="ue_id" class="form-label">University Id</label>
+                        <input type="text" class="form-control" id="ue_id" placeholder="Enter Entrance Type"
+                            formControlName="ue_id" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="Course Year" class="form-label">Course Year</label>
+                        <input type="text" class="form-control" id="Course Year" formControlName="course_year_name" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="Semester" class="form-label">Semester</label>
+                        <input type="text" class="form-control" id="Semester" formControlName="semester_name" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="Academic Status" class="form-label">Academic Status</label>
+                        <input type="text" class="form-control" id="Academic Status"
+                            formControlName="academic_status_name" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="Student Status" class="form-label">Student Status</label>
+                        <input type="text" class="form-control" id="Student Status"
+                            formControlName="student_status_name" />
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+        <mat-card class="mt-3">
+            <mat-card-content>
+                <div class="card-header-custom">
+                    <mat-card-title>Contact Details</mat-card-title>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="correct">
+                            <button mat-stroked-button color="primary" (click)="onMobileNumberUpdate()">
+                                <mat-icon>settings_b_roll</mat-icon> Edit
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="Email" class="form-label">Email</label>
+                        <input type="text" class="form-control" id="Email" placeholder="Email"
+                            formControlName="e_mail" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="Mobile No" class="form-label">Mobile No</label>
+                        <input type="number" class="form-control" id="Mobile No" placeholder="9876543210"
+                            formControlName="mobile" />
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="mt-3">
+            <mat-card-content>
+                <div class="card-header-custom">
+                    <mat-card-title>Address Details</mat-card-title>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="correct">
+                            <button mat-stroked-button color="primary" (click)="onAddressUpdate()">
+                                <mat-icon>settings_b_roll</mat-icon> Edit
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="permanent_country_id" class="form-label">Parnmanent Country</label>
+                        <select class="form-select" id="permanent_country_id" formControlName="permanent_country_id">
+                            <option *ngFor="let country of countries" [value]="country.country_id">
+                                {{country.country_name}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="permanent_state_id" class="form-label">Parnmanent State</label>
+                        <select class="form-select" id="permanent_state_id" formControlName="permanent_state_id">
+                            <option *ngFor="let state of states" [value]="state.state_id">{{state.name}}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="permanent_district_id" class="form-label">Parnmanent District</label>
+                        <select class="form-select" id="permanent_district_id" formControlName="permanent_district_id">
+                            <option *ngFor="let district of districts" [value]="district.district_id">
+                                {{district.district_name}}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="permanent_pin_code" class="form-label">Parnmanent Pincode</label>
+                        <input type="number" class="form-control" id="permanent_pin_code"
+                            formControlName="permanent_pin_code" />
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label for="permanent_address" class="form-label">Permanent Address</label>
+                        <textarea class="form-control" rows="3" id="permanent_address"
+                            formControlName="permanent_address"></textarea>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="current_country_id" class="form-label">Current Country</label>
+                        <select class="form-select" id="current_country_id" formControlName="current_country_id">
+                            <option *ngFor="let country of countries" [value]="country.country_id">
+                                {{country.country_name}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="current_state_id" class="form-label">Current State</label>
+                        <select class="form-select" id="current_state_id" formControlName="current_state_id">
+                            <option *ngFor="let state of states" [value]="state.state_id">{{state.name}}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="current_district_id" class="form-label">Current District</label>
+                        <select class="form-select" id="current_district_id" formControlName="current_district_id">
+                            <option value="">Select District</option>
+                            <option *ngFor="let district of districts" [value]="district.district_id">
+                                {{district.district_name}}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="current_pin_code" class="form-label">Current Pincode</label>
+                        <input type="number" class="form-control" id="current_pin_code"
+                            formControlName="current_pin_code" />
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label for="current_address" class="form-label">Current Address</label>
+                        <textarea class="form-control" rows="3" id="current_address"
+                            formControlName="current_address"></textarea>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</form>

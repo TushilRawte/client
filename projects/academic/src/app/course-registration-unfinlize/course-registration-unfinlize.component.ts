@@ -48,13 +48,13 @@ export class CourseRegistrationUnfinlizeComponent {
   }
 
  getAcademicSession() {
-    this.HTTP.getParam('/master/get/getAcademicSession1/',{},'academic').subscribe((result:any) => {
+    this.HTTP.getParam('/master/get/getAcademicSession/',{},'academic').subscribe((result:any) => {
       this.acadmcSesnList = result.body.data;
     })
   }
 
   getCollegeData() {
-    this.HTTP.getParam('/master/get/getCollegeList1/',{} ,'academic').subscribe((result:any) => {
+    this.HTTP.getParam('/master/get/getCollegeList/',{} ,'academic').subscribe((result:any) => {
       this.collegeList = result.body.data;
     })
   }
@@ -64,7 +64,7 @@ export class CourseRegistrationUnfinlizeComponent {
  }
 
   getDegreeProgramme(college_id:number) {
-    this.HTTP.getParam('/master/get/getDegreePrograamList/',{college_id},'academic').subscribe((result:any) => {
+    this.HTTP.getParam('/master/get/getDegreeProgramme/',{college_id},'academic').subscribe((result:any) => {
       this.degreeProgramme = result.body.data;
     })
   }

@@ -85,13 +85,13 @@ onTopSectionChange(sectionId: number | string) {
   }
 
     getAcademicSession() {
-    this.HTTP.getParam('/master/get/getAcademicSession1/',{},'academic').subscribe((result:any) => {
+    this.HTTP.getParam('/master/get/getAcademicSession/',{},'academic').subscribe((result:any) => {
       this.acadmcSesnList = result.body.data;
     })
   }
 
     getDegreeProgramme() {
-    this.HTTP.getParam('/master/get/getDegreePrograamList/',{},'academic').subscribe((result:any) => {
+    this.HTTP.getParam('/master/get/getDegreeProgramme/',{},'academic').subscribe((result:any) => {
       // console.log('GP',result);
       this.degreeProgramme = result.body.data;
     })
@@ -119,7 +119,7 @@ onTopSectionChange(sectionId: number | string) {
   }
 
     getCollegeData() {
-    this.HTTP.getParam('/master/get/getCollegeList1/',{} ,'academic').subscribe((result:any) => {
+    this.HTTP.getParam('/master/get/getCollegeList/',{} ,'academic').subscribe((result:any) => {
       // console.log(result);
       this.collegeList = result.body.data;
     })

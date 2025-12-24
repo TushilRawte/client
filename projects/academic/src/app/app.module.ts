@@ -77,6 +77,10 @@ import { StudentCourseRegistrationComponent } from './registration/student-cours
 import { StudentCourseRegistrationUnfinalizeComponent } from './registration/student-course-registration-unfinalize/student-course-registration-unfinalize.component';
 import { DegreeCompletedDataComponent } from './convocation/degree-completed-data/degree-completed-data.component';
 import { AttendanceUnfinalizeComponent } from './attendance/attendance-unfinalize/attendance-unfinalize.component';
+import { StudentProfileComponent } from './student/student-profile/student-profile.component';
+import { AddressUpdatePopupComponent } from './student/student-profile-update/address-update-popup/address-update-popup.component';
+import { MobileNumberUpdatePopupComponent } from './student/student-profile-update/mobile-number-update-popup/mobile-number-update-popup.component';
+import { NameUpdatePopupComponent } from './student/student-profile-update/name-update-popup/name-update-popup.component';
 
 @NgModule({
   declarations: [
@@ -149,6 +153,10 @@ import { AttendanceUnfinalizeComponent } from './attendance/attendance-unfinaliz
     StudentCourseRegistrationUnfinalizeComponent,
     DegreeCompletedDataComponent,
     AttendanceUnfinalizeComponent,
+    StudentProfileComponent,
+    AddressUpdatePopupComponent,
+    MobileNumberUpdatePopupComponent,
+    NameUpdatePopupComponent,
   ],
   imports: [
     SharedModule,

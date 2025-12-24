@@ -64,7 +64,7 @@ export class MarksEntryReportComponent {
 
 
 getAcademicSessionName(academic_session_id: any) {
-  this.HTTP.getParam('/master/get/getAcademicSession1/', { academic_session_id }, 'academic').subscribe((result: any) => {
+  this.HTTP.getParam('/master/get/getAcademicSession/', { academic_session_id }, 'academic').subscribe((result: any) => {
       const sessionName = result?.body?.data?.[0]?.academic_session_name_e;
       // ✅ update payload dynamically
       this.optionStudent.payload.academic_session_name_e = sessionName;

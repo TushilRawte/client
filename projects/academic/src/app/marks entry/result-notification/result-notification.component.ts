@@ -182,7 +182,7 @@ export class ResultNotificationComponent implements OnInit {
 
   //* Step : 1
   getAcademicSession() {
-    this.http.getParam('/master/get/getAcademicSession1', {}, 'academic')
+    this.http.getParam('/master/get/getAcademicSession', {}, 'academic')
       .subscribe(
         (result: any) => {
           // console.log("acadmicSessionList : ", result);

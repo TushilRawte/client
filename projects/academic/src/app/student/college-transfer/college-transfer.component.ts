@@ -246,7 +246,7 @@ export class CollegeTransferComponent implements OnInit {
 
   //* step: 1
   getAcademicSession() {
-    this.http.getParam('/master/get/getAcademicSession1', {}, 'academic')
+    this.http.getParam('/master/get/getAcademicSession', {}, 'academic')
       .subscribe(
         (result: any) => {
           // console.log("acadmcSessionList : ", result);
@@ -260,7 +260,7 @@ export class CollegeTransferComponent implements OnInit {
 
   //* step: 2
   getDegreeProgrammeData() {
-    this.http.getParam('/master/get/getDegreePrograamList', {}, 'academic')
+    this.http.getParam('/master/get/getDegreeProgramme', {}, 'academic')
       .subscribe(
         (result: any) => {
           // console.log("degreeProgrammeList : ", result);

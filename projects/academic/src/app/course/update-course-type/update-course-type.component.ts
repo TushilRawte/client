@@ -65,7 +65,7 @@ export class UpdateCourseTypeComponent implements OnInit {
 
   loadDropdownData() {
     // Load Academic Sessions
-    this.HTTP.getParam('/master/get/getAcademicSession1/', {}, 'academic')
+    this.HTTP.getParam('/master/get/getAcademicSession/', {}, 'academic')
       .subscribe((result: any) => {
         this.academicSessions = result.body?.data || [];
         console.log(result);
@@ -89,7 +89,7 @@ this.HTTP.getParam('/master/get/getCollegeList/', {}, 'academic')
   
 
 //degree program
-this.HTTP.getParam('/master/get/getDegreePrograamList/', {}, 'academic')
+this.HTTP.getParam('/master/get/getDegreeProgramme/', {}, 'academic')
 .subscribe((result: any) => {
   this.degreeProgrammes = result.body?.data || [];
 });

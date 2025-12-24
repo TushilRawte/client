@@ -19,14 +19,14 @@
               </ng-container>
             </ng-select>
           </div>
-          <!-- <div class="col-md-3 col-6">
-            <ng-select placeholder="Degree Programme" formControlName="Degree_Programme_Id" (change)="onDegreeProgrammeChange($event)" appearance="outline" >
+          <div class="col-md-3 col-6">
+            <ng-select placeholder="Degree Programme" formControlName="degree_programme_id" (change)="onDegreeProgrammeChange($event)" appearance="outline" >
               <ng-container *ngFor="let server of degreeProgramme">
-                <ng-option [value]="server.Degree_Programme_Id">{{ server.Degree_Programme_Name_E }}</ng-option>
+                <ng-option [value]="server.degree_programme_id">{{ server.degree_programme_name_e }}</ng-option>
               </ng-container>
             </ng-select>
-          </div> -->
-          <div class="col-md-4 col-6">
+          </div>
+          <!-- <div class="col-md-4 col-6">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Degree Programme</mat-label>
               <mat-select placeholder="Degree Programme" formControlName="degree_programme_id" (selectionChange)="onDegreeProgrammeChange($event.value)">
@@ -35,7 +35,7 @@
                 </mat-option>
               </mat-select>
             </mat-form-field>
-          </div>
+          </div> -->
     
           <div class="col-md-2 col-6">
 
@@ -147,7 +147,7 @@
                     </ng-select>
                   </div>
               </ng-container>
-             <ng-container *ngIf="ifShowContainer">
+             <ng-container *ngIf="ifShowContainer" id="editSection">
              
                                     <div class="col-md-2 col-3 align-items-center">
                       <label>Other Department Course</label>
@@ -202,7 +202,7 @@
                       </ng-container>
                     </ng-select>
                   </div>
-                  <div class="col-md-3 col-6">
+                  <div class="col-md-5 col-6">
                     <ng-select placeholder="Teacher" formControlName="emp_id" appearance="outline" [multiple]="true">
                       <ng-container *ngFor="let item of teacherList">
                         <ng-option [value]="item?.emp_id">{{ item?.emp_name || 'unknown' }}</ng-option>
@@ -215,29 +215,29 @@
                   <button style="margin-left: 3px;" *ngIf="isEdit" class="btn btn-primary" (click)="submitUpdatedRow()">Update Selected Course & Teachers</button>
                 </div> -->
                 <!-- In the form buttons section -->
-<div class="col-md-5 col-12 mt-2">
-  <button *ngIf="!isEdit" type="button" class="btn btn-primary" (click)="addRowToTable()">
-    + Add Row
-  </button>
-  
-  <!-- Single button that changes behavior based on mode -->
-  <button *ngIf="isEdit" 
-          style="margin-left: 3px;" 
-          class="btn btn-primary" 
-          [class.btn-primary]="!isDirectDBUpdate"
-          [class.btn-success]="isDirectDBUpdate"
-          (click)="submitUpdatedRow()">
-    {{ isDirectDBUpdate ? 'Update ' : 'Update ' }}
-  </button>
-  
-  <!-- Cancel button -->
-  <button *ngIf="isEdit" 
-          style="margin-left: 3px;" 
-          class="btn btn-secondary" 
-          (click)="cancelEdit()">
-    Cancel Edit
-  </button>
-</div>
+              <div class="col-md-5 col-12 mt-2">
+                <button *ngIf="!isEdit" type="button" class="btn btn-primary" (click)="addRowToTable()">
+                  + Add Row
+                </button>
+                
+                <!-- Single button that changes behavior based on mode -->
+                <button *ngIf="isEdit" 
+                        style="margin-left: 3px;" 
+                        class="btn btn-primary" 
+                        [class.btn-primary]="!isDirectDBUpdate"
+                        [class.btn-success]="isDirectDBUpdate"
+                        (click)="submitUpdatedRow()">
+                  {{ isDirectDBUpdate ? 'Update ' : 'Update ' }}
+                </button>
+                
+                <!-- Cancel button -->
+                <button *ngIf="isEdit" 
+                        style="margin-left: 3px;" 
+                        class="btn btn-secondary" 
+                        (click)="cancelEdit()">
+                  Cancel Edit
+                </button>
+              </div>
               </ng-container>
             
               </div>
@@ -258,8 +258,8 @@
                   <th>S.No</th>
                   <th>Course</th>
                   <th>Course Type</th>
-                  <th>Course Nature</th>
-                  <th>Credit</th>
+                  <!-- <th>Course Nature</th> -->
+                  <th>Credit T+P</th>
                   <th *ngIf="isHideModuleSection">Module</th>
                   <th *ngIf="isHideModuleSection">Group</th>
                   <th>Allotment Type</th>
@@ -273,7 +273,7 @@
                   <td>{{ i + 1 }}</td>
                   <td>{{ row.get('course_name')?.value }}</td>
                   <td>{{ getCourseTypeName(row.get('course_type_id')?.value) }}</td>
-                  <td>{{ row.get('course_nature')?.value }}</td>
+                  <!-- <td>{{ row.get('course_nature')?.value }}</td> -->
                   <td>{{ row.get('total_credit')?.value }}</td>
                   <td *ngIf="isHideModuleSection">{{ getModuleName(row.get('course_module_id')?.value) }}</td>
                   <td *ngIf="isHideModuleSection">{{ getBatchGroup(row.get('course_module_batch_group_id')?.value)}}</td>
@@ -306,7 +306,7 @@
                   <td>
                     <!-- *ngIf="isShowbutton == true" -->
                      <!-- [disabled]="isFilalizeThanHideDeleteButton" -->
-                    <button  mat-icon-button color="primary"(click)="visibleForm()" (click)="editRow(row, i)">
+                    <button  mat-icon-button color="primary"(click)="visibleForm()" (click)="editRow(row, i); goToTop()">
                       <mat-icon>edit</mat-icon>
                     </button>
                   </td>

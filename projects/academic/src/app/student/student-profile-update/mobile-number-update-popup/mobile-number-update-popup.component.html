@@ -1,0 +1,102 @@
+<div class="container-fluid py-3">
+    <!-- Header -->
+    <h5 class="mb-3 text-center fw-bold text-primary">
+        Mobile Number Update
+    </h5>
+
+    <div class="card shadow-lg border-0 mb-3">
+        <div class="card-body">
+            <div class="row">
+
+                <form [formGroup]="mobileNumberUpdateForm">
+                    <div class="row g-3">
+
+                        <!-- Old Mobile Number -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Old Mobile Number</label>
+                            <input matInput class="form-control" placeholder="Ex. 9876543210"
+                                formControlName="mobile" />
+                        </div>
+
+                        <!-- New Mobile Number -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">New Mobile Number</label>
+                            <input matInput class="form-control" placeholder="Ex. 9876543210"
+                                formControlName="mobile_no" />
+                        </div>
+
+                        <!-- Radio Group -->
+                        <!-- <div class="col-12">
+                            <label class="form-label fw-semibold d-block mb-2">
+                                Update Mobile Number?
+                            </label>
+
+                            <mat-radio-group aria-label="Update Mobile Number?" formControlName="mobile_no_update"
+                                class="d-flex gap-4">
+                                <mat-radio-button value="Y">Yes</mat-radio-button>
+                                <mat-radio-button value="N">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div> -->
+
+                        <!-- Old email ID -->
+                        <!-- <div class="col-12">
+                            <label class="form-label fw-semibold">Old Email ID</label>
+                            <input matInput class="form-control" placeholder="Ex. mguvv@test.com"
+                                formControlName="e_mail" />
+                        </div> -->
+
+                        <!-- New email ID -->
+                        <!-- <div class="col-12">
+                            <label class="form-label fw-semibold">New Email ID</label>
+                            <input matInput class="form-control" placeholder="Ex. mguvv@test.com"
+                                formControlName="email_id" />
+                        </div> -->
+
+                        <!-- Radio Group -->
+                        <!-- <div class="col-12">
+                            <label class="form-label fw-semibold d-block mb-2">
+                                Update Email ID?
+                            </label>
+
+                            <mat-radio-group aria-label="Update Email ID?" formControlName="email_id_update"
+                                class="d-flex gap-4">
+                                <mat-radio-button value="Y">Yes</mat-radio-button>
+                                <mat-radio-button value="N">No</mat-radio-button>
+                            </mat-radio-group>
+                        </div> -->
+
+                        <hr>
+                        <!-- <div class="col-md-6 mb-3">
+                            <label for="proof_document" class="form-label">Document Upload</label>
+                            <input type="file" class="form-control" id="proof_document"
+                                formControlName="proof_document" />
+                        </div> -->
+                        <div class="col-md-6 col-12">
+                            <!-- <mat-label>Upload Order Copy</mat-label> -->
+                            <app-fileupload formControlName="pdfFile">Document Upload</app-fileupload>
+                            <div class="text-danger" *ngIf="f['pdfFile'].touched && f['pdfFile'].hasError('required')">
+                                Document for Proof is require for changes
+                            </div>
+                            eg. Upload College ID, SRC, PDC etc.
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+    </div>
+
+    <div class="text-end mt-3">
+        <button class="btn btn-secondary m-3" (click)="closeDialog()">
+            Close
+        </button>
+
+        <button class="btn btn-info" (click)="onUpdateMobileNumber()">
+            Update
+        </button>
+    </div>
+</div>

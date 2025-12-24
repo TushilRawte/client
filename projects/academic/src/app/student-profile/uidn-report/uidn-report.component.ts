@@ -67,7 +67,7 @@ export class UidnReportComponent implements OnInit {
 
   // * get academic session
   getAcademicSession() {
-    this.HTTP.getParam('/master/get/getAcademicSession1/', {}, 'academic')
+    this.HTTP.getParam('/master/get/getAcademicSession/', {}, 'academic')
       .subscribe((result: any) => {
         // console.log('session', result);
         this.acadmcSesnList = result.body.data;
@@ -76,7 +76,7 @@ export class UidnReportComponent implements OnInit {
 
   // * get college 
   getCollegeData() {
-    this.HTTP.getParam('/master/get/getCollegeList1/', {}, 'academic')
+    this.HTTP.getParam('/master/get/getCollegeList/', {}, 'academic')
       .subscribe((result: any) => {
         // console.log(result);
         this.collegeList = result.body.data;

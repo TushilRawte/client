@@ -77,7 +77,7 @@ export class PaymentComponent {
       currently_running:'Y'
       }
     this.HTTP.getParam(
-      '/master/get/getAcademicSession1',
+      '/master/get/getAcademicSession',
       params,
       'academic'
     ).subscribe((result: any) => {
