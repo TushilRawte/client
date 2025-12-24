@@ -52,7 +52,7 @@ export class StudentPasswordResetComponent  implements OnInit {
   };
 
   getCollegeData() {
-    this.http.getParam('/master/get/getCollege', {}, 'academic')
+    this.http.getParam('/master/get/getCollegeList', {}, 'academic')
       .subscribe(
         (result: any) => {
           this.state.collegeList = result.body.data;

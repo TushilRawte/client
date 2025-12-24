@@ -343,7 +343,7 @@ export class SrcGeneratePdfComponent implements OnInit {
   };
 
   getCollegeData() {
-    this.http.getParam('/master/get/getCollege',
+    this.http.getParam('/master/get/getCollegeList',
       {},
       'academic')
       .subscribe(

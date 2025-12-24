@@ -251,7 +251,7 @@ export class AttendanceUnfinalizeComponent implements OnInit {
   }
 
   getCollegeData(degree_programme_type_id: number) {
-    this.HTTP.getParam('/master/get/getCollege', { degree_programme_type_id }, 'academic')
+    this.HTTP.getParam('/master/get/getCollegeList', { degree_programme_type_id }, 'academic')
       .subscribe((result: any) => {
         this.state.collegeList = result.body.data || [];
       }, (error) => {

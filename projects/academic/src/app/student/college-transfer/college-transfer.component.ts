@@ -274,7 +274,7 @@ export class CollegeTransferComponent implements OnInit {
 
   //* step: 3
   getCollegeData() {
-    this.http.getParam('/master/get/getCollege',
+    this.http.getParam('/master/get/getCollegeList',
       {},
       'academic')
       .subscribe(

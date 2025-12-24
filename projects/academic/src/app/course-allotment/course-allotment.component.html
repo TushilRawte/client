@@ -151,7 +151,7 @@
              
                                     <div class="col-md-2 col-3 align-items-center">
                       <label>Other Department Course</label>
-                      <mat-checkbox formControlName="isAllCourse">
+                      <mat-checkbox formControlName="isAllCourse" [disabled]="isDisabledOtherCourseCheck">
                         Yes
                       </mat-checkbox>
                     </div>
@@ -291,7 +291,7 @@
                       <mat-icon>delete</mat-icon>
                     </button>
                   </td> -->
-                  <td>
+                  <!-- <td>
                     <button mat-icon-button 
                             [color]="isEditModeDelete && row.get('allotment_detail_id')?.value ? 'warn' : 'accent'" 
                             (click)="deleteParticularCourse(row, i)"
@@ -302,14 +302,35 @@
                         {{ isEditModeDelete && row.get('allotment_detail_id')?.value ? 'delete_forever' : 'delete' }}
                       </mat-icon>
                     </button>
-                  </td>
-                  <td>
-                    <!-- *ngIf="isShowbutton == true" -->
-                     <!-- [disabled]="isFilalizeThanHideDeleteButton" -->
+                  </td> -->
+                  <!-- <td>
+                  
                     <button  mat-icon-button color="primary"(click)="visibleForm()" (click)="editRow(row, i); goToTop()">
                       <mat-icon>edit</mat-icon>
                     </button>
-                  </td>
+                  </td> -->
+                  <td>
+                  <button mat-icon-button 
+                          [color]="isEditModeDelete && row.get('allotment_detail_id')?.value ? 'warn' : 'accent'" 
+                          (click)="deleteParticularCourse(row, i)"
+                          [matTooltip]="isEditModeDelete && row.get('allotment_detail_id')?.value ? 
+                                      'Delete permanently from database' : 
+                                      'Remove from list'"
+                          [disabled]="isCourseFinalized">
+                    <mat-icon>
+                      {{ isEditModeDelete && row.get('allotment_detail_id')?.value ? 'delete_forever' : 'delete' }}
+                    </mat-icon>
+                  </button>
+                </td>
+                <td>
+                  <button mat-icon-button 
+                          color="primary"
+                          (click)="visibleForm()" 
+                          (click)="editRow(row, i); goToTop()"
+                          [disabled]="isCourseFinalized">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                </td>
                 </tr> 
               </tbody>
             </table>
@@ -329,11 +350,11 @@
             <button type="submit" class="btn btn-primary" *ngIf="isSbumitBtn == true && hideAllotButton" (click)="onSubmit()" >Allot Course</button>
             <!-- <button type="submit" class="btn btn-primary" (click)="onSubmit()" >Allot Course</button> -->
             <button type="submit" class="btn btn-primary" *ngIf="previousYearaltBtn == true && hideAllotButton" (click)="onSubmit()" > Allot Course</button>
-             <button type="submit" class="btn btn-primary" *ngIf="isShowUpdateButton && hideUpdateButtonForalt" (click)="onUpdateCouesNew()" >Update Alloted Course</button>
+             <button type="submit" class="btn btn-primary"  *ngIf="isShowUpdateButton && hideUpdateButtonForalt" [disabled]="isCourseFinalized" (click)="onUpdateCouesNew()" >Update Alloted Course</button>
              
           </div>
           <div class="col-md-3">
-           <button type="submit" *ngIf="isShowUpdateButton == true" class="btn btn-danger"  (click)="finalizeCourse()" >Finalize Course</button>
+           <button type="submit" *ngIf="isShowUpdateButton == true" class="btn btn-danger" [disabled]="isCourseFinalized" (click)="finalizeCourse()" >Finalize Course</button>
           </div>
          </div>
         
