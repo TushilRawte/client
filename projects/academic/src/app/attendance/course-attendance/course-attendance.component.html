@@ -105,7 +105,8 @@
 
               <td [ngClass]="{'bg-green': isRowSelected(item)}">
                 <span class="button-custom bg-secondary" (click)="onStatusClick(item, 'finalize')">
-                  {{ item.student_count - item.finalize }}
+                  <!-- {{ item.student_count - item.finalize }} -->
+                  {{item.attendance_updated}}
                 </span>
               </td>
 
@@ -228,7 +229,7 @@
                     <td [style]="getClassForFinalizeStudents(rec)">
                       <!-- Debug: Current status: {{ rec.attendance_status_id }} -->
                       <select class="form-control" formControlName="attendance_status_id">
-                        <option value="">-- Select Status --</option>
+                        <!-- <option value="">-- Select Status --</option> -->
                         <option *ngFor="let status of attendanceStatusList" [value]="status.attendance_status_id"
                           [selected]="status.attendance_status_id === rec.attendance_status_id">
                           {{ status.attendance_status_name }}
