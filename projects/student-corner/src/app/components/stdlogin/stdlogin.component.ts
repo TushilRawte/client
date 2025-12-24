@@ -180,7 +180,7 @@ this.httpService.postData('/security/stdlogin', payload, 'common')
 
 setStudentSession(selectedStudent: any) {
   this.authService.setSession({
-  user_id: selectedStudent.ue_id,
+  user_id: selectedStudent.user_id,
   student_name: selectedStudent.student_name,
   academic_session_id: selectedStudent.academic_session_id,
   course_year_id: selectedStudent.course_year_id,
