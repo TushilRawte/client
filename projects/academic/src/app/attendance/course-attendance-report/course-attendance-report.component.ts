@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertService, HttpService, PrintService } from 'shared';
 import { Subject, take, takeUntil } from 'rxjs';
+import { AlertService, HttpService, PrintService } from 'shared';
 
 @Component({
   selector: 'app-course-attendance-report',
@@ -23,6 +23,9 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
 
   @Input() options: any; // PDF or Print options
   @ViewChild('print_content') print_content!: ElementRef;
+
+  selectedRowData: any = null;
+  selectedCourseId: any = null;
 
   ngOnInit(): void {
     this.getAcademicSession();
@@ -151,7 +154,7 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
     is_render: true,
     page: 0,
     pageSize: 10,
-    title: ""
+    title: "Report Filter"
   };
 
   courseListOption: any = {
@@ -239,7 +242,8 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
       course_nature_id,
       exam_type_id,
       course_year_id,
-      semester_id
+      semester_id,
+      courseAttendaceReport: 1
     }, 'academic')
       .subscribe(
         (result: any) => {
@@ -334,6 +338,7 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
   }
 
   getCourses_btn(item: any) {
+    this.selectedRowData = item;
     let {
       academic_session_id,
       semester_id,
@@ -351,13 +356,6 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
       item.course_year_id,
       semester_id,
     )
-  }
-
-  formatDate(date: Date): string {
-    const dd = String(date.getDate()).padStart(2, '0');
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const yyyy = date.getFullYear();
-    return `${dd}-${mm}-${yyyy}`;
   }
 
   // downloadAttendanceReport(fileName: string, payload: any) {
@@ -385,9 +383,9 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
   //   document.body.removeChild(form);
   // }
 
-
   getPdfReport_btn(course: any) {
     // console.log("course: ", course);
+    this.selectedCourseId = course.course_id;
     let {
       college_id,
       degree_programme_type_id,
@@ -403,7 +401,7 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
       course_name
     } = course
     const sanitizedCourseName = course_name?.replace(/\s+/g, '_');
-    const fileName = `${sanitizedCourseName}_${new Date().getFullYear()}_${this.formatDate(new Date())}.pdf`;
+    const fileName = `Examination_Attendance_Sheet_${sanitizedCourseName}`;
 
     const getNameById = (list: any[], idKey: string, idValue: any, nameKey: string) =>
       list.find(item => item[idKey] === idValue)?.[nameKey] || '';
@@ -412,6 +410,7 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
     const exam_type_name_e = getNameById(this.state.matrixList, 'exam_type_id', exam_type_id, 'exam_type_name_e');
     const course_year_name_e = getNameById(this.state.matrixList, 'course_year_id', course_year_id, 'course_year_name_e');
     const semester_name_e = getNameById(this.state.semesterList, 'semester_id', semester_id, 'semester_name_e');
+    const academic_session_name_e = getNameById(this.state.acadmcSesnList, 'academic_session_id', academic_session_id, 'academic_session_name_e');
 
     this.http.postBlob(`/file/post/studentAttendanceReportPdf`, {
       academic_session_id,
@@ -426,6 +425,7 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
       exam_type_name_e,
       course_year_name_e,
       semester_name_e,
+      academic_session_name_e,
       orientation: this.options?.orientation || 'portrait'
     }, fileName, "academic").pipe(take(1))
       .subscribe(
@@ -451,33 +451,21 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
           this.alert.alertMessage("Something went wrong!", "Failed to download report. Please try again later.", "error");
         }
       );
-
-    // this.downloadAttendanceReport(fileName, {
-    //   academic_session_id,
-    //   semester_id,
-    //   degree_programme_type_id,
-    //   course_id,
-    //   college_id,
-    //   exam_type_id,
-    //   course_year_id,
-    //   course_nature_id,
-    //   college_name_e,
-    //   exam_type_name_e,
-    //   course_year_name_e,
-    //   semester_name_e,
-    //   orientation: this.options?.orientation || 'portrait'
-    // });
-
   }
 
-  // getPdf(): void {
-  //   console.log("this.options?.orientation : ", this.options?.orientation);
-  //   const html = this.print_content.nativeElement.innerHTML;
-  //   this.http.postBlob(`/file/post/htmltoPdf`, {
-  //     html,
-  //     // orientation: this.options?.orientation || 'portrait'
-  //     orientation: 'landscape'
-  //   }, null).pipe(take(1)).subscribe(() => console.log("PDF Generated"));
-  // }
+  isRowSelected(item: any): boolean {
+    return (this.selectedRowData?.course_nature_id == item.course_nature_id &&
+      this.selectedRowData?.course_year_id == item.course_year_id &&
+      this.selectedRowData?.dean_committee_id == item.dean_committee_id &&
+      this.selectedRowData?.exam_type_id == item.exam_type_id)
+  }
+
+  isRowSelectedCourse(item: any): boolean {
+    return item.course_id == this.selectedCourseId
+  }
+
+  clearSelection(): void {
+    this.selectedRowData = null;
+  }
 
 }
