@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import CryptoJS from 'crypto-js';
 import {CookieService} from 'ngx-cookie-service';
 import {moduleMapping} from "environment";
-import {Observable, take} from "rxjs";
+import {catchError, map, Observable, of, take} from "rxjs";
 import {HttpService} from "./http.service";
 import {Router} from '@angular/router';
 import {EncryptionService} from './encryption.service';
@@ -70,10 +70,32 @@ export class AuthService {
   }
 
 
-  isStdLoggedIn(): boolean {
-    const cookie = this.cookie.get('session')
-    return !!cookie;
+isStdLoggedIn(): Observable<boolean> {
+
+  const cookieValue = this.cookie.get('session');
+
+  // 1. Cookie must exist
+  if (!cookieValue) {
+    return of(false);
   }
+
+  // 2. Cookie must contain user_id
+  try {
+    const decrypted = this.es.decrypt(cookieValue);
+    if (!decrypted?.user_id) {
+      return of(false);
+    }
+  } catch {
+    return of(false);
+  }
+
+  // 3. Backend confirms login-table entry
+return this.http.getData('/security/isStdLoggedIn', 'common').pipe(
+  map((res: any) => res.loggedIn === true),
+  catchError(() => of(false))
+);
+}
+
 
   decryptCookie(cookie: string) {
     try {
