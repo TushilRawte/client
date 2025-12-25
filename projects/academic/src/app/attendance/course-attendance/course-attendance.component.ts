@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, take, takeUntil } from 'rxjs';
 import { AlertService, HttpService, PrintService } from 'shared';
@@ -17,6 +17,7 @@ export class CourseAttendanceComponent implements OnInit {
     degreeProgrammeTypeList: [] as any[],
   };
 
+  // & step 1: selection bg-color change -> declare value
   selectedCourseId: number | null = null;
   selectedOperationType: string | null = null;
   selectedRowData: any = null;
@@ -42,6 +43,8 @@ export class CourseAttendanceComponent implements OnInit {
   globalAttendanceStatusId: number = 1; // Default global status
   groupedStudents: any[] = [];
   private destroy$ = new Subject<void>();
+  @ViewChild('courseListSection') courseListSection!: ElementRef; // ~ step 1 (scroll) then set id in target div
+
 
   constructor(
     private HTTP: HttpService,
@@ -271,23 +274,37 @@ export class CourseAttendanceComponent implements OnInit {
     });
   }
 
+  // getClassForFinalizeStudents(item: any): string {
+  //   if (this.attendanceOperation.attendanceUpdate || this.attendanceOperation.finalize) {
+  //     if (item.attendance_finalize_yn === 'Y') {
+  //       return 'background-color: #D3D3D3';
+  //     } else if (item.attendance_status_id && [1].includes(item.attendance_status_id)) {
+  //       return 'background-color: #BDF9C2';
+  //     } else if (item.attendance_status_id && [3].includes(item.attendance_status_id)) {
+  //       return 'background-color: #f9cabdff';
+  //     }
+  //   } else if (this.attendanceOperation.finalize) {
+  //     if (item.attendance_finalize_yn === 'Y') {
+  //       return 'background-color: #D3D3D3';
+  //     }
+  //   } else if (this.attendanceOperation.unFinalize) {
+  //     if (item.attendance_finalize_yn === 'N') {
+  //       return 'background-color: #D3D3D3';
+  //     }
+  //   }
+  //   return 'background-color: #fff';
+  // }
+
   getClassForFinalizeStudents(item: any): string {
-    if (this.attendanceOperation.attendanceUpdate) {
-      if (item.attendance_finalize_yn === 'Y') {
-        return 'background-color: #D3D3D3';
-      } else if (item.attendance_status_id && [1, 2, 3].includes(item.attendance_status_id)) {
-        return 'background-color: #BDF9C2';
-      }
-    } else if (this.attendanceOperation.finalize) {
-      if (item.attendance_finalize_yn === 'Y') {
-        return 'background-color: #D3D3D3';
-      }
-    } else if (this.attendanceOperation.unFinalize) {
-      if (item.attendance_finalize_yn === 'N') {
-        return 'background-color: #D3D3D3';
-      }
+    if (item.attendance_finalize_yn === 'Y') {
+      return 'background-color: #D3D3D3';
+    } else if (item.attendance_status_id && [1].includes(item.attendance_status_id)) {
+      return 'background-color: #BDF9C2';
+    } else if (item.attendance_status_id && [3].includes(item.attendance_status_id)) {
+      return 'background-color: #f9cabdff';
+    } else {
+      return 'background-color: #fff';
     }
-    return 'background-color: #fff';
   }
 
   onToggleSelectAll(isChecked: boolean): void {
@@ -300,6 +317,65 @@ export class CourseAttendanceComponent implements OnInit {
       }
     });
   }
+
+  // prepareGroupedStudents(): void {
+  //   if (!this.courseAttendanceStudentList || this.courseAttendanceStudentList.length === 0) {
+  //     this.groupedStudents = [];
+  //     return;
+  //   }
+
+  //   const groupedMap = new Map<string, any>();
+
+  //   // First, group students by degree programme
+  //   this.courseAttendanceStudentList.forEach((student: any, index: number) => {
+  //     const key = student.degree_programme_name_e;
+
+  //     if (!groupedMap.has(key)) {
+  //       groupedMap.set(key, {
+  //         degree_programme_name_e: student.degree_programme_name_e,
+  //         records: [],
+  //       });
+  //     }
+
+  //     groupedMap.get(key).records.push({
+  //       ...student,
+  //       formIndex: index,
+  //     });
+  //   });
+
+  //   // Convert map to array and sort groups if needed
+  //   this.groupedStudents = Array.from(groupedMap.values());
+
+  //   // Sort groups by degree programme name
+  //   this.groupedStudents.sort((a, b) =>
+  //     a.degree_programme_name_e.localeCompare(b.degree_programme_name_e)
+  //   );
+
+  //   let globalIndex = 1;
+
+  //   // Sort records within each group and assign sequential index
+  //   this.groupedStudents = this.groupedStudents.map((group: any) => {
+  //     // Sort records: First by finalize status, then by student name
+  //     group.records.sort((a: any, b: any) => {
+  //       // If names are the same, sort by finalize status (Y before N)
+  //       if (a.attendance_finalize_yn !== b.attendance_finalize_yn) {
+  //         return a.attendance_finalize_yn === 'Y' ? 1 : -1; // 'N' comes before 'Y'
+  //       }
+  //       // then sort by student name alphabetically
+  //       const nameCompare = (a.student_name || '').localeCompare(b.student_name || '');
+  //       if (nameCompare !== 0) return nameCompare;
+
+  //       return 0;
+  //     });
+
+  //     // Assign sequential global index
+  //     group.records.forEach((student: any) => {
+  //       student.index = globalIndex++;
+  //     });
+
+  //     return group;
+  //   });
+  // }
 
   prepareGroupedStudents(): void {
     if (!this.courseAttendanceStudentList || this.courseAttendanceStudentList.length === 0) {
@@ -336,18 +412,47 @@ export class CourseAttendanceComponent implements OnInit {
 
     let globalIndex = 1;
 
-    // Sort records within each group and assign sequential index
+    // Sort records within each group according to the specified order
     this.groupedStudents = this.groupedStudents.map((group: any) => {
-      // Sort records: First by finalize status, then by student name
+      // Define sorting priority based on attendance status
       group.records.sort((a: any, b: any) => {
-        // If names are the same, sort by finalize status (Y before N)
-        if (a.attendance_finalize_yn !== b.attendance_finalize_yn) {
-          return a.attendance_finalize_yn === 'Y' ? 1 : -1; // 'N' comes before 'Y'
-        }
-        // then sort by student name alphabetically
-        const nameCompare = (a.student_name || '').localeCompare(b.student_name || '');
-        if (nameCompare !== 0) return nameCompare;
+        // Priority 1: attendance_finalize_yn is null AND attendance_status_id is null (comes first)
+        const aIsNullAndNull = a.attendance_finalize_yn === null && a.attendance_status_id === null;
+        const bIsNullAndNull = b.attendance_finalize_yn === null && b.attendance_status_id === null;
 
+        if (aIsNullAndNull && !bIsNullAndNull) return -1;
+        if (!aIsNullAndNull && bIsNullAndNull) return 1;
+        if (aIsNullAndNull && bIsNullAndNull) return 0;
+
+        // Priority 2: attendance_finalize_yn is null AND attendance_status_id = 3 (comes second)
+        const aIsNullAndThree = a.attendance_finalize_yn === 'N' && a.attendance_status_id === 3;
+        const bIsNullAndThree = b.attendance_finalize_yn === 'N' && b.attendance_status_id === 3;
+
+        if (aIsNullAndThree && !bIsNullAndThree) return -1;
+        if (!aIsNullAndThree && bIsNullAndThree) return 1;
+        if (aIsNullAndThree && bIsNullAndThree) return 0;
+
+        // Priority 3: Sort by name alphabetically (comes third)
+        // const nameCompare = (a.student_name || '').localeCompare(b.student_name || '');
+        // if (nameCompare !== 0) return nameCompare;
+
+        // Priority 4: attendance_status_id = 1 AND attendance_finalize_yn = 'Y' (comes last)
+        const aIsOneAndY = a.attendance_status_id === 1 && a.attendance_finalize_yn === 'Y';
+        const bIsOneAndY = b.attendance_status_id === 1 && b.attendance_finalize_yn === 'Y';
+
+        if (aIsOneAndY && !bIsOneAndY) return 1;  // 'Y' comes after others
+        if (!aIsOneAndY && bIsOneAndY) return -1; // Others come before 'Y'
+        if (aIsOneAndY && bIsOneAndY) return 0;
+
+        // Priority 5: attendance_status_id = 3 AND attendance_finalize_yn = 'Y' (comes last)
+        const aIsOneAndYFive = a.attendance_status_id === 3 && a.attendance_finalize_yn === 'Y';
+        const bIsOneAndYFive = b.attendance_status_id === 3 && b.attendance_finalize_yn === 'Y';
+
+        if (aIsOneAndYFive && !bIsOneAndYFive) return 1;  // 'Y' comes after others
+        if (!aIsOneAndYFive && bIsOneAndYFive) return -1; // Others come before 'Y'
+        if (aIsOneAndYFive && bIsOneAndYFive) return 0;
+
+        // For any remaining cases, maintain current order
         return 0;
       });
 
@@ -387,6 +492,7 @@ export class CourseAttendanceComponent implements OnInit {
       return;
     }
 
+  // & step 3: selection bg-color change -> clear
     // Clear previous selection
     this.clearSelection();
 
@@ -439,6 +545,7 @@ export class CourseAttendanceComponent implements OnInit {
   }
 
   onStatusClick(item: any, operation: string): void {
+  // & step 2: selection bg-color change -> initialize value
     // Set selected row data
     this.selectedCourseId = item.course_id;
     this.selectedOperationType = operation;
@@ -507,6 +614,12 @@ export class CourseAttendanceComponent implements OnInit {
 
             // Auto-select all by default
             this.onToggleSelectAll(true);
+
+            // ~ step 2 (scroll)
+            // ⬇️ WAIT FOR DOM TO RENDER, THEN SCROLL
+            setTimeout(() => {
+              this.scrollToCourseList();
+            }, 150);
           } else {
             this.alert.alertMessage("No Records Found There!", "", "warning");
           }
@@ -522,7 +635,8 @@ export class CourseAttendanceComponent implements OnInit {
   getAttendanceStatus() {
     this.HTTP.getParam('/master/get/getAttendanceStatus/', {}, 'academic')
       .subscribe((result: any) => {
-        this.attendanceStatusList = result.body.data || [];
+        let temp = result.body.data || [];
+        this.attendanceStatusList = temp.filter((ele: any) => ele?.attendance_status_id !== 2);
       });
   }
 
@@ -627,7 +741,6 @@ export class CourseAttendanceComponent implements OnInit {
     return allowed.some(id => this.user?.designation_arr?.includes(id));
   }
 
-
   getPdf(): void {
     let { academic_session_id, degree_programme_type_id, semester_id, course_id } =
       this.finalizeCourseFilterFormGroup.value;
@@ -642,7 +755,6 @@ export class CourseAttendanceComponent implements OnInit {
     let selectedSemester = this.state.semesterList
       .filter((sem: any) => sem.semester_id === semester_id);
 
-
     let type = this.attendanceOperation.attendanceUpdate ?
       "Total Student List" : this.attendanceOperation.finalize ? "Attendance Not-Finalize Student List" : "Attendance Finalize Student List"
 
@@ -655,11 +767,14 @@ export class CourseAttendanceComponent implements OnInit {
       title: `${type} ${selectedAcademicSession?.academic_session_name_e}`,
       academic_session_name_e: selectedAcademicSession?.academic_session_name_e,
       degree_programme_type_name_e: selectedDegreeProTy[0]?.degree_programme_type_name_e,
-      semester_name_e: selectedSemester[0]?.semester_name_e
+      semester_name_e: selectedSemester[0]?.semester_name_e,
+      course_code: this.selectedRowData?.course_code,
+      course_title_e: this.selectedRowData?.course_title_e,
+      dean_committee_name_e: this.selectedRowData?.dean_committee_name_e,
+      course_year_name_e: this.selectedRowData?.course_year_name_e,
       // orientation: 'landscape'
     }, "Attendance_Status_Report", "common").pipe(take(1)).subscribe(() => console.log("PDF Generated"));
   }
-
 
   hasNullAttendanceStatus(): boolean {
     return this.courseAttendanceStudentList?.some((student: any) =>
@@ -667,16 +782,32 @@ export class CourseAttendanceComponent implements OnInit {
     );
   }
 
+  // & step 4: selection bg-color change -> check value
   isRowSelected(item: any): boolean {
     return this.selectedCourseId === item.course_id &&
       this.selectedOperationType !== null;
   }
 
-
+  // & step 5: selection bg-color change -> clean value
   clearSelection(): void {
     this.selectedCourseId = null;
     this.selectedOperationType = null;
     this.selectedRowData = null;
+  }
+
+  // ~ step 4 (scroll)
+  scrollToCourseList() {
+    const el = document.getElementById('courseListSection');
+    if (!el) return;
+
+    const headerHeight = 64; // mat-toolbar height
+    const rect = el.getBoundingClientRect();
+    const absoluteTop = rect.top + window.pageYOffset - headerHeight;
+
+    window.scrollTo({
+      top: absoluteTop,
+      behavior: 'smooth'
+    });
   }
 
 }

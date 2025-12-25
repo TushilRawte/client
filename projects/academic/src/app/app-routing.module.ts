@@ -59,8 +59,8 @@ import { UidnReportComponent } from './student-profile/uidn-report/uidn-report.c
 import { StudentCourseRegistrationComponent } from './registration/student-course-registration/student-course-registration.component';
 import { StudentCourseRegistrationUnfinalizeComponent } from './registration/student-course-registration-unfinalize/student-course-registration-unfinalize.component';
 import { DegreeCompletedDataComponent } from './convocation/degree-completed-data/degree-completed-data.component';
-import { AttendanceUnfinalizeComponent } from './attendance/attendance-unfinalize/attendance-unfinalize.component';
 import { StudentProfileComponent } from './student/student-profile/student-profile.component';
+import { CourseAttendanceUnfinalizeComponent } from './attendance/course-attendance-unfinalize/course-attendance-unfinalize.component';
 
 const routes: Routes = [
   {
@@ -119,7 +119,7 @@ const routes: Routes = [
       },
       {
         path: 'course-attendance-unfinalize',
-        component: AttendanceUnfinalizeComponent,
+        component: CourseAttendanceUnfinalizeComponent,
         pathMatch: 'full',
       },
       {

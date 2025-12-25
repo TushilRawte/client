@@ -10,7 +10,7 @@ import { AlertService, HttpService, PrintService } from 'shared';
   styleUrl: './course-attendance-report.component.scss'
 })
 export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
- state = {
+  state = {
     matrixList: [] as any[],
     acadmcSesnList: [] as any[],
     degreeProgrammeTypeList: [] as any[],
@@ -349,6 +349,9 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
   }
 
   getCourses_btn(item: any) {
+    this.clearSelection();
+    this.clearSelectionCourse();
+
     this.selectedRowData = item;
     let {
       academic_session_id,
@@ -374,6 +377,7 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
 
   getPdfReport_btn(course: any) {
     // console.log("course: ", course);
+    // const course_code = course.course_name?.split(' ')[0]; // eg. AHPD-5111
     this.selectedCourseId = course.course_id;
     let {
       college_id,
@@ -415,6 +419,7 @@ export class CourseAttendanceReportComponent implements OnInit, OnDestroy {
       course_year_name_e,
       semester_name_e,
       academic_session_name_e,
+      // course_code,
       orientation: this.options?.orientation || 'portrait'
     }, fileName, "academic").pipe(take(1))
       .subscribe(
