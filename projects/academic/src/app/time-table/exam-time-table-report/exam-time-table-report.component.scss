@@ -1,4 +1,3 @@
-
 .text-danger {
   color: #fe6f6f;
   font-weight: bold;
@@ -10,17 +9,22 @@
 }
 
 ::ng-deep .ng-select.is-invalid .ng-select-container {
-  border-color: #dc3545 !important;   /* red border */
+  border-color: #dc3545 !important;
+  /* red border */
   box-shadow: none;
 }
 
 
 .page-title {
-    color: rgb(3, 101, 69);
-    font-weight: bolder;
+  color: rgb(3, 101, 69);
+  font-weight: bolder;
 }
 
-td{
+td {
   text-align: left !important;
 }
 
+
+.text-start {
+  text-align: left !important;
+}
