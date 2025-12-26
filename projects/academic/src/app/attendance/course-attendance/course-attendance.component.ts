@@ -492,7 +492,7 @@ export class CourseAttendanceComponent implements OnInit {
       return;
     }
 
-  // & step 3: selection bg-color change -> clear
+    // & step 3: selection bg-color change -> clear
     // Clear previous selection
     this.clearSelection();
 
@@ -522,7 +522,8 @@ export class CourseAttendanceComponent implements OnInit {
       degree_programme_type_id,
       exam_type_id,
       emp_id,
-      course_registration_type_id
+      course_registration_type_id,
+      is_finalize_yn: 'Y'
     };
 
     this.HTTP.getParam('/attendance/get/getCourseWiseAttendance', params, 'academic')
@@ -545,7 +546,7 @@ export class CourseAttendanceComponent implements OnInit {
   }
 
   onStatusClick(item: any, operation: string): void {
-  // & step 2: selection bg-color change -> initialize value
+    // & step 2: selection bg-color change -> initialize value
     // Set selected row data
     this.selectedCourseId = item.course_id;
     this.selectedOperationType = operation;
@@ -604,7 +605,7 @@ export class CourseAttendanceComponent implements OnInit {
     }
     // For attendanceUpdate: get all students (no filter)
 
-    this.HTTP.getParam('/course/get/getStuWiseRegCourses', params, 'academic')
+    this.HTTP.getParam('/course/get/getStuWiseRegCourses', { ...params, is_finalize_yn: 'Y' }, 'academic')
       .subscribe((res: any) => {
         if (!res.body.error) {
           this.courseAttendanceStudentList = res.body.data || [];

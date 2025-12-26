@@ -353,21 +353,21 @@ export class CourseAttendanceUnfinalizeComponent implements OnInit {
   }
 
   getAcademicSession() {
-    this.HTTP.getParam('/master/get/getAcademicSession/', {}, 'academic')
+    this.HTTP.getParam('/master/get/getAcademicSession', {}, 'academic')
       .subscribe((result: any) => {
         this.state.acadmcSesnList = result.body.data || [];
       });
   }
 
   getDegreeProgrammeTypeData() {
-    this.HTTP.getParam('/master/get/getDegreeProgramType/', {}, 'academic')
+    this.HTTP.getParam('/master/get/getDegreeProgramType', {}, 'academic')
       .subscribe((result: any) => {
         this.state.degreeProgrammeTypeList = result.body.data || [];
       });
   }
 
   getSemester() {
-    this.HTTP.getParam('/master/get/getSemesterList/', {}, 'academic')
+    this.HTTP.getParam('/master/get/getSemesterList', {}, 'academic')
       .subscribe((result: any) => {
         this.state.semesterList = result.body.data || [];
       });
@@ -433,6 +433,7 @@ export class CourseAttendanceUnfinalizeComponent implements OnInit {
       college_id,
       course_id,
       exam_type_id,
+      is_finalize_yn: 'Y'
     };
 
     this.HTTP.getParam('/attendance/get/getCourseWiseAttendance', params, 'academic')
@@ -509,7 +510,7 @@ export class CourseAttendanceUnfinalizeComponent implements OnInit {
     }
     // For attendanceUpdate: get all students (no filter)
 
-    this.HTTP.getParam('/course/get/getStuWiseRegCourses', params, 'academic')
+    this.HTTP.getParam('/course/get/getStuWiseRegCourses', { ...params, is_finalize_yn: 'Y' }, 'academic')
       .subscribe((res: any) => {
         if (!res.body.error) {
           this.courseAttendanceStudentList = res.body.data || [];
