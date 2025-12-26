@@ -264,7 +264,8 @@ addRowToTable() {
     this.HTTP.postData(apiUrl, finalPayload, 'academic').subscribe(res => {
       if (!res.body.error) {
         this.alert.alertMessage("Record Inserted...!", "", "success");
-        this.clearCourseTable();
+        // this.clearCourseTable();
+        this.getCourseYearList();
       } else {
         this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
       }
@@ -538,6 +539,8 @@ getDegreeProgramme(college_id: number) {
     this.selectedDegreeProgrammeTypeId = degree_programme_type_id;
         this.isOtherCourseDisabled()
         this.filterCourseTypeList()
+        // this.getCourseYearList();
+        this.clearCourseTable()
 
     // ✅ Check if selected degree_programme_id is 1, 2, or 3
   this.hasSpecificProgramme = [1, 2, 3].includes(degree_programme_id);
