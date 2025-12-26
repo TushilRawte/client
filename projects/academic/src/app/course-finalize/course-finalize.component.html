@@ -176,7 +176,10 @@
           <th>Course</th>
           <th>Course Type</th>
           <!-- <th>Course Nature</th> -->
-          <th>Credit</th>
+          <th>
+            <span style="display: inline-block;">Credit</span>
+            <span style="display: inline-block;">T<sub>C</sub> (C<sub>T</sub>&nbsp;+&nbsp;C<sub>P</sub>)</span>
+          </th>
           <th>Allotment Type</th>
           <th>Teachers</th>
         </tr>
@@ -192,8 +195,8 @@
           <td>{{ course.cou_allot_type_name_e }}</td>
           <td class="text-start">
             <ul class="mb-0">
-              <li *ngFor="let teacher of course.teacherRows">
-                {{ teacher.emp_name }}
+              <li *ngFor="let teacher of course.teacherRows let i = index">
+                P{{i+1}}- {{ teacher.emp_name?.toUpperCase() }}
               </li>
             </ul>
           </td>
