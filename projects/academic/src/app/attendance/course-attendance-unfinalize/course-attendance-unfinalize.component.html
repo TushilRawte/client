@@ -90,7 +90,7 @@
                     <tbody>
                         <tr *ngFor="let item of courseAttendanceList">
                             <td style="text-align: left !important;" [ngClass]="{'bg-green': isRowSelected(item)}">
-                                {{ item.course_title_e }}
+                                {{ item.course_title_e?.toUpperCase() }}
                             </td>
                             <td [ngClass]="{'bg-green': isRowSelected(item)}">{{ item.course_code }}</td>
                             <!-- <td>{{ item.degree_programme_type_name_e }}</td> -->
