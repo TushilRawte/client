@@ -89,7 +89,8 @@
           </thead>
           <tbody>
             <tr *ngFor="let item of courseAttendanceList">
-              <td [ngClass]="{'bg-green': isRowSelected(item)}">{{ item.course_title_e }}</td>
+              <td [ngClass]="{'bg-green': isRowSelected(item)}" style="text-align: left !important;">{{
+                item.course_title_e }}</td>
               <td [ngClass]="{'bg-green': isRowSelected(item)}">{{ item.course_code }}</td>
               <!-- <td>{{ item.degree_programme_type_name_e }}</td> -->
               <td [ngClass]="{'bg-green': isRowSelected(item)}">{{ item.dean_committee_name_e }}</td>
@@ -134,11 +135,21 @@
 
 <!-- second part refresh -->
 <ng-container *ngIf="!courseAttendanceStudentList || courseAttendanceStudentList.length > 0">
-  <mat-card class="attendance-detail-main mt-lg-4 mt-4">
+  <mat-card class="attendance-detail-main mt-lg-4 mt-4" id="courseListSection">
     <mat-card-content>
-      <!-- Global Attendance Status Selector *ngIf="attendanceOperation.attendanceUpdate" -->
+      <h3 class="page-title" *ngIf="this.attendanceOperation.attendanceUpdate">
+        Total Student List
+      </h3>
+      <h3 class="page-title" *ngIf="this.attendanceOperation.finalize">
+        Not Finalize Students
+      </h3>
+      <h3 class=" page-title" *ngIf="this.attendanceOperation.unFinalize">
+        Finalize Students
+      </h3>
+
+      <!-- Global Attendance Status Selector *ngIf=" attendanceOperation.attendanceUpdate" -->
       <div class="row mb-3" *ngIf="!attendanceOperation?.unFinalize">
-        <div class="col-md-4 col-6">
+        <div class="col-md-4 col-6" *ngIf="!attendanceOperation?.finalize">
           <ng-select placeholder="Attendance Status" appearance="outline" [(ngModel)]="globalAttendanceStatusId"
             (ngModelChange)="onSelectAllAttendanceStatus($event)">
             <ng-container *ngFor="let status of attendanceStatusList">
@@ -156,16 +167,20 @@
             <p class="legend-title mb-1">Color Indicators:</p>
             <div class="d-flex flex-wrap gap-3">
               <div class="legend-item">
+                <div class="legend-item">
+                  <span class="color-box" style="background-color: #fff;"></span>
+                  <span class="legend-label">Attendance Not-Update</span>
+                </div>
+                <div class="legend-item">
+                  <span class="color-box" style="background-color: #f9cabdff"></span>
+                  <span class="legend-label">Short Attendance Updated</span>
+                </div>
                 <span class="color-box" style="background-color: #BDF9C2;"></span>
                 <span class="legend-label">Attendance Updated</span>
               </div>
               <div class="legend-item">
                 <span class="color-box" style="background-color: #D3D3D3;"></span>
                 <span class="legend-label">Attendance Finalized</span>
-              </div>
-              <div class="legend-item">
-                <span class="color-box" style="background-color: #fff;"></span>
-                <span class="legend-label">Attendance Not-Update</span>
               </div>
             </div>
           </div>
@@ -206,13 +221,14 @@
                     <td>
                       {{rec.index}}
                     </td>
-                    <td *ngIf="i === 0" [attr.rowspan]="group.records.length" style="vertical-align: top !important;">
+                    <td *ngIf="i === 0" [attr.rowspan]="group.records.length"
+                      style="vertical-align: top !important; text-align: left !important;">
                       {{ group.degree_programme_name_e }}
                     </td>
                     <td [style]="getClassForFinalizeStudents(rec)">
                       {{ rec.ue_id +' / '+ rec.registration_id}}
                     </td>
-                    <td [style]="getClassForFinalizeStudents(rec)">
+                    <td [style]="getClassForFinalizeStudents(rec)" style="text-align: left !important;">
                       {{ rec.student_name }}
                     </td>
                     <td [style]="getClassForFinalizeStudents(rec)">

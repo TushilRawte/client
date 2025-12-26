@@ -63,9 +63,7 @@ export class ExamTimeTableComponent {
     public print: PrintService,
     private snackBar: MatSnackBar,
     private loaderService: LoaderService
-  ) {
-  }
-
+  ) { }
   ngOnInit() {
     this.getExamTypeData();
     this.mainforfun();
@@ -85,81 +83,6 @@ export class ExamTimeTableComponent {
     });
   }
 
-  // onSubmitRows() {
-  //   if (this.TimeTablerowsFormGroup.invalid) {
-  //     this.alert.alertMessage("Please fill in all required fields", "", "warning");
-  //     this.TimeTablerowsFormGroup.markAllAsTouched(); // highlight invalid fields
-  //     return;
-  //   }
-  //   // const rows = (this.TimeTablerowsFormGroup.get('rows') as FormArray).getRawValue();
-  //   const selectedRows = this.rows.value.filter((row: any) => row.select);
-  //   if (selectedRows.length === 0) {
-  //     this.alert.alertMessage("Select Atleast one course!", "", "warning");
-  //     return;
-  //   }
-
-  //   const formdata = this.getcourseListForTimeTable[0];
-  //   const formgroupdata = this.payload_data;
-
-  //   // 1) Main table payload
-  //   const mainPayload = {
-  //     academic_session_id: formgroupdata["Academic Session"],
-  //     exam_type_id: formgroupdata["Exam Type"],
-  //     course_year_id: formgroupdata["Course Year"],
-  //     semester_id: formgroupdata["Semester"],
-  //     degree_id: formgroupdata["Degree Program"],
-  //     // dean_committee_id: formgroupdata["Dean Committee"],
-
-  //     exam_paper_type_id: formgroupdata["Exam Paper Type"],
-  //     is_finalize_yn: formdata.is_finalize_yn || 'N',
-  //     is_issue_yn: formdata.is_issue_yn || 'N'
-  //   };
-  //   const detailPayload = this.TimeTablerowsFormGroup.value.rows
-  //     .filter((r: any) => r.select)
-  //     .map((r: any) => ({
-  //       course_id: r.course_id,
-  //       course_nature_id: 1,
-  //       // dean_committee_id: formgroupdata["Dean Committee"],
-  //       exam_date: r.exam_date,
-  //       // exam_shift_time_id: firstRow.exam_shift_time_id.id,   // ✅ FIXED
-  //       exam_shift_time_id: r.exam_shift_time_id?.id,   // ✅ FIXED
-  //       is_finalize_yn: r.is_finalize_yn || 'N',
-  //     }));
-
-  //   // 3) Send everything in one request
-  //   const payload = {
-  //     ...mainPayload,
-  //     courserows: detailPayload
-  //   };
-
-
-  //   let selectedData = selectedRows.map((data: any) => ({
-  //     timetable_detail_id: data.timetable_detail_id,
-  //     course_id: data.course_id,
-  //     exam_date: data.exam_date,
-  //     exam_shift_time_id: data.exam_shift_time_id?.id || data.exam_shift_time_id
-  //   }))
-
-  //   console.log("skdjk---------------------------------------------");
-  //   console.log("payload : ====>>>>", payload);
-  //   console.log("sds--------------------------------------------------00000000000000000000000");
-  //   console.log("selectedData : ====>>>>", selectedData);
-  // this.HTTP.postData('/timetable/post/saveExamTimeTable', payload, 'academic')
-  //   .subscribe((result: any) => {
-  //     const details = result?.body?.error?.details;
-  //     if (!result.body.error) {
-  //       this.onSubmitFields(); //^ reload page
-  //       this.alert.alertMessage(result?.body?.data?.message || "Time Table saved successfully!", "", "success");
-  //     } else {
-  //       const message = Array.isArray(details) && details.length > 0
-  //         ? details[0].message
-  //         : result.body.error.message || "Unknown error occurred";
-
-  //       // console.log(message);
-  //       this.alert.alertMessage("Update failed!", message, "error");
-  //     }
-  //   });
-  // }
 
   onSubmitRows() {
     const rows = this.rows.controls;
@@ -198,7 +121,7 @@ export class ExamTimeTableComponent {
       exam_type_id: formgroupdata["Exam Type"],
       course_year_id: formgroupdata["Course Year"],
       semester_id: formgroupdata["Semester"],
-      degree_id: formgroupdata["Degree Program"],
+      degree_id: formgroupdata["Degree Programme"],
       exam_paper_type_id: formgroupdata["Exam Paper Type"],
       is_finalize_yn: formdata.is_finalize_yn || 'N',
       is_issue_yn: formdata.is_issue_yn || 'N'
@@ -433,10 +356,9 @@ export class ExamTimeTableComponent {
 
     return `${year}-${month}-${day}`;
   };
-
   // optimize..
   onSubmitFields() {
-    this.loaderService.showLoader();
+    this.loaderService.show();
     this.examShiftTimeData();
 
     const rawData = this.TimeTableFiledFormGroup.value;
@@ -455,7 +377,7 @@ export class ExamTimeTableComponent {
       academic_session_id: allData["Academic Session"],
       semester_id: allData["Semester"],
       degree_programme_type_id: allData["Degree Programme Type"],
-      degree_id: allData["Degree Program"],
+      degree_id: allData["Degree Programme"],
       course_year_id: allData["Course Year"],
       // dean_committee_id: allData["Dean Committee"],
       exam_type_id: allData["Exam Type"],
@@ -479,68 +401,63 @@ export class ExamTimeTableComponent {
         } else {
           this.showcourse = true;
         }
+        // ✅ Sort the data: move records with timetable_detail_id to the bottom
+        apidata = apidata.sort((a: any, b: any) => {
+          const hasA = !!a.timetable_detail_id;
+          const hasB = !!b.timetable_detail_id;
+          return Number(hasA) - Number(hasB); // false (0) comes before true (1)
+        });
 
-        this.loadTableData(apidata);
+        // Use Map for O(1) lookup
+        const shiftMap = new Map(this.examShiftTimeList.map((s: any) => [s.id, s]));
+
+        // Clear rows once
+        const rowsArray = this.TimeTablerowsFormGroup.get('rows') as FormArray;
+        rowsArray.clear();
+
+        // console.time("⏱️ Build Rows Loop");
+        // Build normalized list + patch rows in a single loop
+        this.getcourseListForTimeTable = apidata.map((item: any) => {
+          const shiftObj = shiftMap.get(item.exam_shift_time_id) || null;
+
+          // console.log("shiftObj ===??==??: ", shiftObj);
+
+          const row = this.fb.group({
+            select: [!item.timetable_detail_id],
+            course_id: [item.course_id],
+            course_name: [item.course_name],
+            exam_date: [{ value: this.formatDate(item.exam_date), disabled: item.timetable_detail_id }, Validators.required],
+            exam_shift_time_id: [{ value: shiftObj, disabled: item.timetable_detail_id }, Validators.required],
+            course_nature_id: [item.course_nature_id || null],
+            // dean_committee_id: [item.dean_committee_id || null],
+            is_finalize_yn: ['N'],
+            editable: [item.timetable_detail_id],
+            timetable_main_id: item.timetable_main_id,
+            timetable_detail_id: item.timetable_detail_id
+          });
+          rowsArray.push(row);
+
+          return {
+            course_year_id: item.course_year_id,
+            course_name: item.course_name,
+            course_id: item.course_id,
+            select: !!item.timetable_detail_id,
+            course_code: item.course_code,
+            academic_session_id: item.academic_session_id,
+            degree_programme_id: item.degree_programme_id,
+            semester_id: item.semester_id,
+            exam_type_id: item.exam_type_id,
+            exam_date: item.exam_date || null,
+            exam_shift_time_id: item.exam_shift_time_id || null,
+            course_nature_id: item.course_nature_id || null,
+            // dean_committee_id: item.dean_committee_id || null,
+            timetable_main_id: item.timetable_main_id,
+            timetable_detail_id: item.timetable_detail_id || null
+          };
+        });
         // console.timeEnd("⏱️ Build Rows Loop");
+        this.loaderService.hide();
       });
-    this.loaderService.hideLoader();
-  }
-
-  loadTableData(apidata: any[]) {
-    // ✅ Sort the data: move records with timetable_detail_id to the bottom
-    // apidata = apidata.sort((a: any, b: any) => {
-    //   const hasA = !!a.timetable_detail_id;
-    //   const hasB = !!b.timetable_detail_id;
-    //   return Number(hasA) - Number(hasB); // false (0) comes before true (1)
-    // });
-
-    // Use Map for O(1) lookup
-    const shiftMap = new Map(this.examShiftTimeList.map((s: any) => [s.id, s]));
-
-    // Clear rows once
-    const rowsArray = this.TimeTablerowsFormGroup.get('rows') as FormArray;
-    rowsArray.clear();
-
-    // console.time("⏱️ Build Rows Loop");
-    // Build normalized list + patch rows in a single loop
-    this.getcourseListForTimeTable = apidata.map((item: any) => {
-      const shiftObj = shiftMap.get(item.exam_shift_time_id) || null;
-
-      // console.log("shiftObj ===??==??: ", shiftObj);
-
-      const row = this.fb.group({
-        select: [!item.timetable_detail_id],
-        course_id: [item.course_id],
-        course_name: [item.course_name],
-        exam_date: [{ value: this.formatDate(item.exam_date), disabled: item.timetable_detail_id }, Validators.required],
-        exam_shift_time_id: [{ value: shiftObj, disabled: item.timetable_detail_id }, Validators.required],
-        course_nature_id: [item.course_nature_id || null],
-        // dean_committee_id: [item.dean_committee_id || null],
-        is_finalize_yn: ['N'],
-        editable: [item.timetable_detail_id],
-        timetable_main_id: item.timetable_main_id,
-        timetable_detail_id: item.timetable_detail_id
-      });
-      rowsArray.push(row);
-
-      return {
-        course_year_id: item.course_year_id,
-        course_name: item.course_name,
-        course_id: item.course_id,
-        select: !!item.timetable_detail_id,
-        course_code: item.course_code,
-        academic_session_id: item.academic_session_id,
-        degree_programme_id: item.degree_programme_id,
-        semester_id: item.semester_id,
-        exam_type_id: item.exam_type_id,
-        exam_date: item.exam_date || null,
-        exam_shift_time_id: item.exam_shift_time_id || null,
-        course_nature_id: item.course_nature_id || null,
-        // dean_committee_id: item.dean_committee_id || null,
-        timetable_main_id: item.timetable_main_id,
-        timetable_detail_id: item.timetable_detail_id || null
-      };
-    });
   }
 
   onDropdownChange(event: any, fieldName: string) {
@@ -550,7 +467,7 @@ export class ExamTimeTableComponent {
       this.getDegreeProgrammeData(event?.value); //* step 4
     } else if (fieldName.trim() === 'Academic Session') {
       this.getDegreeProgramTypeData(); //* step 3
-    } else if (fieldName.trim() === 'Degree Program') {
+    } else if (fieldName.trim() === 'Degree Programme') {
       this.getCourseYearData(event?.value); //* step 5
     } else if (fieldName.trim() === 'Exam Type') {
       this.getAcademicSession(); //* step 2
@@ -611,7 +528,7 @@ export class ExamTimeTableComponent {
   getDegreeProgrammeData(degree_programme_type_id: number) {
     // console.log("Called getDegreeProgrammeData------>>>");
     // console.log("degree_programme_type_id : ", degree_programme_type_id);
-    this.HTTP.getParam('/master/get/getDegreePrograam', { degree_programme_type_id }, 'academic')
+    this.HTTP.getParam('/master/get/getDegreeProgramme', { degree_programme_type_id }, 'academic')
       .subscribe((result: any) => {
         this.degreeProgrammeList = (result.body.data || [])
           .map((item: any) => ({
@@ -705,7 +622,7 @@ export class ExamTimeTableComponent {
     { id: 1, name: 'Exam Type', required: true, class: 'col-md-3 col-6' },
     { id: 2, name: 'Academic Session', required: false, class: 'col-md-3 col-6' },
     { id: 3, name: 'Degree Programme Type', required: false, class: 'col-md-6 col-6' },
-    { id: 4, name: 'Degree Program', required: false, class: 'col-md-6 col-6' },
+    { id: 4, name: 'Degree Programme', required: false, class: 'col-md-6 col-6' },
     { id: 5, name: 'Course Year', required: false, class: 'col-md-3 col-6' },
     { id: 6, name: 'Exam Paper Type', required: false, class: 'col-md-3 col-6' },
     { id: 7, name: 'Semester', required: true, class: 'col-md-3 col-6' },
@@ -716,7 +633,7 @@ export class ExamTimeTableComponent {
     switch (fieldName) {
       case 'Academic Session': return this.academicSessionList;
       case 'Degree Programme Type': return this.degreeProgrammeTypeList;
-      case 'Degree Program': return this.degreeProgrammeList;
+      case 'Degree Programme': return this.degreeProgrammeList;
 
       case 'Exam Type': return this.examTypeList;
       case 'Exam Paper Type': return this.examPaperTypeList;

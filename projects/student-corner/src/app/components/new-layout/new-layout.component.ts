@@ -151,8 +151,8 @@ export class NewLayoutComponent {
       hasSubmenu: true,
       isExpanded: false,
       submenus: [
-        { label: 'Apply Transfer Certificate', route: '/exams/upcoming', isActive: false },
-        { label: 'Apply Migration Certificate', route: '/exams/upcoming', isActive: false },
+        { label: 'Apply Transfer Certificate', route: '/payment/transfer', isActive: false },
+        { label: 'Apply Migration Certificate', route: '/payment/migration', isActive: false },
         { label: 'Get SRC', route: '/exams/upcoming', isActive: false },
       ]
     },

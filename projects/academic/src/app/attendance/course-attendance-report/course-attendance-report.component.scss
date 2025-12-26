@@ -1,3 +1,38 @@
 .page-title {
     color: rgb(3, 101, 69);
 }
+
+
+// Add this to your SCSS file
+.bg-green {
+    background-color: #d4edda !important;
+    transition: background-color 0.3s ease;
+}
+
+// Optional: Add hover effect
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+// Style for clickable spans/buttons
+.button-custom {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.button-custom:hover {
+    transform: scale(1.1);
+    opacity: 0.9;
+}
+

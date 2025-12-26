@@ -44,26 +44,17 @@ export class CourseRegistrationComponent {
 
   ngOnInit(): void {
     this.getStudentDetails();
-    console.log(this.userData);
-    
   }
 
   getStudentDetails() {
-    const academic_session_id = this.userData.academic_session_id;
-    const course_year_id = this.userData.course_year_id;
-    const semester_id = this.userData.semester_id;
-    const college_id = this.userData.college_id;
-    const degree_programme_id = this.userData.degree_programme_id;
-    const ue_id = this.userData.user_id;
-
     const params = {
-      academic_session_id: academic_session_id,
-      course_year_id: course_year_id,
-      semester_id: semester_id,
-      college_id: college_id,
-      degree_programme_id: degree_programme_id,
-      ue_id: ue_id,
-      payment:true
+       academic_session_id: this.userData?.academic_session_id,
+      course_year_id: this.userData?.course_year_id,
+      semester_id: this.userData?.semester_id,
+      college_id: this.userData?.college_id,
+      degree_programme_id: this.userData.degree_programme_id,
+      ue_id: this.userData.user_id,
+      payment: true,
     };
     this.HTTP.getParam(
       '/course/get/getStudentList/',
