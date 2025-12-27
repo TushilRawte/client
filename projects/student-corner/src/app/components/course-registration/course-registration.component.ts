@@ -24,7 +24,7 @@ export class CourseRegistrationComponent {
   studentData: any = null;
   userData: any = {};
 
-
+//tushil
   constructor(
     private HTTP: HttpService,
     private alert: AlertService,
