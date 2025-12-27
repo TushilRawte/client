@@ -172,7 +172,7 @@ addRowToTable() {
   );
 
   if (isDuplicate) {
-    alert('This course with the selected type is already added!');
+    alert('This course already added.');
     return;
   }
 
@@ -264,7 +264,8 @@ addRowToTable() {
     this.HTTP.postData(apiUrl, finalPayload, 'academic').subscribe(res => {
       if (!res.body.error) {
         this.alert.alertMessage("Record Inserted...!", "", "success");
-        this.clearCourseTable();
+        // this.clearCourseTable();
+        this.getCourseYearList();
       } else {
         this.alert.alertMessage("Something went wrong!", res.body.error?.message, "warning");
       }
@@ -538,6 +539,8 @@ getDegreeProgramme(college_id: number) {
     this.selectedDegreeProgrammeTypeId = degree_programme_type_id;
         this.isOtherCourseDisabled()
         this.filterCourseTypeList()
+        // this.getCourseYearList();
+        this.clearCourseTable()
 
     // ✅ Check if selected degree_programme_id is 1, 2, or 3
   this.hasSpecificProgramme = [1, 2, 3].includes(degree_programme_id);
@@ -679,26 +682,123 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     })
   }
 
-  onCourseChange(selectedCourseId: number): void {
-    const selectedCourse = this.courseList.find((course: { course_id: number; }) => course.course_id === selectedCourseId);
-    if (selectedCourse) {
-      this.courseAllotFormGroup.patchValue({
-        course_nature: selectedCourse.course_nature,
-        total_credit: selectedCourse.credit
-      });
-    } else {
-      this.courseAllotFormGroup.patchValue({
-        course_nature: '',
-        total_credit: ''
-      });
-    }
+  // onCourseChange(selectedCourseId: number): void {
+  //   const selectedCourse = this.courseList.find((course: { course_id: number; }) => course.course_id === selectedCourseId);
+  //   if (selectedCourse) {
+  //     this.courseAllotFormGroup.patchValue({
+  //       course_nature: selectedCourse.course_nature,
+  //       total_credit: selectedCourse.credit
+  //     });
+  //   } else {
+  //     this.courseAllotFormGroup.patchValue({
+  //       course_nature: '',
+  //       total_credit: ''
+  //     });
+  //   }
+  // }
+
+  //old here i am added course_type_id auto select belove so in this code not added course_type_id auto select
+//   onCourseChange(selectedCourseId: number): void {
+//   // Check if "Other Department Course" checkbox is checked
+//   const isAllCourse = this.courseAllotFormGroup.get('isAllCourse')?.value;
+  
+//   let selectedCourse;
+  
+//   if (isAllCourse) {
+//     // Search in allCourses array for "Other Department Course"
+//     selectedCourse = this.allCourses.find((course: { course_id: number; }) => course.course_id === selectedCourseId);
+//   } else {
+//     // Search in courseList array for regular courses
+//     selectedCourse = this.courseList.find((course: { course_id: number; }) => course.course_id === selectedCourseId);
+//   }
+  
+//   if (selectedCourse) {
+//     console.log('Selected course found:', selectedCourse);
+//     console.log('Course nature:', selectedCourse.course_nature);
+//     console.log('Credit:', selectedCourse.credit);
+    
+//     this.courseAllotFormGroup.patchValue({
+//       course_nature: selectedCourse.course_nature || '',
+//       total_credit: selectedCourse.credit || ''
+//     });
+//   } else {
+//     console.log('Selected course not found');
+//     this.courseAllotFormGroup.patchValue({
+//       course_nature: '',
+//       total_credit: ''
+//     });
+//   }
+// }
+
+onCourseChange(selectedCourseId: number): void {
+  // Check if "Other Department Course" checkbox is checked
+  const isAllCourse = this.courseAllotFormGroup.get('isAllCourse')?.value;
+  
+  let selectedCourse;
+  
+  if (isAllCourse) {
+    // Search in allCourses array for "Other Department Course"
+    selectedCourse = this.allCourses.find((course: { course_id: number; }) => course.course_id === selectedCourseId);
+  } else {
+    // Search in courseList array for regular courses
+    selectedCourse = this.courseList.find((course: { course_id: number; }) => course.course_id === selectedCourseId);
   }
+  
+  if (selectedCourse) {
+    console.log('Selected course found:', selectedCourse);
+    console.log('Course nature:', selectedCourse.course_nature);
+    console.log('Credit:', selectedCourse.credit);
+    console.log('Course Type ID from course data:', selectedCourse.course_type_id);
+    
+    // If course has course_type_id, auto-select it
+    if (selectedCourse.course_type_id) {
+      // Check if this course_type_id exists in the filtered courseTypeList
+      const courseTypeExists = this.courseTypeList.some(
+        (type: any) => type.course_type_id === selectedCourse.course_type_id
+      );
+      
+      if (courseTypeExists) {
+        this.courseAllotFormGroup.patchValue({
+          course_type_id: selectedCourse.course_type_id,
+          course_nature: selectedCourse.course_nature || '',
+          total_credit: selectedCourse.credit || ''
+        });
+        console.log('Auto-selected course_type_id:', selectedCourse.course_type_id);
+      } else {
+        // If course_type_id doesn't exist in filtered list, reset it
+        this.courseAllotFormGroup.patchValue({
+          course_type_id: '',
+          course_nature: selectedCourse.course_nature || '',
+          total_credit: selectedCourse.credit || ''
+        });
+        console.log('Course type ID not available in filtered list, resetting.');
+      }
+    } else {
+      // If course doesn't have course_type_id, keep it blank
+      this.courseAllotFormGroup.patchValue({
+        course_type_id: '',
+        course_nature: selectedCourse.course_nature || '',
+        total_credit: selectedCourse.credit || ''
+      });
+      console.log('No course_type_id in course data, leaving blank.');
+    }
+  } else {
+    console.log('Selected course not found');
+    this.courseAllotFormGroup.patchValue({
+      course_type_id: '',
+      course_nature: '',
+      total_credit: ''
+    });
+  }
+}
 
   getCourseType() {
     this.HTTP.getParam('/master/get/getCourseTypeList/',{} ,'academic').subscribe((result:any) => {
       // console.log(result);
       this.courseTypeList = result.body.data;
-      this.courseTypeList = [...this.allCourseTypeList];
+      console.log(this.courseTypeList);
+         this.allCourseTypeList = [...this.courseTypeList] 
+      
     })
   }
 
@@ -709,7 +809,7 @@ onIsAllCourseChange(isAllCourse: boolean) {}
     
     // For UG (type id 1), show only specific course type (e.g., index 6)
     this.courseTypeList = this.allCourseTypeList.filter((type: any) => 
-      type.course_type_id === 1 // or whatever specific ID you need
+      type.course_type_id === 7 // or whatever specific ID you need
     );
     console.log('after filter', this.courseTypeList);
     

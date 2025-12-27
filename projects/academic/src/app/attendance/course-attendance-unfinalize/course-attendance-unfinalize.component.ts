@@ -1,15 +1,15 @@
-import { Component, OnInit, ɵɵstoreLet } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { take } from 'rxjs';
 import { AlertService, HttpService, PrintService } from 'shared';
 
 @Component({
-  selector: 'app-attendance-unfinalize',
+  selector: 'app-course-attendance-unfinalize',
   standalone: false,
-  templateUrl: './attendance-unfinalize.component.html',
-  styleUrl: './attendance-unfinalize.component.scss'
+  templateUrl: './course-attendance-unfinalize.component.html',
+  styleUrl: './course-attendance-unfinalize.component.scss'
 })
-export class AttendanceUnfinalizeComponent implements OnInit {
+export class CourseAttendanceUnfinalizeComponent implements OnInit {
   state = {
     acadmcSesnList: [] as any[],
     semesterList: [] as any[],
@@ -37,6 +37,12 @@ export class AttendanceUnfinalizeComponent implements OnInit {
   finalizeCourseAttendanceFormGroup!: FormGroup;
   globalAttendanceStatusId: number = 1; // Default global status
   groupedStudents: any[] = [];
+  @ViewChild('courseListSection') courseListSection!: ElementRef; // ~ step 1 (scroll) then set id in target div
+
+  // & step 1: selection bg-color change -> declare value
+  selectedCourseId: number | null = null;
+  selectedOperationType: string | null = null;
+  selectedRowData: any = null;
 
   constructor(
     private HTTP: HttpService,
@@ -48,6 +54,9 @@ export class AttendanceUnfinalizeComponent implements OnInit {
   ngOnInit(): void {
     this.showEmpIdField = this.hasAllowedDesignation([327, 342, 2423]);
     this.getAcademicSession();
+    this.getSemester();
+    this.getDegreeProgrammeTypeData();
+
     this.initializeFilterForm();
     this.setupFormValueChanges();
   }
@@ -64,21 +73,24 @@ export class AttendanceUnfinalizeComponent implements OnInit {
 
   setupFormValueChanges() {
     this.finalizeCourseFilterFormGroup.get('academic_session_id')?.valueChanges.subscribe(academicSessionId => {
-      this.clearDependentFields(['semester_id', 'degree_programme_type_id', 'college_id', 'course_id']);
-      if (academicSessionId) {
-        this.getSemester();
-      }
+      // this.clearDependentFields(['course_id']);
+      this.clearData();
+      // if (academicSessionId) {
+      //   this.getSemester();
+      // }
     });
 
     this.finalizeCourseFilterFormGroup.get('semester_id')?.valueChanges.subscribe(semesterId => {
-      this.clearDependentFields(['degree_programme_type_id', 'college_id', 'course_id']);
-      if (semesterId) {
-        this.getDegreeProgrammeTypeData();
-      }
+      // this.clearDependentFields(['course_id']);
+      this.clearData();
+      // if (semesterId) {
+      //   this.getDegreeProgrammeTypeData();
+      // }
     });
 
     this.finalizeCourseFilterFormGroup.get('degree_programme_type_id')?.valueChanges.subscribe(degreeProgrammeTypeId => {
       this.clearDependentFields(['college_id', 'course_id']);
+      this.clearData();
       if (degreeProgrammeTypeId) {
         this.getCollegeData(degreeProgrammeTypeId);
       }
@@ -86,6 +98,7 @@ export class AttendanceUnfinalizeComponent implements OnInit {
 
     this.finalizeCourseFilterFormGroup.get('college_id')?.valueChanges.subscribe(collegeId => {
       this.clearDependentFields(['course_id']);
+      this.clearData();
       if (collegeId) {
         const { academic_session_id, semester_id, degree_programme_type_id } = this.finalizeCourseFilterFormGroup.value;
         this.getCourseData(academic_session_id, semester_id, degree_programme_type_id, collegeId);
@@ -98,6 +111,15 @@ export class AttendanceUnfinalizeComponent implements OnInit {
       (this.state as any)[field.replace('_id', 'List')] = [];
       this.finalizeCourseFilterFormGroup.patchValue({ [field]: '' });
     });
+  }
+
+  private clearData(): void {
+    this.groupedStudents = [];
+    this.courseAttendanceList = [];
+    this.courseAttendanceStudentList = [];
+    if (this.finalizeCourseAttendanceFormGroup) {
+      this.finalizeCourseAttendanceFormGroup.reset();
+    }
   }
 
   initializeStudentForm() {
@@ -137,7 +159,8 @@ export class AttendanceUnfinalizeComponent implements OnInit {
       course_nature_id: [student.course_nature_id, Validators.required],
       attendance_status_id: [{
         value: student.attendance_status_id || this.globalAttendanceStatusId,
-        disabled: attendanceStatusDisabled
+        // disabled: attendanceStatusDisabled
+        disabled: true
       }, Validators.required],
       selected: [{ value: false, disabled: selectedDisabled }],
       action_remark: [student.action_remark || '']
@@ -172,23 +195,35 @@ export class AttendanceUnfinalizeComponent implements OnInit {
     });
   }
 
+  // getClassForFinalizeStudents(item: any): string {
+  //   if (this.attendanceOperation.attendanceUpdate) {
+  //     if (item.attendance_finalize_yn === 'Y') {
+  //       return 'background-color: #D3D3D3';
+  //     } else if (item.attendance_status_id && [1, 2, 3].includes(item.attendance_status_id)) {
+  //       return 'background-color: #BDF9C2';
+  //     }
+  //   } else if (this.attendanceOperation.finalize) {
+  //     if (item.attendance_finalize_yn === 'Y') {
+  //       return 'background-color: #D3D3D3';
+  //     }
+  //   } else if (this.attendanceOperation.unFinalize) {
+  //     if (item.attendance_finalize_yn === 'N') {
+  //       return 'background-color: #D3D3D3';
+  //     }
+  //   }
+  //   return 'background-color: #fff';
+  // }
+
   getClassForFinalizeStudents(item: any): string {
-    if (this.attendanceOperation.attendanceUpdate) {
-      if (item.attendance_finalize_yn === 'Y') {
-        return 'background-color: #D3D3D3';
-      } else if (item.attendance_status_id && [1, 2, 3].includes(item.attendance_status_id)) {
-        return 'background-color: #BDF9C2';
-      }
-    } else if (this.attendanceOperation.finalize) {
-      if (item.attendance_finalize_yn === 'Y') {
-        return 'background-color: #D3D3D3';
-      }
-    } else if (this.attendanceOperation.unFinalize) {
-      if (item.attendance_finalize_yn === 'N') {
-        return 'background-color: #D3D3D3';
-      }
+    if (item.attendance_finalize_yn === 'Y') {
+      return 'background-color: #D3D3D3';
+    } else if (item.attendance_status_id && [1].includes(item.attendance_status_id)) {
+      return 'background-color: #BDF9C2';
+    } else if (item.attendance_status_id && [3].includes(item.attendance_status_id)) {
+      return 'background-color: #f9cabdff';
+    } else {
+      return 'background-color: #fff';
     }
-    return 'background-color: #fff';
   }
 
   onToggleSelectAll(isChecked: boolean): void {
@@ -202,6 +237,33 @@ export class AttendanceUnfinalizeComponent implements OnInit {
     });
   }
 
+  // prepareGroupedStudents(): void {
+  //   if (!this.courseAttendanceStudentList || this.courseAttendanceStudentList.length === 0) {
+  //     this.groupedStudents = [];
+  //     return;
+  //   }
+
+  //   const groupedMap = new Map<string, any>();
+
+  //   this.courseAttendanceStudentList.forEach((student: any, index: number) => {
+  //     const key = student.degree_programme_name_e;
+
+  //     if (!groupedMap.has(key)) {
+  //       groupedMap.set(key, {
+  //         degree_programme_name_e: student.degree_programme_name_e,
+  //         records: [],
+  //       });
+  //     }
+
+  //     groupedMap.get(key).records.push({
+  //       ...student,
+  //       formIndex: index,
+  //     });
+  //   });
+
+  //   this.groupedStudents = Array.from(groupedMap.values());
+  // }
+
   prepareGroupedStudents(): void {
     if (!this.courseAttendanceStudentList || this.courseAttendanceStudentList.length === 0) {
       this.groupedStudents = [];
@@ -210,6 +272,7 @@ export class AttendanceUnfinalizeComponent implements OnInit {
 
     const groupedMap = new Map<string, any>();
 
+    // First, group students by degree programme
     this.courseAttendanceStudentList.forEach((student: any, index: number) => {
       const key = student.degree_programme_name_e;
 
@@ -226,25 +289,85 @@ export class AttendanceUnfinalizeComponent implements OnInit {
       });
     });
 
+    // Convert map to array and sort groups if needed
     this.groupedStudents = Array.from(groupedMap.values());
+
+    // Sort groups by degree programme name
+    this.groupedStudents.sort((a, b) =>
+      a.degree_programme_name_e.localeCompare(b.degree_programme_name_e)
+    );
+
+    let globalIndex = 1;
+
+    // Sort records within each group according to the specified order
+    this.groupedStudents = this.groupedStudents.map((group: any) => {
+      // Define sorting priority based on attendance status
+      group.records.sort((a: any, b: any) => {
+        // Priority 1: attendance_finalize_yn is null AND attendance_status_id is null (comes first)
+        const aIsNullAndNull = a.attendance_finalize_yn === null && a.attendance_status_id === null;
+        const bIsNullAndNull = b.attendance_finalize_yn === null && b.attendance_status_id === null;
+
+        if (aIsNullAndNull && !bIsNullAndNull) return -1;
+        if (!aIsNullAndNull && bIsNullAndNull) return 1;
+        if (aIsNullAndNull && bIsNullAndNull) return 0;
+
+        // Priority 2: attendance_finalize_yn is null AND attendance_status_id = 3 (comes second)
+        const aIsNullAndThree = a.attendance_finalize_yn === 'N' && a.attendance_status_id === 3;
+        const bIsNullAndThree = b.attendance_finalize_yn === 'N' && b.attendance_status_id === 3;
+
+        if (aIsNullAndThree && !bIsNullAndThree) return -1;
+        if (!aIsNullAndThree && bIsNullAndThree) return 1;
+        if (aIsNullAndThree && bIsNullAndThree) return 0;
+
+        // Priority 3: Sort by name alphabetically (comes third)
+        // const nameCompare = (a.student_name || '').localeCompare(b.student_name || '');
+        // if (nameCompare !== 0) return nameCompare;
+
+        // Priority 4: attendance_status_id = 1 AND attendance_finalize_yn = 'Y' (comes last)
+        const aIsOneAndY = a.attendance_status_id === 1 && a.attendance_finalize_yn === 'Y';
+        const bIsOneAndY = b.attendance_status_id === 1 && b.attendance_finalize_yn === 'Y';
+
+        if (aIsOneAndY && !bIsOneAndY) return 1;  // 'Y' comes after others
+        if (!aIsOneAndY && bIsOneAndY) return -1; // Others come before 'Y'
+        if (aIsOneAndY && bIsOneAndY) return 0;
+
+        // Priority 5: attendance_status_id = 3 AND attendance_finalize_yn = 'Y' (comes last)
+        const aIsOneAndYFive = a.attendance_status_id === 3 && a.attendance_finalize_yn === 'Y';
+        const bIsOneAndYFive = b.attendance_status_id === 3 && b.attendance_finalize_yn === 'Y';
+
+        if (aIsOneAndYFive && !bIsOneAndYFive) return 1;  // 'Y' comes after others
+        if (!aIsOneAndYFive && bIsOneAndYFive) return -1; // Others come before 'Y'
+        if (aIsOneAndYFive && bIsOneAndYFive) return 0;
+
+        // For any remaining cases, maintain current order
+        return 0;
+      });
+
+      // Assign sequential global index
+      group.records.forEach((student: any) => {
+        student.index = globalIndex++;
+      });
+
+      return group;
+    });
   }
 
   getAcademicSession() {
-    this.HTTP.getParam('/master/get/getAcademicSession/', {}, 'academic')
+    this.HTTP.getParam('/master/get/getAcademicSession', {}, 'academic')
       .subscribe((result: any) => {
         this.state.acadmcSesnList = result.body.data || [];
       });
   }
 
   getDegreeProgrammeTypeData() {
-    this.HTTP.getParam('/master/get/getDegreeProgramType/', {}, 'academic')
+    this.HTTP.getParam('/master/get/getDegreeProgramType', {}, 'academic')
       .subscribe((result: any) => {
         this.state.degreeProgrammeTypeList = result.body.data || [];
       });
   }
 
   getSemester() {
-    this.HTTP.getParam('/master/get/getSemesterList/', {}, 'academic')
+    this.HTTP.getParam('/master/get/getSemesterList', {}, 'academic')
       .subscribe((result: any) => {
         this.state.semesterList = result.body.data || [];
       });
@@ -283,6 +406,10 @@ export class AttendanceUnfinalizeComponent implements OnInit {
       return;
     }
 
+    // & step 3: selection bg-color change -> clear
+    // Clear previous selection
+    this.clearSelection();
+
     const formValue = this.finalizeCourseFilterFormGroup.value;
     this.finalizeCourse = { ...formValue };
 
@@ -306,16 +433,21 @@ export class AttendanceUnfinalizeComponent implements OnInit {
       college_id,
       course_id,
       exam_type_id,
+      is_finalize_yn: 'Y'
     };
 
     this.HTTP.getParam('/attendance/get/getCourseWiseAttendance', params, 'academic')
       .subscribe((res: any) => {
         if (!res.body.error) {
           this.courseAttendanceList = res.body.data || [];
-          this.courseAttendanceStudentList = [];
-          this.groupedStudents = [];
+          if (this.courseAttendanceList.length > 0) {
+            this.courseAttendanceStudentList = [];
+            this.groupedStudents = [];
+          } else {
+            this.alert.alertMessage("No Records Found There!", "", "warning");
+          }
         } else {
-          this.alert.alertMessage("Error", res.body.error?.message || "Failed to load course attendance", "warning");
+          this.alert.alertMessage(res.body?.error?.message || res.body?.error, "Failed to load course attendance", "warning");
         }
       }, (error) => {
         console.error('Error in getCourseWiseAttendance:', error);
@@ -324,6 +456,12 @@ export class AttendanceUnfinalizeComponent implements OnInit {
   }
 
   onStatusClick(item: any, operation: string): void {
+    // & step 2: selection bg-color change -> initialize value
+    // Set selected row data
+    this.selectedCourseId = item.course_id;
+    this.selectedOperationType = operation;
+    this.selectedRowData = item;
+
     // Reset operation states
     this.attendanceOperation = {
       attendanceUpdate: operation === "attendanceUpdate",
@@ -372,17 +510,27 @@ export class AttendanceUnfinalizeComponent implements OnInit {
     }
     // For attendanceUpdate: get all students (no filter)
 
-    this.HTTP.getParam('/course/get/getStuWiseRegCourses', params, 'academic')
+    this.HTTP.getParam('/course/get/getStuWiseRegCourses', { ...params, is_finalize_yn: 'Y' }, 'academic')
       .subscribe((res: any) => {
         if (!res.body.error) {
           this.courseAttendanceStudentList = res.body.data || [];
-          this.initializeStudentForm();
-          this.prepareGroupedStudents();
+          if (this.courseAttendanceStudentList.length > 0) {
+            this.initializeStudentForm();
+            this.prepareGroupedStudents();
 
-          // Auto-select all by default
-          this.onToggleSelectAll(true);
+            // Auto-select all by default
+            this.onToggleSelectAll(true);
+
+            // ~ step 2 (scroll)
+            // ⬇️ WAIT FOR DOM TO RENDER, THEN SCROLL
+            setTimeout(() => {
+              this.scrollToCourseList();
+            }, 150);
+          } else {
+            this.alert.alertMessage("No Records Found There!", "", "warning");
+          }
         } else {
-          this.alert.alertMessage("Error", res.body.error?.message || "Failed to load student list", "warning");
+          this.alert.alertMessage(res.body?.error?.message || res.body?.error || "Failed to load student list", '', "warning");
         }
       }, (error) => {
         console.error('Error in getStudentAttendanceList:', error);
@@ -498,7 +646,6 @@ export class AttendanceUnfinalizeComponent implements OnInit {
     return allowed.some(id => this.user?.designation_arr?.includes(id));
   }
 
-
   getPdf(): void {
     let { academic_session_id, college_id, degree_programme_type_id, semester_id, course_id } =
       this.finalizeCourseFilterFormGroup.value;
@@ -533,8 +680,39 @@ export class AttendanceUnfinalizeComponent implements OnInit {
       college_name_e: selectedCollege?.college_name_e,
       degree_programme_type_name_e: selectedDegreeProTy[0]?.degree_programme_type_name_e,
       course_title_e: selectedCourse[0]?.course_name,
-      semester_name_e: selectedSemester[0]?.semester_name_e
+      semester_name_e: selectedSemester[0]?.semester_name_e,
+      course_code: this.selectedRowData?.course_code,
+      dean_committee_name_e: this.selectedRowData?.dean_committee_name_e,
+      course_year_name_e: this.selectedRowData?.course_year_name_e,
       // orientation: 'landscape'
     }, "Attendance_Status_Report", "common").pipe(take(1)).subscribe(() => console.log("PDF Generated"));
+  }
+
+  // ~ step 4 (scroll)
+  scrollToCourseList() {
+    const el = document.getElementById('courseListSection');
+    if (!el) return;
+
+    const headerHeight = 64; // mat-toolbar height
+    const rect = el.getBoundingClientRect();
+    const absoluteTop = rect.top + window.pageYOffset - headerHeight;
+
+    window.scrollTo({
+      top: absoluteTop,
+      behavior: 'smooth'
+    });
+  }
+
+  // & step 4: selection bg-color change -> check value
+  isRowSelected(item: any): boolean {
+    return this.selectedCourseId === item.course_id &&
+      this.selectedOperationType !== null;
+  }
+
+  // & step 5: selection bg-color change -> clean value
+  clearSelection(): void {
+    this.selectedCourseId = null;
+    this.selectedOperationType = null;
+    this.selectedRowData = null;
   }
 }
