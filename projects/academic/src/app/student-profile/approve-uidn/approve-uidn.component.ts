@@ -119,15 +119,22 @@ export class ApproveUidnComponent {
       return; // Stop execution
     }
     this.HTTP.getParam('/studentProfile/get/getStudentListForApproveUIDN/', payload, 'academic').subscribe((result: any) => {
-      this.studentList = result?.body?.data;
+      this.studentList = result?.body?.data || [];
       console.log('Fetched Student List:', this.studentList);
 
       this.students.clear();
 
-      this.studentList.forEach((row: any) => {
-        this.students.push(this.createStudentRow(row, formData));
-      });
-
+      if (this.studentList.length > 0) {
+        this.studentList.forEach((row: any) => {
+          this.students.push(this.createStudentRow(row, formData));
+        });
+      } else {
+        this.alert.alertMessage(
+          "No Records Found",
+          result?.body?.error?.message || result?.body?.error || '',
+          "warning"
+        );
+      }
       console.log('API Response:', result);
     });
   }

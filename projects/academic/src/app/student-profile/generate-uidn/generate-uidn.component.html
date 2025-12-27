@@ -1,4 +1,8 @@
 <mat-card>
+  <mat-card-header>
+    <mat-card-title class="page-title">Generate UIDN</mat-card-title>
+  </mat-card-header>
+  
   <mat-card-content>
     <form [formGroup]="generateUIDNFormGroup">
       <div class="row">
@@ -9,7 +13,7 @@
             </ng-container>
           </ng-select>
         </div>
-        <div class="col-md-4 col-6">
+        <div class="col-md-5 col-6">
           <ng-select placeholder="College" formControlName="college_id" (change)="onCollegeChange($event)"
             appearance="outline">
             <ng-container *ngFor="let server of collegeList">
@@ -17,32 +21,28 @@
             </ng-container>
           </ng-select>
         </div>
-        <div class="col-md-4 col-6">
+        <div class="col-md-3 col-6">
           <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Degree Programme</mat-label>
-            <mat-select placeholder="Degree Programme" (selectionChange)="onDegreeProgrammeChange($event.value)">
-              <mat-option *ngFor="let server of degreeProgramme" [value]="server.degree_programme_id">
-                {{ server.degree_programme_name_e }}
+            <mat-label>Degree</mat-label>
+            <mat-select placeholder="Degree" (selectionChange)="onDegreeChange($event.value)">
+              <mat-option *ngFor="let server of degreeList" [value]="server.degree_id">
+                {{ server.degree_name_e }}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-2 mt-2">
           <button class="btn btn-primary" (click)="getStudentList()">Get List</button>
         </div>
       </div>
-      <div class="row">
+      <div class="row" *ngIf="this.studentList?.length > 0">
         <table class="table table-bordered">
           <thead>
             <tr>
-              <th>#</th>
-                  <th>
-                        <input
-                        type="checkbox"
-                        [checked]="selectAll"
-                        (change)="toggleSelectAll($event)"
-                        />
-                    </th>
+              <th>SNO.</th>
+              <th>
+                <input type="checkbox" [checked]="selectAll" (change)="toggleSelectAll($event)" />
+              </th>
               <th>Admission / Registration No.</th>
               <th>Student Name</th>
               <th>Overall Rank</th>
@@ -75,7 +75,7 @@
           </tbody>
         </table>
       </div>
-      <div class="row">
+      <div class="row" *ngIf="this.studentList?.length > 0">
         <div class="col-md-3 mt-4">
           <button class="btn btn-success" type="button" (click)="submitSelected()">Generate UIDN</button>
         </div>
