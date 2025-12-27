@@ -73,15 +73,15 @@
           <tr [class.highlighted-row]="!isFailedCourse(row) "
             [class.failed-course-row]="isFailedCourse(row) || row?.course_registration_type_id == 2">
             <td>{{i+1}}</td>
-            <td>{{ row?.course_name }}</td>
-            <td>{{ row?.emp_names || 'No Data'  }}</td>
+            <td class="text-start ps-2">{{ row?.course_name }}</td>
+            <td class="text-start ps-2">{{ row?.emp_names || 'No Data'  }}</td>
             <td>{{ row?.course_type_name_e }}</td>
             <td>{{ row?.credit }}</td>
             <td> {{ row?.cou_allot_type_name_e === 'Complusory' ? 'C' : (row?.cou_allot_type_name_e ===
               'Optional' ? 'O' : '') }}</td>
             <td>
               <button type="button" color="danger" class="btn-remove" [class.failed-course-remove]="isFailedCourse(row)"
-                [disabled]="isFailedCourse(row)  || (row.cou_allot_type_name_e === 'Complusory' && row?.other_department !== true) "
+                [disabled]="isFailedCourse(row) || studentData?.is_finalize_yn == 'Y' || (row.cou_allot_type_name_e === 'Complusory' && row?.other_department !== true) "
                 (click)="onCourseRemove(row.course_id,row.course_nature_id)"
                 [title]="isFailedCourse(row) ? 'Failed courses are mandatory and cannot be removed' : 'Remove Course'">
                 <mat-icon>{{ isFailedCourse(row) ? 'lock' : 'close' }}</mat-icon>
@@ -132,10 +132,11 @@
 
         </div>
         <div class="col-sm-3">
-          @if (studentData?.registration_status_id == 2) {
+          @if (studentData?.registration_status_id == 2 && studentData?.is_finalize_yn == 'N') {
           <button type="button" (click)="onSubmit()" class="btn btn-primary btn-sm">Register courses</button>
-          } @else  {
-          <button type="button" *ngIf="studentData?.is_finalize_yn !=='Y'" (click)="onUpdate()" class="btn btn-primary btn-sm">Update courses</button>
+          } @else if (studentData?.registration_status_id == 1 && studentData?.is_finalize_yn ==='N') {
+          <button type="button"  (click)="onUpdate()" class="btn btn-primary btn-sm">Update courses</button>
+          <button type="button" (click)="onFinalize()" class="btn btn-success btn-sm ms-2 text-dark fw-semibold">Finalize Courses</button>
           }
         </div>
       </mat-card-content>
